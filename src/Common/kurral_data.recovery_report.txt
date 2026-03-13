@@ -1,0 +1,5 @@
+Source: src/Common/kurral_data.json
+Total fragments extracted: 1330
+Successfully recovered objects: 1330
+Failed fragments: 0
+

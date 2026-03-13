@@ -1,0 +1,53 @@
+{
+  "footer": {
+    "title": "திருக்குறள்",
+    "description": "திருவள்ளுவர் அருளிய உலகப்பொதுமறை",
+    "sections": [
+      {
+        "title": "சிக்ஷணம்",
+        "links": [
+          { "href": "/thirukurral", "label": "குறள் கற்க" },
+          { "href": "/practice", "label": "பயிற்சி" },
+          { "href": "/adhikarams", "label": "அதிகாரங்கள்" }
+        ]
+      },
+      {
+        "title": "பற்றி",
+        "links": [
+          { "href": "/about", "label": "இந்த செயலி" },
+          { "href": "/contact", "label": "தொடர்பு" },
+          { "href": "/privacy", "label": "தனியுரிமை" }
+        ]
+      }
+    ],
+    "copyright": "© {year} திருக்குறள் | அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை",
+    "developedBy": "Developed with ❤️ by",
+    "developerName": "Arun",
+    "developerUrl": "http://www.darunk.com"
+  },
+  "header": {
+    "siteTitle": "திருக்குறள் UI",
+    "nav": [
+      { "label": "முகப்பு", "link": "/" },
+      { "label": "குறள்", "link": "/thirukurral" },
+      { "label": "பயிற்சி", "link": "/practice" }
+    ]
+  },
+  "practice": {
+    "pageTitle": "பயிற்சி வகைகள்",
+    "welcomeTitle": "வணக்கம்!",
+    "welcomeText": "தயவுசெய்து ஒரு பயிற்சி வகையை தேர்ந்தெடுக்கவும்",
+    "features": [
+      { "icon": "🎯", "text": "இலக்காக பயிற்சி" },
+      { "icon": "📈", "text": "முன்னேற்றம் கண்காணித்தல்" },
+      { "icon": "🏆", "text": "சாதனைகள் பெறுதல்" }
+    ],
+    "types": [
+      {
+        "Tamil": "Match Paal to Adhikaram",
+        "icon": "🎯",
+        "description": "பாலுடன் அதிகாரத்தை பொருத்துக"
+      }
+    ]
+  }
+}
