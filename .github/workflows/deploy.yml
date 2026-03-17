@@ -17,6 +17,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Set API base URL from secret
+        run: echo "VITE_API_BASE_URL=${{ secrets.API_BASE_URL }}" > .env.production
+
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
