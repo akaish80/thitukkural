@@ -191,7 +191,7 @@ function findByPaal(paalList: PaalData[], paalNumber: number | string): PaalData
   return paalList.find((p: PaalData) => Number(p.paal_number || p.Paal_number) === n) || null;
 }
 
-module.exports = function buildService(): ChatbotService {
+export default function buildService(): ChatbotService {
   const nestedData = loadNestedData();
   if (!nestedData) {
     throw new Error('Failed to load thirukkural_complete_nested.json');

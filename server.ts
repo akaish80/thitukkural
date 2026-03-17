@@ -335,72 +335,81 @@ app.get("/api/getPaalsAndAdikarams", (_req: any, res: any) => {
 
 // Mount chatbot service API routes so the chat API runs on the same origin
 
-try {
-  const buildService = require("./src/services/chatbotService")();
 
-  // Move all chatbot endpoints under /api for Vercel compatibility
-  app.get("/api/health", (_req: any, res: any) =>
-    res.json({ ok: true, kurrals: buildService.kurrals.length }),
-  );
+// Dynamically import chatbotService for ES module compatibility (Vercel)
+let buildService: any = null;
+let chatbotReady = false;
+async function setupChatbotRoutes() {
+  try {
+    const chatbotModule = await import("./src/services/chatbotService.js");
+    buildService = chatbotModule.default();
+    chatbotReady = true;
 
-  app.get("/api/kurral/:id", (req: any, res: any) => {
-    const id = Number(req.params.id);
-    if (isNaN(id)) return res.status(400).json({ error: "invalid id" });
-    const k = buildService.getKurralById(id);
-    if (!k) return res.status(404).json({ error: "not found" });
-    res.json(k);
-  });
-
-  app.get("/api/adikaram/:num", (req: any, res: any) => {
-    const n = Number(req.params.num);
-    if (isNaN(n)) return res.status(400).json({ error: "invalid number" });
-    const a = buildService.getAdikaramInfo(n);
-    if (!a) return res.status(404).json({ error: "not found" });
-    const kurrals = buildService.kurrals.filter(
-      (k: { adikaram_number: number | string }) =>
-        Number(k.adikaram_number) === n,
+    // Move all chatbot endpoints under /api for Vercel compatibility
+    app.get("/api/health", (_req: any, res: any) =>
+      res.json({ ok: true, kurrals: buildService.kurrals.length }),
     );
-    res.json({ adikaram: a, kurrals });
-  });
 
-  app.post("/api/chat", (req: any, res: any) => {
-    const { query, topN } = req.body || {};
-    if (!query || typeof query !== "string")
-      return res.status(400).json({ error: "query (string) required" });
-    const result = buildService.search(query, topN || 10);
-    // append a small server-side log for auditing (timestamp, ip, query, result count)
-    try {
-      const logLine = JSON.stringify({
-        ts: Date.now(),
-        ip: req.ip || req.connection?.remoteAddress,
-        query,
-        topN: topN || 10,
-        resultCount:
-          result && result.results && result.results.length
-            ? result.results.length
-            : Array.isArray(result)
-              ? result.length
-              : result && result.kurral
-                ? 1
-                : 0,
-      });
-      const logPath = path.join(__dirname, "chat_queries.log");
-      fs.appendFile(
-        logPath,
-        `${logLine}\n`,
-        (err: NodeJS.ErrnoException | null) => {
-          if (err) console.warn("Failed to append chat log:", err.message);
-        },
+    app.get("/api/kurral/:id", (req: any, res: any) => {
+      const id = Number(req.params.id);
+      if (isNaN(id)) return res.status(400).json({ error: "invalid id" });
+      const k = buildService.getKurralById(id);
+      if (!k) return res.status(404).json({ error: "not found" });
+      res.json(k);
+    });
+
+    app.get("/api/adikaram/:num", (req: any, res: any) => {
+      const n = Number(req.params.num);
+      if (isNaN(n)) return res.status(400).json({ error: "invalid number" });
+      const a = buildService.getAdikaramInfo(n);
+      if (!a) return res.status(404).json({ error: "not found" });
+      const kurrals = buildService.kurrals.filter(
+        (k: { adikaram_number: number | string }) =>
+          Number(k.adikaram_number) === n,
       );
-    } catch (e) {
-      // ignore logging errors
-    }
-    res.json({ query, result });
-  });
-} catch (e) {
-  const message = e instanceof Error ? e.message : String(e);
-  console.warn("chatbotService not available:", message);
+      res.json({ adikaram: a, kurrals });
+    });
+
+    app.post("/api/chat", (req: any, res: any) => {
+      const { query, topN } = req.body || {};
+      if (!query || typeof query !== "string")
+        return res.status(400).json({ error: "query (string) required" });
+      const result = buildService.search(query, topN || 10);
+      // append a small server-side log for auditing (timestamp, ip, query, result count)
+      try {
+        const logLine = JSON.stringify({
+          ts: Date.now(),
+          ip: req.ip || req.connection?.remoteAddress,
+          query,
+          topN: topN || 10,
+          resultCount:
+            result && result.results && result.results.length
+              ? result.results.length
+              : Array.isArray(result)
+                ? result.length
+                : result && result.kurral
+                  ? 1
+                  : 0,
+        });
+        const logPath = path.join(__dirname, "chat_queries.log");
+        fs.appendFile(
+          logPath,
+          `${logLine}\n`,
+          (err: NodeJS.ErrnoException | null) => {
+            if (err) console.warn("Failed to append chat log:", err.message);
+          },
+        );
+      } catch (e) {
+        // ignore logging errors
+      }
+      res.json({ query, result });
+    });
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e);
+    console.warn("chatbotService not available:", message);
+  }
 }
+setupChatbotRoutes();
 
 // Serve static build in production from the project's build/ folder
 if (process.env.NODE_ENV === "production") {
