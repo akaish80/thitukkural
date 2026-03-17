@@ -26,7 +26,7 @@ const Nav = (props: NavProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
 
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, item: any) => {
+  const handleClick = (_e: React.MouseEvent<HTMLAnchorElement>, item: any) => {
     const newMenu = menu.map((menuItem: any) => ({
       ...menuItem,
       isClicked: menuItem.text === item.text,

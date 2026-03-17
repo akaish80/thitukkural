@@ -16,14 +16,14 @@ const Homepage = () => {
       icon: '✍️',
       title: 'Practice Writing',
       description: 'Learn to write Tamil letters with interactive drawing exercises.',
-      link: '/kurral/excercise',
+      link: '/practice',
       color: 'green',
     },
     {
       icon: '🎯',
       title: 'Interactive Games',
       description: 'Test your knowledge with engaging Tamil learning games.',
-      link: '/kurral/excercise',
+      link: '/excercise',
       color: 'purple',
     },
     {
@@ -52,26 +52,26 @@ const Homepage = () => {
               <span>🚀</span>
               Start Learning
             </Link>
-            <Link to="/kurral/excercise" className="btn btn-secondary btn-large">
+            <Link to="/excercise" className="btn btn-secondary btn-large">
               <span>✨</span>
               Practice Now
             </Link>
           </div>
         </div>
         <div className="hero-visual">
-          <div className="floating-card">
+          <div className="floating-card delayed-more">
             <div className="card-content">
               <h3>அறம்</h3>
               <p>Virtue</p>
             </div>
           </div>
-          <div className="floating-card delayed">
+          <div className="floating-card ">
             <div className="card-content">
               <h3>பொருள்</h3>
               <p>Wealth</p>
             </div>
           </div>
-          <div className="floating-card delayed-more">
+          <div className="floating-card delayed">
             <div className="card-content">
               <h3>இன்பம்</h3>
               <p>Pleasure</p>

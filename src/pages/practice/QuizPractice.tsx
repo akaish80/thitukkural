@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './QuizPractice.scss';
-import kurralData from '../../Common/kurral_data.with_adikaram.json';
 
 interface QuizQuestion {
   question: string;
@@ -8,7 +7,12 @@ interface QuizQuestion {
   answer: string;
 }
 
-function getRandomQuestions(num: number): QuizQuestion[] {
+interface QuizDataItem {
+  Kurral_id: number;
+  Tamil: string;
+}
+
+function getRandomQuestions(num: number, kurralData: QuizDataItem[]): QuizQuestion[] {
   const questions: QuizQuestion[] = [];
   const usedIndexes = new Set<number>();
   while (questions.length < num && usedIndexes.size < kurralData.length) {
@@ -37,11 +41,46 @@ function shuffle(arr: string[]): string[] {
 }
 
 const QuizPractice: React.FC = () => {
-  const [questions] = useState<QuizQuestion[]>(getRandomQuestions(5));
+  const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [current, setCurrent] = useState(0);
   const [score, setScore] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadQuizData = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/kurrals`);
+        if (!response.ok) throw new Error('Failed to load kurrals');
+        const data = await response.json();
+        if (isMounted) {
+          const quizData = (Array.isArray(data) ? data : []).map((item: any) => ({
+            Kurral_id: Number(item.Kurral_id),
+            Tamil: item.Tamil.replace('<br />',''),
+          })) as QuizDataItem[];
+          setQuestions(getRandomQuestions(5, quizData));
+        }
+      } catch (error) {
+        if (isMounted) {
+          setLoadError('Unable to load quiz data. Please refresh and try again.');
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadQuizData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleSelect = (option: string) => setSelected(option);
   const handleNext = () => {
@@ -54,6 +93,30 @@ const QuizPractice: React.FC = () => {
     }
   };
   const handleRetry = () => window.location.reload();
+
+  if (isLoading) {
+    return (
+      <div className="quiz-result">
+        <h2>Loading quiz...</h2>
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="quiz-result">
+        <h2>{loadError}</h2>
+      </div>
+    );
+  }
+
+  if (questions.length === 0) {
+    return (
+      <div className="quiz-result">
+        <h2>No quiz questions available.</h2>
+      </div>
+    );
+  }
 
   if (showResult) {
     return (

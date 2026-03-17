@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { isEmpty } from '../../components/utils';
 import { Container } from '../../Common/common.styles';
 import './practice.styles.scss';
-import MatchAdhikaramToPaal from './matchadhikaramtopaal/match.adhikaram.to.paal';
-import FillInKurral from './fillinkurral/fill.in.kurral';
-import PracticeLetter from './practiceletter/practice.letter';
-import DrawLetter from './drawletter/draw.letter';
-import QuizPractice from './QuizPractice';
+
+const MatchAdhikaramToPaal = lazy(() => import('./matchadhikaramtopaal/match.adhikaram.to.paal'));
+const FillInKurral = lazy(() => import('./fillinkurral/fill.in.kurral'));
+const DrawLetter = lazy(() => import('./drawletter/draw.letter'));
+const QuizPractice = lazy(() => import('./QuizPractice'));
 
 const practiceTypes = [
   {
@@ -16,16 +16,10 @@ const practiceTypes = [
     description: 'பாலுடன் அதிகாரத்தை பொருத்துக',
   },
   {
-    Tamil: 'Fill in Kurral Data',
+    Tamil: 'Fill in the Kurral',
     index: 2,
     icon: '✏️',
     description: 'குறள் வரிகளை நிரப்புக',
-  },
-  {
-    Tamil: 'Practice Letter அ',
-    index: 3,
-    icon: '📝',
-    description: 'தமிழ் எழுத்துக்கள் பயிற்சி',
   },
   {
     Tamil: 'Draw Letter அ',
@@ -41,6 +35,7 @@ const practiceTypes = [
   },
 ];
 
+
 const Excercise = () => {
   const [selectedExcercise, setSelectedExcercise] = useState(practiceTypes[0]);
 
@@ -55,8 +50,6 @@ const Excercise = () => {
       return <MatchAdhikaramToPaal selPractice={selectedExcercise} />;
     } else if (selInd.index === 2) {
       return <FillInKurral />;
-    } else if (selInd.index === 3) {
-      return <PracticeLetter />;
     } else if (selInd.index === 4) {
       return <DrawLetter />;
     } else if (selInd.index === 5) {
@@ -112,7 +105,9 @@ const Excercise = () => {
               </div>
 
               <div className="exercise-container">
-                {getExcerciseSessionContainer(selectedExcercise)}
+                <Suspense fallback={<p>Loading practice module...</p>}>
+                  {getExcerciseSessionContainer(selectedExcercise)}
+                </Suspense>
               </div>
             </div>
           )}

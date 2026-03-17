@@ -1,5 +1,5 @@
 // Import theme styles
-@import './assets/styles/theme.scss';
+@use 'assets/styles/theme.scss';
 
 * {
   box-sizing: border-box;

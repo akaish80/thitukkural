@@ -1,17 +1,15 @@
 import React from 'react';
-import { KurralData } from 'types';
+import type { KurralData } from '../../../types/kurral';
 // import { Kurral } from '../thirukurral.component';
 
 interface KurralListSectionProps {
   kurralDataList: KurralData[];
-  selectedKurral: KurralData | null;
   handleOnClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   children?: React.ReactNode;
 }
 
 const KurralListSection: React.FC<KurralListSectionProps> = ({
   kurralDataList,
-  selectedKurral,
   handleOnClick,
   children,
 }) => (

@@ -11,9 +11,14 @@ const nav = [
   },
   {
     text: 'Excercise Kurral',
-    link: '/kurral/excercise',
+    link: '/excercise',
     isClicked: false,
   },
+  {
+    text: 'Practice Writing Tamil',
+    link: '/practice',
+    isClicked: false,
+  }
 ];
 
 export { nav };
