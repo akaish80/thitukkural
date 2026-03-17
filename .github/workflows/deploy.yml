@@ -20,6 +20,9 @@ jobs:
       - name: Set API base URL from secret
         run: echo "VITE_API_BASE_URL=${{ secrets.API_BASE_URL }}" > .env.production
 
+      - name: Set Node.js 24 opt-in
+        run: echo "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true" >> $GITHUB_ENV
+
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
