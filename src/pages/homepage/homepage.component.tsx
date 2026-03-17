@@ -59,19 +59,19 @@ const Homepage = () => {
           </div>
         </div>
         <div className="hero-visual">
-          <div className="floating-card">
+          <div className="floating-card delayed-more">
             <div className="card-content">
               <h3>அறம்</h3>
               <p>Virtue</p>
             </div>
           </div>
-          <div className="floating-card delayed">
+          <div className="floating-card ">
             <div className="card-content">
               <h3>பொருள்</h3>
               <p>Wealth</p>
             </div>
           </div>
-          <div className="floating-card delayed-more">
+          <div className="floating-card delayed">
             <div className="card-content">
               <h3>இன்பம்</h3>
               <p>Pleasure</p>

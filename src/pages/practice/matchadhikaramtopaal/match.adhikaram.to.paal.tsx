@@ -65,34 +65,13 @@ const MatchAdhikaramToPaal = ({ selPractice }: MatchAdhikaramToPaalProps) => {
   useEffect(() => {
     async function fetchData() {
       const data = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/getPaalsAndAdikarams`).then((res) => res.json());
-      // Flatten paal/adikaram structure
-      const paals: PaalItem[] = data.paals.map((paal: any) => ({
-        Index: paal.index,
-        Tamil: paal.tamil,
-        English: paal.english,
-        Transliteration: paal.transliteration,
-        adikaramStart: paal.adikaramRange.start,
-        adikaramEnd: paal.adikaramRange.end,
-        adikaram: paal.adikarams.map((a: any) => a.tamil),
-        count: 0,
-      }));
-      const adikarams: AdikaramItem[] = data.paals.flatMap((paal: any) =>
-        paal.adikarams.map((a: any) => ({
-          Index: a.index,
-          Tamil: a.tamil,
-          English: a.english,
-          Transliteration: a.transliteration,
-          kurralStart: a.kurralRange.start,
-          kurralEnd: a.kurralRange.end,
-        }))
-      );
-      setAllPaalList(paals);
-      setAllAdikaram(adikarams);
+      setAllPaalList(data.paals);
+      setAllAdikaram(data.adikarams);
       // Build initial practice list
-      buildPracticeList(activeListType, adikarams, paals);
+      buildPracticeList(activeListType, data.adikarams, data.paals);
     }
     fetchData();
-    // eslint-disable-next-line
+    
   }, []);
 
   // Rebuild practice list when list type changes
