@@ -102,7 +102,7 @@ export default function Chatbot() {
     const kurralMatch = q.match(/kurral[:#\s]*(\d+)/i) || q.match(/^(\d+)$/);
     if (kurralMatch) {
       const id = parseInt(kurralMatch[1]);
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/kurral/${id}`);
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/kurral/${id}`);
       if (response.ok) {
         const kurral = await response.json();
         return {
@@ -128,7 +128,7 @@ export default function Chatbot() {
     const adikaramMatch = q.match(/adikaram[:#\s]*(\d+)/i);
     if (adikaramMatch) {
       const num = parseInt(adikaramMatch[1]);
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/adikaram/${num}`);
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/adikaram/${num}`);
       if (response.ok) {
         return await response.json();
       }
@@ -166,7 +166,7 @@ export default function Chatbot() {
     let shouldUseLocalData = false;
 
     try {
-      const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/chat`, {
+      const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: q, topN: 6 }),

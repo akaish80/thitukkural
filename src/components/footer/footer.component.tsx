@@ -40,12 +40,15 @@ const Footer = () => {
         </div>
         <div className="footer-divider"></div>
         <div className="footer-bottom">
-          <div className="copyright">
-            <p>{content.copyright.replace('{year}', currentYear)}</p>
+          <div className="footer-bottom-left">
+            <span className="copyright-text">
+              {content.copyright.replace('{year}', currentYear)}
+            </span>
           </div>
-          <div className="footer-social">
-            <span className="social-text">{content.developedBy}</span>
-            <span className="developer-name">
+          <div className="footer-bottom-center">
+            <span className="footer-powered">{content.developedBy}</span>
+            <span className="footer-divider-dot">•</span>
+            <span className="footer-developer">
               <a href={content.developerUrl} target="_blank" rel="noreferrer">
                 {content.developerName}
               </a>

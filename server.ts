@@ -334,14 +334,16 @@ app.get("/api/getPaalsAndAdikarams", (_req: any, res: any) => {
 // console.log(`Arun -> ${process.env.NODE_ENV}`);
 
 // Mount chatbot service API routes so the chat API runs on the same origin
+
 try {
   const buildService = require("./src/services/chatbotService")();
 
-  app.get("/health", (_req: any, res: any) =>
+  // Move all chatbot endpoints under /api for Vercel compatibility
+  app.get("/api/health", (_req: any, res: any) =>
     res.json({ ok: true, kurrals: buildService.kurrals.length }),
   );
 
-  app.get("/kurral/:id", (req: any, res: any) => {
+  app.get("/api/kurral/:id", (req: any, res: any) => {
     const id = Number(req.params.id);
     if (isNaN(id)) return res.status(400).json({ error: "invalid id" });
     const k = buildService.getKurralById(id);
@@ -349,7 +351,7 @@ try {
     res.json(k);
   });
 
-  app.get("/adikaram/:num", (req: any, res: any) => {
+  app.get("/api/adikaram/:num", (req: any, res: any) => {
     const n = Number(req.params.num);
     if (isNaN(n)) return res.status(400).json({ error: "invalid number" });
     const a = buildService.getAdikaramInfo(n);
@@ -361,7 +363,7 @@ try {
     res.json({ adikaram: a, kurrals });
   });
 
-  app.post("/chat", (req: any, res: any) => {
+  app.post("/api/chat", (req: any, res: any) => {
     const { query, topN } = req.body || {};
     if (!query || typeof query !== "string")
       return res.status(400).json({ error: "query (string) required" });
@@ -420,11 +422,16 @@ if (process.env.NODE_ENV === "production") {
   app.get("/", (_req: any, res: any) => res.send("App is running"));
 }
 
-app.listen(PORT, () => {
-  console.log(`server running on port ${PORT} (env=${process.env.NODE_ENV})`);
-});
 
-export {};
+// Only listen if running as a standalone server (not in Vercel serverless)
+if (process.env.VERCEL === undefined) {
+  app.listen(PORT, () => {
+    console.log(`server running on port ${PORT} (env=${process.env.NODE_ENV})`);
+  });
+}
+
+// Export the app for Vercel serverless
+export default app;
 
 // app.post('/Commone', (req, res) => {
 //   const body = {
