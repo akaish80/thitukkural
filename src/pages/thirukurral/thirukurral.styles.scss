@@ -1,3 +1,44 @@
+  .kurral-accordion-listing {
+    margin-top: 0.5rem;
+  }
+
+  .accordion-panel.kurral {
+    background: #f6f8fa;
+    border-radius: 6px;
+    box-shadow: none;
+    border: 1px solid #e2e8f0;
+    margin: 0.5rem 0 0.5rem 1.5rem;
+  }
+
+  .accordion-header.kurral {
+    background: #f3f6fa;
+    font-size: 1rem;
+    padding: 0.7rem 1.2rem;
+    font-weight: 500;
+    color: #2d3748;
+  }
+
+  .accordion-header.kurral:hover {
+    background: #e0e7ef;
+  }
+
+  .accordion-content.kurral {
+    padding: 0.8rem 1.2rem;
+    background: #f6f8fa;
+    border-radius: 0 0 6px 6px;
+    font-size: 0.98rem;
+  }
+
+  .accordion-content.kurral .title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #2b6cb0;
+  }
+
+  .accordion-content.kurral .urraiTitle {
+    margin-bottom: 0.3rem;
+    color: #4a5568;
+  }
 // Add these styles or adjust as needed
 
 .thirukurral-page {
@@ -27,11 +68,108 @@
     background-clip: text;
   }
 
-  .listing-sections {
+
+  .accordion-listing {
     display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    justify-content: center;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+  }
+
+
+  .accordion-panel {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+    border: 1px solid #e2e8f0;
+    width: 100%;
+  }
+
+  .accordion-panel.nested {
+    background: #f9fafb;
+    border-radius: 8px;
+    box-shadow: none;
+    border: 1px solid #e2e8f0;
+    margin: 0.5rem 0 0.5rem 1.5rem;
+    width: 95%;
+  }
+
+  .accordion-panel.kurral {
+    width: 95%;
+    margin-left: 2.5rem;
+  }
+
+  .accordion-header {
+    width: 100%;
+    background: #f7fafc;
+    border: none;
+    outline: none;
+    padding: 1rem 1.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .accordion-header.nested {
+    background: #f1f5f9;
+    font-size: 1.05rem;
+    padding: 0.8rem 1.2rem;
+    font-weight: 500;
+  }
+
+  .accordion-header:hover {
+    background: #e2e8f0;
+  }
+
+  .accordion-header.nested:hover {
+    background: #e0e7ef;
+  }
+
+  .accordion-content {
+    padding: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    animation: fadeIn 0.3s;
+  }
+
+  .accordion-content.nested {
+    padding: 1rem 1.2rem;
+    background: #f9fafb;
+    border-radius: 0 0 8px 8px;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    .accordion-listing {
+      max-width: 100%;
+      padding: 0 0.2rem;
+    }
+    .accordion-panel,
+    .accordion-panel.nested,
+    .accordion-panel.kurral {
+      width: 100%;
+      margin-left: 0;
+    }
+    .accordion-content {
+      padding: 1rem 0.5rem;
+    }
+    .accordion-header {
+      padding: 1rem 0.5rem;
+      font-size: 1rem;
+    }
   }
 
   .section {

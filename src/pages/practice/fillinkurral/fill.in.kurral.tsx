@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
-import React, { useEffect, useState } from 'react';
+import React, { createRef, useEffect, useRef, useState } from 'react';
 import { getRandomList, returnMatchedLine } from '../../../components/utils';
-import kurral from '../../../Common/kurral_data';
+import TextInputComp from '../../../components/TextInputComp';
 import './fill.in.kurral.styles.scss';
 
 interface KurralItem {
@@ -22,9 +22,38 @@ const FillInKurral = () => {
   const [acceptedWords, setAcceptedWords] = useState<string[]>([]);
   // const [inputWords, setInputWords] = useState([]);
   const [loadComplete, setLoadComplete] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const inputRefs = useRef<Array<React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>>>(
+    [],
+  );
 
   useEffect(() => {
-    setKurralList(getRandomList(kurral, 10));
+    let isMounted = true;
+
+    const loadKurralData = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/kurrals`);
+        const data = await response.json();
+        if (isMounted) {
+          setKurralList(getRandomList(data as KurralItem[], 10));
+        }
+      } catch (error) {
+        if (isMounted) {
+          setLoadError('Unable to load kurral data. Please refresh and try again.');
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadKurralData();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -56,9 +85,9 @@ const FillInKurral = () => {
     }
   }, [kurralList, loadComplete]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleChange = (value: string, index: number) => {
     const newKurLst = [...kurralList];
-    newKurLst[index].inputWord = e.target.value;
+    newKurLst[index].inputWord = value;
     newKurLst[index].error = false;
 
     setKurralList(newKurLst);
@@ -73,10 +102,21 @@ const FillInKurral = () => {
     inputWord: string | undefined;
     rowNum: number;
   }) => {
+    if (!inputRefs.current[rowNum]) {
+      inputRefs.current[rowNum] = createRef<HTMLInputElement | HTMLTextAreaElement>();
+    }
+
     const spltStr = line.split(' ');
     return spltStr.map((item, index) =>
       item === '_' ? (
-        <input key={index} onChange={(e) => handleChange(e, rowNum)} value={inputWord} />
+        <TextInputComp
+          key={index}
+          freeRef={inputRefs.current[rowNum]}
+          freeText={inputWord ?? ''}
+          setFreeText={(text) => handleChange(text, rowNum)}
+          className="kurral-blank-input"
+          placeholder="சொல்"
+        />
       ) : (
         <p key={index}>{`${item} `}</p>
       ),
@@ -105,10 +145,14 @@ const FillInKurral = () => {
   };
 
   return (
-    <>
+    <div className="fill-in-kurral-page">
+      {isLoading && <p className="status-msg">Loading exercise...</p>}
+      {loadError && <p className="status-msg error">{loadError}</p>}
       {!success ? (
         <>
-          {kurralList.length > 0 &&
+          {!isLoading &&
+            !loadError &&
+            kurralList.length > 0 &&
             kurralList.map((item, index) => {
               return (
                 <div key={index} className="fillInTheBlanksContainer">
@@ -143,14 +187,16 @@ const FillInKurral = () => {
                 </div>
               );
             })}
-          <div className="controls">
-            <button onClick={handleSubmit}>Submit</button>
-          </div>
+          {!isLoading && !loadError && kurralList.length > 0 && (
+            <div className="controls">
+              <button onClick={handleSubmit}>Submit Answers</button>
+            </div>
+          )}
         </>
       ) : (
-        <p>Success</p>
+        <p className="status-msg success">Success! All answers are correct.</p>
       )}
-    </>
+    </div>
   );
 };
 

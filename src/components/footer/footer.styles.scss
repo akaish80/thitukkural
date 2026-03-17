@@ -1,4 +1,4 @@
-@import '../../assets/styles/variables.scss';
+@use '../../assets/styles/variables.scss';
 
 .footer {
   background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));

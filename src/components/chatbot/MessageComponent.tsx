@@ -1,5 +1,3 @@
-import React from 'react';
-
 export interface Message {
   from: string;
   text: any;

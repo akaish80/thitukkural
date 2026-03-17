@@ -16,14 +16,14 @@ const Homepage = () => {
       icon: '✍️',
       title: 'Practice Writing',
       description: 'Learn to write Tamil letters with interactive drawing exercises.',
-      link: '/kurral/excercise',
+      link: '/practice',
       color: 'green',
     },
     {
       icon: '🎯',
       title: 'Interactive Games',
       description: 'Test your knowledge with engaging Tamil learning games.',
-      link: '/kurral/excercise',
+      link: '/excercise',
       color: 'purple',
     },
     {
@@ -52,7 +52,7 @@ const Homepage = () => {
               <span>🚀</span>
               Start Learning
             </Link>
-            <Link to="/kurral/excercise" className="btn btn-secondary btn-large">
+            <Link to="/excercise" className="btn btn-secondary btn-large">
               <span>✨</span>
               Practice Now
             </Link>

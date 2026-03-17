@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import './ListGroup.styles.scss';
 
 interface ListGroupProps {
@@ -28,12 +27,6 @@ const ListGroup = (props: ListGroupProps) => {
   );
 };
 
-ListGroup.propTypes = {
-  listData: PropTypes.arrayOf(PropTypes.object),
-  className: PropTypes.string,
-  handleButtonClick: PropTypes.func,
-  selectedId: PropTypes.number,
-};
 ListGroup.defaultProps = {
   listData: [],
   className: '',

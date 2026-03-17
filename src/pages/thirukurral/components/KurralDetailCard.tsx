@@ -1,5 +1,5 @@
 import React from 'react';
-import { KurralData } from 'types';
+import type { KurralData } from '../../../types/kurral';
 // import { Kurral } from '../thirukurral.component';
 
 interface KurralDetailCardProps {

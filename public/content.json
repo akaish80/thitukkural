@@ -6,8 +6,8 @@
       {
         "title": "சிக்ஷணம்",
         "links": [
-          { "href": "/thirukurral", "label": "குறள் கற்க" },
-          { "href": "/practice", "label": "பயிற்சி" },
+          { "href": "/kurral", "label": "குறள் கற்க" },
+          { "href": "/excercise", "label": "பயிற்சி" },
           { "href": "/adhikarams", "label": "அதிகாரங்கள்" }
         ]
       },
@@ -29,8 +29,8 @@
     "siteTitle": "திருக்குறள் UI",
     "nav": [
       { "label": "முகப்பு", "link": "/" },
-      { "label": "குறள்", "link": "/thirukurral" },
-      { "label": "பயிற்சி", "link": "/practice" }
+      { "label": "குறள்", "link": "/kurral" },
+      { "label": "பயிற்சி", "link": "/excercise" }
     ]
   },
   "practice": {

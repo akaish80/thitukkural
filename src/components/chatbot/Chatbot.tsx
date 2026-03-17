@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './chatbot.scss';
-import thirukkuralData from '../../Common/thirukkural_complete_nested.json';
 
 interface Message {
   from: string;
@@ -95,36 +94,33 @@ export default function Chatbot() {
     }
   }
 
-  // Local fallback search when service is unavailable
-  function searchLocalData(query: string) {
+  // Endpoint fallback search when chat service is unavailable
+  async function searchByEndpoints(query: string) {
     const q = query.toLowerCase().trim();
 
     // Check for specific kurral ID
     const kurralMatch = q.match(/kurral[:#\s]*(\d+)/i) || q.match(/^(\d+)$/);
     if (kurralMatch) {
       const id = parseInt(kurralMatch[1]);
-      for (const paal of thirukkuralData.paals) {
-        for (const adikaram of paal.adikarams) {
-          const kurral = adikaram.kurrals.find((k) => k.kurralId === id);
-          if (kurral) {
-            return {
-              kurral: id,
-              results: [
-                {
-                  Kurral_id: kurral.kurralId,
-                  Index: kurral.index,
-                  adikaram_number: adikaram.adikaramNumber,
-                  Tamil: kurral.tamil.full,
-                  line1: kurral.tamil.line1,
-                  line2: kurral.tamil.line2,
-                  English: kurral.english.translation,
-                  EnglishMeaning: kurral.english.meaning,
-                  Transliteration: kurral.transliteration,
-                },
-              ],
-            };
-          }
-        }
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/kurral/${id}`);
+      if (response.ok) {
+        const kurral = await response.json();
+        return {
+          kurral: id,
+          results: [
+            {
+              Kurral_id: kurral.Kurral_id || kurral.Index || id,
+              Index: kurral.Index || kurral.Kurral_id || id,
+              adikaram_number: kurral.adikaram_number,
+              Tamil: kurral.Tamil || kurral.line1 || '',
+              line1: kurral.line1 || kurral.Tamil || '',
+              line2: kurral.line2 || '',
+              English: kurral.English || '',
+              EnglishMeaning: kurral.EnglishMeaning || '',
+              Transliteration: kurral.Transliteration || '',
+            },
+          ],
+        };
       }
     }
 
@@ -132,22 +128,9 @@ export default function Chatbot() {
     const adikaramMatch = q.match(/adikaram[:#\s]*(\d+)/i);
     if (adikaramMatch) {
       const num = parseInt(adikaramMatch[1]);
-      for (const paal of thirukkuralData.paals) {
-        const adikaram = paal.adikarams.find((a) => a.adikaramNumber === num);
-        if (adikaram) {
-          const results = adikaram.kurrals.map((k) => ({
-            Kurral_id: k.kurralId,
-            Index: k.index,
-            adikaram_number: adikaram.adikaramNumber,
-            Tamil: k.tamil.full,
-            line1: k.tamil.line1,
-            line2: k.tamil.line2,
-            English: k.english.translation,
-            EnglishMeaning: k.english.meaning,
-            Transliteration: k.transliteration,
-          }));
-          return { adikaram: num, results };
-        }
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/adikaram/${num}`);
+      if (response.ok) {
+        return await response.json();
       }
     }
 
@@ -155,70 +138,23 @@ export default function Chatbot() {
     const paalMatch = q.match(/paal[:#\s]*(\d+)/i);
     if (paalMatch) {
       const num = parseInt(paalMatch[1]);
-      const paal = thirukkuralData.paals[num - 1];
-      if (paal) {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/thirukkural?paalIndex=${num}`);
+      if (response.ok) {
+        const payload = await response.json();
         return {
           paal: num,
           paalInfo: {
-            paal_number: paal.index,
-            Tamil: paal.tamil,
-            English: paal.english,
-            Transliteration: paal.transliteration,
+            paal_number: payload.paal?.index,
+            Tamil: payload.paal?.tamil,
+            English: payload.paal?.english,
+            Transliteration: '',
           },
-          results: [],
+          results: payload.data || [],
         };
       }
     }
 
-    // Simple fuzzy search across kurrals
-    const results: any[] = [];
-    const searchTerms = q.split(/\s+/).filter(Boolean);
-
-    for (const paal of thirukkuralData.paals) {
-      for (const adikaram of paal.adikarams) {
-        for (const kurral of adikaram.kurrals) {
-          const searchText = [
-            kurral.tamil.line1,
-            kurral.tamil.line2,
-            kurral.english.translation,
-            kurral.english.meaning,
-            kurral.transliteration,
-            adikaram.tamil,
-            adikaram.english,
-          ]
-            .join(' ')
-            .toLowerCase();
-
-          let matchCount = 0;
-          for (const term of searchTerms) {
-            if (searchText.includes(term)) matchCount++;
-          }
-
-          if (matchCount > 0) {
-            results.push({
-              Kurral_id: kurral.kurralId,
-              Index: kurral.index,
-              adikaram_number: adikaram.adikaramNumber,
-              Tamil: kurral.tamil.full,
-              line1: kurral.tamil.line1,
-              line2: kurral.tamil.line2,
-              English: kurral.english.translation,
-              EnglishMeaning: kurral.english.meaning,
-              Transliteration: kurral.transliteration,
-              score: matchCount,
-            });
-          }
-
-          if (results.length >= 10) break;
-        }
-        if (results.length >= 10) break;
-      }
-      if (results.length >= 10) break;
-    }
-
-    // Sort by score and return top results
-    results.sort((a, b) => (b.score || 0) - (a.score || 0));
-    return { results: results.slice(0, 6) };
+    return { results: [] };
   }
 
   async function handleSend() {
@@ -230,7 +166,7 @@ export default function Chatbot() {
     let shouldUseLocalData = false;
 
     try {
-      const resp = await fetch('/chat', {
+      const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: q, topN: 6 }),
@@ -271,35 +207,39 @@ export default function Chatbot() {
       shouldUseLocalData = true;
     }
 
-    // Use local data as fallback
+    // Use endpoint fallback when chat service is unavailable
     if (shouldUseLocalData) {
-      const localResult = searchLocalData(q);
-      const r = localResult;
+      try {
+        const localResult = await searchByEndpoints(q);
+        const r = localResult;
 
-      if (r.kurral) {
-        const item = (r.results && r.results[0]) || null;
-        pushMessage('bot', {
-          type: 'kurral',
-          id: r.kurral,
-          title: item ? item.line1 || item.Tamil || item.English : '',
-        });
-      } else if (r.adikaram) {
-        pushMessage('bot', `Adikaram ${r.adikaram}: ${r.results?.length || 0} kurrals found`);
-      } else if (Array.isArray(r.results)) {
-        if (r.results.length === 0) pushMessage('bot', 'No matches found in local data.');
-        else {
-          const items = r.results
-            .slice(0, 6)
-            .map((x: any) => ({
-              id: x.Index || x.Kurral_id || x.kurral_id,
-              title: x.line1 || x.Tamil || x.English,
-            }));
-          pushMessage('bot', { type: 'list', items });
+        if (r.kurral) {
+          const item = (r.results && r.results[0]) || null;
+          pushMessage('bot', {
+            type: 'kurral',
+            id: r.kurral,
+            title: item ? item.line1 || item.Tamil || item.English : '',
+          });
+        } else if (r.adikaram) {
+          pushMessage('bot', `Adikaram ${r.adikaram}: ${r.results?.length || 0} kurrals found`);
+        } else if (Array.isArray(r.results)) {
+          if (r.results.length === 0) pushMessage('bot', 'No matches found in local data.');
+          else {
+            const items = r.results
+              .slice(0, 6)
+              .map((x: any) => ({
+                id: x.Index || x.Kurral_id || x.kurral_id,
+                title: x.line1 || x.Tamil || x.English,
+              }));
+            pushMessage('bot', { type: 'list', items });
+          }
+        } else if (r.paalInfo) {
+          pushMessage('bot', `Paal ${r.paal}: ${r.paalInfo.Tamil} (${r.paalInfo.English})`);
+        } else {
+          pushMessage('bot', 'No matches found.');
         }
-      } else if (r.paalInfo) {
-        pushMessage('bot', `Paal ${r.paal}: ${r.paalInfo.Tamil} (${r.paalInfo.English})`);
-      } else {
-        pushMessage('bot', 'No matches found.');
+      } catch (error) {
+        pushMessage('bot', 'Endpoint fallback is unavailable right now. Please try again later.');
       }
     }
 
