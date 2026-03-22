@@ -330,8 +330,27 @@ let buildService: any = null;
 let chatbotReady = false;
 async function setupChatbotRoutes() {
   try {
-    // Always import relative to build output (works in build and dev)
-    const chatbotModule = await import("./src/services/chatbotService.js");
+    // Prefer compiled JS, fallback to TS for local tsx runs
+    const chatbotModuleCandidates = [
+      "./src/services/chatbotService.js",
+      "./src/services/chatbotService" + ".ts",
+    ];
+
+    let chatbotModule: any = null;
+    let moduleLoadError: unknown = null;
+    for (const modulePath of chatbotModuleCandidates) {
+      try {
+        chatbotModule = await import(modulePath);
+        break;
+      } catch (err) {
+        moduleLoadError = err;
+      }
+    }
+
+    if (!chatbotModule) {
+      throw moduleLoadError || new Error("Failed to load chatbot service module");
+    }
+
     buildService = chatbotModule.default(thirukkuralNestedData);
     chatbotReady = true;
 
