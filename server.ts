@@ -1,20 +1,17 @@
 /* eslint-disable import/order */
 
 import { fileURLToPath } from "node:url";
-import { createRequire } from "node:module";
-const require = createRequire(import.meta.url);
-const path = require("path");
+import path from "path";
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import fs from "fs";
+import dotenv from "dotenv";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const fs = require("fs");
-const dotenv = require("dotenv");
 // Load environment variables from .env file (local or production)
-const envFile =
-  process.env.NODE_ENV === "production" ? ".env.production" : ".env.local";
+const envFile = process.env.NODE_ENV === "production" ? ".env.production" : ".env.local";
 dotenv.config({ path: path.join(__dirname, envFile) });
 // const compression = require("compression");
 
@@ -29,12 +26,8 @@ const app = express();
 let thirukkuralNestedData: any = null;
 
 try {
-  const nestedJsonPath = path.join(
-    __dirname,
-    "src",
-    "Common",
-    "thirukkural_complete_nested.json",
-  );
+  // Always resolve from project root, works in build and dev
+  const nestedJsonPath = path.resolve(__dirname, "../src/Common/thirukkural_complete_nested.json");
   const rawData = fs.readFileSync(nestedJsonPath, "utf8");
   thirukkuralNestedData = JSON.parse(rawData);
   const loadedPaals = Array.isArray(thirukkuralNestedData?.paals)
@@ -55,27 +48,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-app.get("/api/getKurral", async (_req: any, res: any) => {
-  const targetUrl = "https://api.mythirukurral.com/thirkurral/adikaram";
-  const apiKey = "b2uz54VCfa5adH5YFDkmL73IWwJBEwUw4rk7TWGp";
 
-  try {
-    const response = await fetch(targetUrl, {
-      method: "GET",
-      headers: {
-        "x-api-key": apiKey,
-      },
-    });
-
-    const data = await response.json();
-    return res.status(response.status).json(data);
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    return res
-      .status(500)
-      .json({ error: "Failed to fetch from target API", details: message });
-  }
-});
 
 app.get("/api/paals", (_req: any, res: any) => {
   if (!thirukkuralNestedData || !Array.isArray(thirukkuralNestedData.paals)) {
@@ -341,8 +314,9 @@ let buildService: any = null;
 let chatbotReady = false;
 async function setupChatbotRoutes() {
   try {
-     const chatbotModule = await import("./src/services/chatbotService.ts");
-    buildService = chatbotModule.default();
+    // Always import relative to build output (works in build and dev)
+    const chatbotModule = await import("./src/services/chatbotService.js");
+    buildService = chatbotModule.default(thirukkuralNestedData);
     chatbotReady = true;
 
     // Move all chatbot endpoints under /api for Vercel compatibility

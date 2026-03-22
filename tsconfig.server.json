@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "build",
+    "rootDir": ".",
+    "noEmit": false,
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "esModuleInterop": true
+  },
+  "include": ["server.ts", "src/services/chatbotService.ts"],
+  "exclude": ["node_modules", "dist", "build", "src/**/*.test.ts"]
+}

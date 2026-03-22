@@ -1,16 +1,12 @@
-import { KurralData, AdikaramData, PaalData, SearchResult, ChatbotService } from '../types';
+import { KurralData, AdikaramData, PaalData, SearchResult, ChatbotService } from '../types/index.js';
 
-const fs = require('fs');
-const path = require('path');
-let Fuse: any = null;
-try {
-  // use fuse.js for better fuzzy matching when available
-  // require dynamically so unit tests or environments without the package don't crash
-  // eslint-disable-next-line global-require, import/no-extraneous-dependencies
-  Fuse = require('fuse.js');
-} catch (e) {
-  Fuse = null;
-}
+import { fileURLToPath } from "node:url";
+import fs from "fs";
+import path from "path";
+import Fuse from "fuse.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 interface NestedThirukkural {
   title: string;
@@ -54,8 +50,18 @@ function safeLoadJson(filePath: string): any {
 }
 
 function loadNestedData(): NestedThirukkural | null {
-  const nestedPath = path.join(__dirname, '..', 'Common', 'thirukkural_complete_nested.json');
-  return safeLoadJson(nestedPath);
+  const candidates = [
+    path.join(__dirname, '..', 'Common', 'thirukkural_complete_nested.json'),
+    path.resolve(__dirname, '..', '..', '..', 'src', 'Common', 'thirukkural_complete_nested.json'),
+    path.resolve(process.cwd(), 'src', 'Common', 'thirukkural_complete_nested.json'),
+  ];
+
+  for (const nestedPath of candidates) {
+    const data = safeLoadJson(nestedPath);
+    if (data) return data;
+  }
+
+  return null;
 }
 
 // Transform nested structure to flat arrays for backward compatibility
@@ -191,8 +197,8 @@ function findByPaal(paalList: PaalData[], paalNumber: number | string): PaalData
   return paalList.find((p: PaalData) => Number(p.paal_number || p.Paal_number) === n) || null;
 }
 
-export default function buildService(): ChatbotService {
-  const nestedData = loadNestedData();
+export default function buildService(preloadedData?: NestedThirukkural | null): ChatbotService {
+  const nestedData = preloadedData || loadNestedData();
   if (!nestedData) {
     throw new Error('Failed to load thirukkural_complete_nested.json');
   }
