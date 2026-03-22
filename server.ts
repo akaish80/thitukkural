@@ -26,15 +26,31 @@ const app = express();
 let thirukkuralNestedData: any = null;
 
 try {
-  // Always resolve from project root, works in build and dev
-  const nestedJsonPath = path.resolve(__dirname, "../src/Common/thirukkural_complete_nested.json");
-  const rawData = fs.readFileSync(nestedJsonPath, "utf8");
-  thirukkuralNestedData = JSON.parse(rawData);
+  const nestedJsonName = "thirukkural_complete_nested.json";
+  const candidates = [
+    path.resolve(process.cwd(), "src", "Common", nestedJsonName),
+    path.resolve(__dirname, "src", "Common", nestedJsonName),
+    path.resolve(__dirname, "..", "src", "Common", nestedJsonName),
+  ];
+
+  let loadedPath: string | null = null;
+  for (const candidate of candidates) {
+    if (!fs.existsSync(candidate)) continue;
+    const rawData = fs.readFileSync(candidate, "utf8");
+    thirukkuralNestedData = JSON.parse(rawData);
+    loadedPath = candidate;
+    break;
+  }
+
+  if (!thirukkuralNestedData) {
+    throw new Error(`File not found. Tried: ${candidates.join(" | ")}`);
+  }
+
   const loadedPaals = Array.isArray(thirukkuralNestedData?.paals)
     ? thirukkuralNestedData.paals.length
     : 0;
   console.log(
-    `Loaded thirukkural_complete_nested.json with ${loadedPaals} paals`,
+    `Loaded thirukkural_complete_nested.json with ${loadedPaals} paals from ${loadedPath}`,
   );
 } catch (e) {
   const message = e instanceof Error ? e.message : String(e);
