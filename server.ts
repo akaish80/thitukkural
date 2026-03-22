@@ -341,7 +341,7 @@ let buildService: any = null;
 let chatbotReady = false;
 async function setupChatbotRoutes() {
   try {
-    const chatbotModule = await import("./src/services/chatbotService.js");
+     const chatbotModule = await import("./src/services/chatbotService.ts");
     buildService = chatbotModule.default();
     chatbotReady = true;
 
