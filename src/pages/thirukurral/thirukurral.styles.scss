@@ -1,49 +1,5 @@
-  .kurral-accordion-listing {
-    margin-top: 0.5rem;
-  }
-
-  .accordion-panel.kurral {
-    background: #f6f8fa;
-    border-radius: 6px;
-    box-shadow: none;
-    border: 1px solid #e2e8f0;
-    margin: 0.5rem 0 0.5rem 1.5rem;
-  }
-
-  .accordion-header.kurral {
-    background: #f3f6fa;
-    font-size: 1rem;
-    padding: 0.7rem 1.2rem;
-    font-weight: 500;
-    color: #2d3748;
-  }
-
-  .accordion-header.kurral:hover {
-    background: #e0e7ef;
-  }
-
-  .accordion-content.kurral {
-    padding: 0.8rem 1.2rem;
-    background: #f6f8fa;
-    border-radius: 0 0 6px 6px;
-    font-size: 0.98rem;
-  }
-
-  .accordion-content.kurral .title {
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: #2b6cb0;
-  }
-
-  .accordion-content.kurral .urraiTitle {
-    margin-bottom: 0.3rem;
-    color: #4a5568;
-  }
-// Add these styles or adjust as needed
-
 .thirukurral-page {
   font-family: 'Noto Sans Tamil', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-
   background: var(--bg-primary);
   color: var(--text-primary);
   min-height: calc(100vh - 200px);
@@ -51,7 +7,7 @@
   padding: 2rem;
 
   @media (max-width: 768px) {
-    padding: 1rem;
+    padding: 0.75rem;
   }
 
   .page-title {
@@ -66,192 +22,406 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-  }
 
-
-  .accordion-listing {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    width: 100%;
-    max-width: none;
-    margin: 0;
-  }
-
-
-  .accordion-panel {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-    margin-bottom: 0.5rem;
-    overflow: hidden;
-    transition: box-shadow 0.2s;
-    border: 1px solid #e2e8f0;
-    width: 100%;
-  }
-
-  .accordion-panel.nested {
-    background: #f9fafb;
-    border-radius: 8px;
-    box-shadow: none;
-    border: 1px solid #e2e8f0;
-    margin: 0.5rem 0 0.5rem 1.5rem;
-    width: 95%;
-  }
-
-  .accordion-panel.kurral {
-    width: 95%;
-    margin-left: 2.5rem;
-  }
-
-  .accordion-header {
-    width: 100%;
-    background: #f7fafc;
-    border: none;
-    outline: none;
-    padding: 1rem 1.5rem;
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #2d3748;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-
-  .accordion-header.nested {
-    background: #f1f5f9;
-    font-size: 1.05rem;
-    padding: 0.8rem 1.2rem;
-    font-weight: 500;
-  }
-
-  .accordion-header:hover {
-    background: #e2e8f0;
-  }
-
-  .accordion-header.nested:hover {
-    background: #e0e7ef;
-  }
-
-  .accordion-content {
-    padding: 1.5rem;
-    border-top: 1px solid #e2e8f0;
-    animation: fadeIn 0.3s;
-  }
-
-  .accordion-content.nested {
-    padding: 1rem 1.2rem;
-    background: #f9fafb;
-    border-radius: 0 0 8px 8px;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @media (max-width: 768px) {
-    .accordion-listing {
-      max-width: 100%;
-      padding: 0 0.2rem;
-    }
-    .accordion-panel,
-    .accordion-panel.nested,
-    .accordion-panel.kurral {
-      width: 100%;
-      margin-left: 0;
-    }
-    .accordion-content {
-      padding: 1rem 0.5rem;
-    }
-    .accordion-header {
-      padding: 1rem 0.5rem;
-      font-size: 1rem;
+    @media (max-width: 768px) {
+      font-size: 1.6rem;
     }
   }
 
-  .section {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-    padding: 1.5rem;
-    min-width: 280px;
-    max-width: 400px;
-    flex: 1 1 320px;
+  // ── Mobile breadcrumb (hidden on desktop) ──────────────────────
+  .tk-breadcrumb {
+    display: none;
 
-    .section-title {
-      font-size: 1.3rem;
-      margin-bottom: 1rem;
-      color: #4a5568;
-    }
-
-    .section-content {
+    @media (max-width: 900px) {
       display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.5rem 0 0.75rem;
+      font-size: 0.9rem;
       flex-wrap: wrap;
-      gap: 0.5rem;
     }
-  }
 
-  .kurral-buttons {
-    margin-bottom: 1.5rem;
-
-    .kurral-btn {
-      background: #f7fafc;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      padding: 0.5rem 1rem;
-      margin: 0.2rem;
-      font-size: 1rem;
+    &__crumb {
+      background: none;
+      border: none;
+      padding: 0.25rem 0.4rem;
       cursor: pointer;
-      transition:
-        background 0.2s,
-        border 0.2s;
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
 
       &.active {
-        background: #3182ce;
-        color: #fff;
-        border-color: #3182ce;
+        color: var(--color-primary);
+        font-weight: 700;
+        cursor: default;
       }
 
-      &:hover {
-        background: #e2e8f0;
+      &:not(.active):hover {
+        background: var(--bg-tertiary);
+      }
+    }
+
+    &__sep {
+      color: var(--text-muted);
+    }
+  }
+
+  // ── 3-column explorer ──────────────────────────────────────────
+  .tk-explorer {
+    display: grid;
+    grid-template-columns: 150px 220px 1fr;
+    gap: 1rem;
+    align-items: start;
+    margin-top: 1rem;
+
+    @media (max-width: 1100px) {
+      grid-template-columns: 130px 190px 1fr;
+    }
+
+    // Mobile: single column, step-driven visibility
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+  }
+
+  // ── Column wrapper ─────────────────────────────────────────────
+  .tk-col {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+
+    &__title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.75rem 1rem;
+      color: var(--color-primary);
+      border-bottom: 1px solid var(--border-primary);
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+
+      @media (max-width: 900px) {
+        font-size: 1rem;
+        padding: 0.9rem 1rem;
+      }
+    }
+
+    &__title-sub {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: none;
+      letter-spacing: 0;
+      margin-left: auto;
+    }
+
+    // Back chevron — only visible on mobile
+    &__back {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.3rem;
+      color: var(--color-primary);
+      padding: 0 0.2rem;
+      line-height: 1;
+
+      @media (max-width: 900px) {
+        display: inline-block;
+      }
+    }
+
+    // On mobile: hide all columns; only the one with .mobile-active is shown
+    @media (max-width: 900px) {
+      display: none;
+
+      &.mobile-active {
+        display: flex;
+        flex-direction: column;
       }
     }
   }
 
-  .kurral-details-card {
-    background: #f1f5f9;
-    border-radius: 10px;
-    padding: 1.2rem;
-    margin-top: 1rem;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  // ── Paal & Adikaram list columns ───────────────────────────────
+  .tk-col--paal,
+  .tk-col--adikaram {
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
 
-    .kurral-title {
-      font-weight: bold;
-      font-size: 1.1rem;
-      margin-bottom: 0.7rem;
+    @media (max-width: 900px) {
+      height: auto;
+      min-height: 0;
     }
 
-    .kurral-tamil {
-      font-size: 1.2rem;
-      color: #2d3748;
-      margin-bottom: 1rem;
+    .tk-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      overflow-y: auto;
+      flex: 1;
+      min-height: 0;
+    }
+  }
+
+  // List item — shared by Paal and Adikaram lists
+  .tk-list__item {
+    width: 100%;
+    border: none;
+    background: none;
+    text-align: left;
+    padding: 0.65rem 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    border-bottom: 1px solid var(--border-primary);
+    transition: background var(--transition-fast);
+    // Ensure 44px tap target on mobile
+    min-height: 44px;
+
+    &:last-child {
+      border-bottom: none;
     }
 
-    .urai-section {
-      .urai-title {
-        font-weight: 600;
-        color: #4a5568;
-        margin-top: 0.7rem;
-        margin-bottom: 0.2rem;
+    &:hover {
+      background: var(--bg-accent);
+    }
+
+    // Active / selected highlight
+    &.active {
+      background: var(--color-primary);
+
+      .tk-list__label { color: #fff; }
+      .tk-list__sub   { color: rgba(255,255,255,0.75); }
+      .tk-list__num   { color: rgba(255,255,255,0.7); }
+      .tk-list__arrow { color: rgba(255,255,255,0.6); }
+    }
+  }
+
+  .tk-col--paal .tk-list__item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.05rem;
+
+    // Push arrow to the right
+    .tk-list__arrow { align-self: center; margin-left: auto; }
+  }
+
+  .tk-col--adikaram .tk-list__item {
+    flex-direction: row;
+    align-items: center;
+
+    .tk-list__label { flex: 1; }
+  }
+
+  .tk-list__label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .tk-list__sub {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+  }
+
+  .tk-list__num {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    min-width: 1.8rem;
+  }
+
+  .tk-list__arrow {
+    font-size: 1rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    // Only visible on mobile as a drill-down cue
+    display: none;
+
+    @media (max-width: 900px) {
+      display: inline;
+    }
+  }
+
+  // ── Kurral column ──────────────────────────────────────────────
+  .tk-col--kurrals {
+    // Do NOT fix the height — let it grow so expanded cards are fully visible.
+    // The page itself scrolls; the kurral list does not clip.
+    display: flex;
+    flex-direction: column;
+
+    .tk-kurral-list {
+      list-style: none;
+      margin: 0;
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+
+      @media (max-width: 900px) {
+        padding: 0.5rem 0.25rem;
+      }
+    }
+  }
+
+  // Kurral card
+  .tk-kurral-card {
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--bg-primary);
+    transition: box-shadow var(--transition-normal);
+
+    &.expanded {
+      box-shadow: 0 4px 18px var(--shadow-dark);
+    }
+
+    &__header {
+      width: 100%;
+      border: none;
+      background: var(--bg-secondary);
+      padding: 0.9rem 1rem;
+      display: grid;
+      grid-template-columns: 2.6rem 1fr 1.4rem;
+      align-items: start;
+      gap: 0.5rem;
+      cursor: pointer;
+      text-align: left;
+      transition: background var(--transition-fast);
+      min-height: 44px;
+
+      &:hover {
+        background: var(--bg-tertiary);
       }
 
-      .urai-text {
-        margin-bottom: 0.5rem;
-        color: #374151;
+      @media (max-width: 900px) {
+        padding: 1rem;
       }
     }
+
+    &__num {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-sm);
+      padding: 0.1rem 0.3rem;
+      text-align: center;
+      align-self: start;
+      margin-top: 0.2rem;
+    }
+
+    &__verse {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    &__verse-line {
+      display: block;
+      font-size: 1.08rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.65;
+
+      @media (max-width: 900px) {
+        font-size: 1.12rem;
+        line-height: 1.7;
+      }
+    }
+
+    &__chevron {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      justify-self: end;
+      padding-top: 0.4rem;
+    }
+
+    // Expanded body — full commentary
+    &__body {
+      padding: 1.25rem 1.25rem 1.5rem;
+      border-top: 2px solid var(--border-primary);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      background: var(--bg-primary);
+      animation: tkFadeIn 0.22s ease;
+
+      @media (max-width: 900px) {
+        padding: 1rem;
+        gap: 1.25rem;
+      }
+    }
+  }
+
+  // Explanation block inside an expanded kurral card
+  .tk-explanation {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.9rem 1rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--color-primary);
+
+    &__author {
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--color-primary);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-secondary);
+      border-radius: var(--radius-sm);
+      padding: 0.2rem 0.65rem;
+      align-self: flex-start;
+    }
+
+    &__text {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--text-primary);
+
+      @media (max-width: 900px) {
+        font-size: 1.05rem;
+        line-height: 1.85;
+      }
+    }
+  }
+
+  // Empty / loading / error states
+  .tk-empty {
+    padding: 1.5rem 1rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-align: center;
+
+    &--loading {
+      animation: tkPulse 1.2s ease-in-out infinite;
+    }
+
+    &--error {
+      color: #e53e3e;
+    }
+  }
+
+  @keyframes tkFadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes tkPulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
   }
 }

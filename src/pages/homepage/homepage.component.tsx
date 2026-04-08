@@ -2,35 +2,33 @@ import { Link } from 'react-router-dom';
 import './homepage.component.scss';
 
 const Homepage = () => {
-  const showAlert = false;
-
   const features = [
     {
       icon: '📖',
-      title: 'Read Thirukkural',
-      description: 'Explore the timeless wisdom of Thiruvalluvar through beautiful Tamil verses.',
+      title: 'Thirukkural',
+      description: 'Explore the timeless wisdom of Thiruvalluvar — 1330 couplets on virtue, wealth, and love.',
       link: '/kurral',
       color: 'blue',
     },
     {
       icon: '✍️',
       title: 'Practice Writing',
-      description: 'Learn to write Tamil letters with interactive drawing exercises.',
+      description: 'Learn to write Tamil letters with interactive drawing and tracing exercises.',
       link: '/practice',
       color: 'green',
     },
     {
       icon: '🎯',
-      title: 'Interactive Games',
-      description: 'Test your knowledge with engaging Tamil learning games.',
+      title: 'Interactive Exercises',
+      description: 'Test your Tamil knowledge with quizzes, matching games, and fill-in-the-blank challenges.',
       link: '/excercise',
       color: 'purple',
     },
     {
-      icon: '🎨',
-      title: 'Themes',
-      description: 'Customize your learning experience with beautiful themes.',
-      link: '/',
+      icon: '🪔',
+      title: 'Aathichudi',
+      description: 'Learn Avvaiyar\'s Aathichudi — moral verses that teach Tamil values and alphabet.',
+      link: '/aathichudi',
       color: 'orange',
     },
   ];
@@ -40,41 +38,41 @@ const Homepage = () => {
       <div className="hero-section">
         <div className="hero-content">
           <h1 className="hero-title">
-            <span className="gradient-text">திருக்குறள்</span>
-            <span className="subtitle">Thirukkural Learning Platform</span>
+            <span className="gradient-text">தமிழ் கற்போம்</span>
+            <span className="subtitle">Learn Tamil</span>
           </h1>
           <p className="hero-description">
-            Discover the eternal wisdom of Thiruvalluvar through interactive learning. Master Tamil
-            literature with modern teaching methods.
+            Your interactive platform for learning Tamil — from writing letters to mastering
+            classical literature. Explore Thirukkural, Aathichudi, and more with modern tools.
           </p>
           <div className="hero-actions">
             <Link to="/kurral" className="btn btn-primary btn-large">
-              <span>🚀</span>
-              Start Learning
+              <span>📖</span>
+              Thirukkural
             </Link>
-            <Link to="/excercise" className="btn btn-secondary btn-large">
-              <span>✨</span>
-              Practice Now
+            <Link to="/practice" className="btn btn-secondary btn-large">
+              <span>✍️</span>
+              Practice Writing
             </Link>
           </div>
         </div>
         <div className="hero-visual">
           <div className="floating-card delayed-more">
             <div className="card-content">
-              <h3>அறம்</h3>
-              <p>Virtue</p>
+              <h3>அ</h3>
+              <p>Vowel</p>
             </div>
           </div>
           <div className="floating-card ">
             <div className="card-content">
-              <h3>பொருள்</h3>
-              <p>Wealth</p>
+              <h3>க</h3>
+              <p>Consonant</p>
             </div>
           </div>
           <div className="floating-card delayed">
             <div className="card-content">
-              <h3>இன்பம்</h3>
-              <p>Pleasure</p>
+              <h3>தமிழ்</h3>
+              <p>Tamil</p>
             </div>
           </div>
         </div>
@@ -100,26 +98,20 @@ const Homepage = () => {
         <div className="container">
           <div className="stats-grid">
             <div className="stat-item">
-              <div className="stat-number">1330</div>
-              <div className="stat-label">திருக்குறள்கள்</div>
+              <div className="stat-number">247</div>
+              <div className="stat-label">எழுத்துக்கள் (Letters)</div>
             </div>
             <div className="stat-item">
-              <div className="stat-number">133</div>
-              <div className="stat-label">அதிகாரங்கள்</div>
+              <div className="stat-number">12</div>
+              <div className="stat-label">உயிர் (Vowels)</div>
             </div>
             <div className="stat-item">
-              <div className="stat-number">3</div>
-              <div className="stat-label">பால்கள்</div>
+              <div className="stat-number">18</div>
+              <div className="stat-label">மெய் (Consonants)</div>
             </div>
           </div>
         </div>
       </div>
-
-      {showAlert && (
-        <div role="alert" className="sr-only">
-          Welcome to Thirukkural Learning Platform
-        </div>
-      )}
     </div>
   );
 };

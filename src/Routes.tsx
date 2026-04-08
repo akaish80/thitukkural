@@ -5,7 +5,10 @@ import NotFound from './pages/PageNotFound/pagenotfound.component';
 
 const HomePage = lazy(() => import('./pages/homepage/homepage.component'));
 const Thirukkural = lazy(() => import('./pages/thirukurral/thirukurral.component'));
+const KurralLanding = lazy(() => import('./pages/thirukurral/KurralLanding'));
+const KurralExplorer = lazy(() => import('./pages/thirukurral/KurralExplorer'));
 const Exercise = lazy(() => import('./pages/practice/practice.component'));
+const Aathichudi = lazy(() => import('./pages/aathichudi/aathichudi.component.tsx'));
 
 // const PracticeLetter = lazy(() => import('./pages/practiceletter/practice.letter'));
 const PracticeLetter = lazy(() => import('./pages/practice/practiceletter/practice.letter'));
@@ -25,10 +28,15 @@ const AppRoutes = () => (
     <ScrollToTop />
     <Routes> 
       <Route path="/" element={<HomePage />} />
-      <Route path="/kurral" element={<Thirukkural />} />
-      <Route path="/kurral/:id" element={<Thirukkural />} />
+      <Route path="/kurral" element={<Thirukkural />}>
+        <Route index element={<KurralLanding />} />
+        <Route path="explore" element={<KurralExplorer />} />
+        <Route path=":id" element={<KurralExplorer />} />
+      </Route>
       <Route path="/excercise" element={<Exercise />} />
       <Route path="/practice" element={<PracticeLetter />} />
+      <Route path="/aathichudi" element={<Aathichudi />} />
+      <Route path="/arthichudi" element={<Aathichudi />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   </Suspense>

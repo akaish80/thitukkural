@@ -3,6 +3,7 @@ import { getRandomList, isEmpty } from '../../../components/utils';
 import './match.adhikaram.to.paal.scss';
 import { DropContainer } from '../../../components/DragAndDrop/DropContainer';
 import { DragContainer } from '../../../components/DragAndDrop/DragContainer';
+import fetchWrapper from '../../../utils/fetchWrapper';
 
 interface MatchAdhikaramToPaalProps {
   selPractice: any;
@@ -64,7 +65,7 @@ const MatchAdhikaramToPaal = ({ selPractice }: MatchAdhikaramToPaalProps) => {
   // Fetch and flatten data from thirukkural_complete_nested.json
   useEffect(() => {
     async function fetchData() {
-      const data = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/getPaalsAndAdikarams`).then((res) => res.json());
+      const data = await fetchWrapper(`${import.meta.env.VITE_API_BASE_URL}/api/getPaalsAndAdikarams`);
       setAllPaalList(data.paals);
       setAllAdikaram(data.adikarams);
       // Build initial practice list

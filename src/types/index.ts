@@ -109,14 +109,6 @@ export interface KurralState {
   error: string | null;
 }
 
-export interface UserState {
-  name: string;
-  preferences: {
-    theme: ThemeType;
-    language: string;
-  };
-}
-
 // Component prop types
 export interface DragItem {
   name: string;

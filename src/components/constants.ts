@@ -10,6 +10,11 @@ const nav = [
     isClicked: false,
   },
   {
+    text: 'Explore Kurral',
+    link: '/kurral/explore',
+    isClicked: false,
+  },
+  {
     text: 'Excercise Kurral',
     link: '/excercise',
     isClicked: false,
@@ -17,6 +22,11 @@ const nav = [
   {
     text: 'Practice Writing Tamil',
     link: '/practice',
+    isClicked: false,
+  },
+  {
+    text: 'Aathichudi',
+    link: '/aathichudi',
     isClicked: false,
   }
 ];

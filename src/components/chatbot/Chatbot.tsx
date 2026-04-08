@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './chatbot.scss';
+import fetchWrapper from '../../utils/fetchWrapper';
 
 interface Message {
   from: string;
@@ -360,9 +361,8 @@ export default function Chatbot() {
     const kurralMatch = q.match(/kurral[:#\s]*(\d+)/i) || q.match(/^(\d+)$/);
     if (kurralMatch) {
       const id = parseInt(kurralMatch[1]);
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/kurral/${id}`);
-      if (response.ok) {
-        const kurral = await response.json();
+      try {
+        const kurral = await fetchWrapper(`${import.meta.env.VITE_API_BASE_URL}/api/kurral/${id}`);
         return {
           kurral: id,
           results: [
@@ -379,6 +379,8 @@ export default function Chatbot() {
             },
           ],
         };
+      } catch {
+        // not found or error, fall through
       }
     }
 
@@ -386,9 +388,10 @@ export default function Chatbot() {
     const adikaramMatch = q.match(/adikaram[:#\s]*(\d+)/i);
     if (adikaramMatch) {
       const num = parseInt(adikaramMatch[1]);
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/adikaram/${num}`);
-      if (response.ok) {
-        return await response.json();
+      try {
+        return await fetchWrapper(`${import.meta.env.VITE_API_BASE_URL}/api/adikaram/${num}`);
+      } catch {
+        // not found or error, fall through
       }
     }
 
@@ -396,9 +399,8 @@ export default function Chatbot() {
     const paalMatch = q.match(/paal[:#\s]*(\d+)/i);
     if (paalMatch) {
       const num = parseInt(paalMatch[1]);
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/thirukkural?paalIndex=${num}`);
-      if (response.ok) {
-        const payload = await response.json();
+      try {
+        const payload = await fetchWrapper(`${import.meta.env.VITE_API_BASE_URL}/api/thirukkural?paalIndex=${num}`);
         return {
           paal: num,
           paalInfo: {
@@ -409,6 +411,8 @@ export default function Chatbot() {
           },
           results: payload.data || [],
         };
+      } catch {
+        // not found or error, fall through
       }
     }
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './QuizPractice.scss';
+import fetchWrapper from '../../utils/fetchWrapper';
 
 interface QuizQuestion {
   question: string;
@@ -54,9 +55,7 @@ const QuizPractice: React.FC = () => {
 
     const loadQuizData = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/kurrals`);
-        if (!response.ok) throw new Error('Failed to load kurrals');
-        const data = await response.json();
+        const data = await fetchWrapper(`${import.meta.env.VITE_API_BASE_URL}/api/kurrals`);
         if (isMounted) {
           const quizData = (Array.isArray(data) ? data : []).map((item: any) => ({
             Kurral_id: Number(item.Kurral_id),

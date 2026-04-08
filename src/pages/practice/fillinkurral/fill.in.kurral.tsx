@@ -3,6 +3,7 @@ import React, { createRef, useEffect, useRef, useState } from 'react';
 import { getRandomList, returnMatchedLine } from '../../../components/utils';
 import TextInputComp from '../../../components/TextInputComp';
 import './fill.in.kurral.styles.scss';
+import fetchWrapper from '../../../utils/fetchWrapper';
 
 interface KurralItem {
   Index: number;
@@ -33,8 +34,7 @@ const FillInKurral = () => {
 
     const loadKurralData = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/kurrals`);
-        const data = await response.json();
+        const data = await fetchWrapper(`${import.meta.env.VITE_API_BASE_URL}/api/kurrals`);
         if (isMounted) {
           setKurralList(getRandomList(data as KurralItem[], 10));
         }

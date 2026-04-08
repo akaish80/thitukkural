@@ -1,0 +1,150 @@
+.aathichudi-page {
+  min-height: calc(100vh - 120px);
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: var(--text-primary);
+}
+
+.aathichudi-hero {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: 0.5rem;
+    color: var(--color-primary);
+  }
+
+  p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+  }
+}
+
+.flip-all-btn {
+  margin-top: 1rem;
+  border: 1px solid var(--border-primary);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    background: var(--bg-primary);
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+.aathichudi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.verse-card {
+  background: transparent;
+  border: 0;
+  border-radius: 14px;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  perspective: 1000px;
+  min-height: 190px;
+  width: 100%;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+  }
+
+  .verse-card-inner {
+    position: relative;
+    width: 100%;
+    min-height: 190px;
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease;
+  }
+
+  &:hover .verse-card-inner {
+    transform: translateY(-2px);
+  }
+
+  &.is-flipped .verse-card-inner {
+    transform: rotateY(180deg);
+  }
+}
+
+.verse-face {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow: 0 8px 20px var(--shadow-light);
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+
+  h2,
+  h3 {
+    margin: 0.25rem 0 0.5rem;
+    color: var(--text-primary);
+  }
+
+  h2 {
+    font-size: 1.1rem;
+  }
+
+  h3 {
+    font-size: 1rem;
+  }
+
+  p {
+    margin: 0;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    font-size: 0.95rem;
+    flex: 1;
+  }
+}
+
+.verse-back {
+  transform: rotateY(180deg);
+}
+
+.flip-hint {
+  margin-top: 0.8rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  opacity: 0.85;
+}
+
+.letter-badge {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .aathichudi-page {
+    padding: 1rem;
+  }
+}
