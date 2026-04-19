@@ -1,5 +1,96 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './homepage.component.scss';
+import { getDailyKurralIndex, getStreakData, getProgressStats } from '../../utils/learningStore';
+import fetchWrapper from '../../utils/fetchWrapper';
+
+const DailyKurral = () => {
+  const [kurral, setKurral] = useState<{ id: number; tamil: string; explanation: string } | null>(null);
+
+  useEffect(() => {
+    const id = getDailyKurralIndex();
+    fetchWrapper(`${import.meta.env.VITE_API_BASE_URL}/api/kurral/${id}`)
+      .then((data: any) => {
+        if (data) {
+          setKurral({
+            id: data.Kurral_id ?? data.Index ?? id,
+            tamil: (data.Tamil || '').replace(/<br \/>/g, '\n'),
+            explanation: data.MuVaUrai || '',
+          });
+        }
+      })
+      .catch(() => { /* silent — widget just won't show */ });
+  }, []);
+
+  if (!kurral) return (
+    <div className="floating-cards-fallback">
+      <div className="floating-card delayed-more">
+        <div className="card-content"><h3>அ</h3><p>Vowel</p></div>
+      </div>
+      <div className="floating-card">
+        <div className="card-content"><h3>க</h3><p>Consonant</p></div>
+      </div>
+      <div className="floating-card delayed">
+        <div className="card-content"><h3>தமிழ்</h3><p>Tamil</p></div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="daily-kurral">
+      <div className="daily-kurral__badge">📜 இன்றைய குறள் · Daily Kurral #{kurral.id}</div>
+      <div className="daily-kurral__verse">
+        {kurral.tamil.split('\n').map((line, i) => (
+          <span key={i} className="daily-kurral__line">{line}</span>
+        ))}
+      </div>
+      {kurral.explanation && (
+        <p className="daily-kurral__meaning">{kurral.explanation}</p>
+      )}
+      <Link to={`/kurral/${kurral.id}`} className="daily-kurral__link">Read more →</Link>
+    </div>
+  );
+};
+
+const StreakBanner = () => {
+  const streak = getStreakData();
+  const progress = getProgressStats();
+
+  if (streak.totalDaysActive === 0 && progress.totalSessions === 0) return null;
+
+  return (
+    <div className="streak-banner">
+      {streak.currentStreak > 0 && (
+        <div className="streak-banner__item streak-banner__item--fire">
+          <span className="streak-banner__icon">🔥</span>
+          <span className="streak-banner__value">{streak.currentStreak}</span>
+          <span className="streak-banner__label">Day Streak</span>
+        </div>
+      )}
+      {progress.totalSessions > 0 && (
+        <div className="streak-banner__item">
+          <span className="streak-banner__icon">📊</span>
+          <span className="streak-banner__value">{progress.avgAccuracy}%</span>
+          <span className="streak-banner__label">Avg Accuracy</span>
+        </div>
+      )}
+      {progress.totalSessions > 0 && (
+        <div className="streak-banner__item">
+          <span className="streak-banner__icon">✅</span>
+          <span className="streak-banner__value">{progress.totalCorrect}/{progress.totalQuestions}</span>
+          <span className="streak-banner__label">Correct</span>
+        </div>
+      )}
+      {streak.longestStreak > 1 && (
+        <div className="streak-banner__item">
+          <span className="streak-banner__icon">🏆</span>
+          <span className="streak-banner__value">{streak.longestStreak}</span>
+          <span className="streak-banner__label">Best Streak</span>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const Homepage = () => {
   const features = [
@@ -46,37 +137,23 @@ const Homepage = () => {
             classical literature. Explore Thirukkural, Aathichudi, and more with modern tools.
           </p>
           <div className="hero-actions">
-            <Link to="/kurral" className="btn btn-primary btn-large">
+            <Link to="/learn" className="btn btn-primary btn-large">
+              <span>🛤️</span>
+              Start Learning Path
+            </Link>
+            <Link to="/kurral" className="btn btn-secondary btn-large">
               <span>📖</span>
               Thirukkural
-            </Link>
-            <Link to="/free-type" className="btn btn-secondary btn-large">
-              <span>✍️</span>
-              Practice Writing
             </Link>
           </div>
         </div>
         <div className="hero-visual">
-          <div className="floating-card delayed-more">
-            <div className="card-content">
-              <h3>அ</h3>
-              <p>Vowel</p>
-            </div>
-          </div>
-          <div className="floating-card ">
-            <div className="card-content">
-              <h3>க</h3>
-              <p>Consonant</p>
-            </div>
-          </div>
-          <div className="floating-card delayed">
-            <div className="card-content">
-              <h3>தமிழ்</h3>
-              <p>Tamil</p>
-            </div>
-          </div>
+          <DailyKurral />
+          {/* Fallback decorative cards shown while kurral loads */}
         </div>
       </div>
+
+      <StreakBanner />
 
       <div className="features-section">
         <div className="container">

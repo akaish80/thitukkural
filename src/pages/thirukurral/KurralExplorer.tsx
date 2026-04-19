@@ -1,7 +1,65 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Container } from '../../Common/common.styles';
 import './thirukurral.styles.scss';
 import fetchWrapper from '../../utils/fetchWrapper';
+import { isBookmarked, toggleBookmark } from '../../utils/learningStore';
+
+const shareKurral = (kurralId: number, text: string) => {
+  const cleanText = text.replace(/<br \/>/g, '\n');
+  const shareText = `திருக்குறள் ${kurralId}:\n${cleanText}`;
+  const url = `${window.location.origin}/kurral/${kurralId}`;
+  return { shareText, url, cleanText };
+};
+
+const ShareButtons = ({ kurralId, text }: { kurralId: number; text: string }) => {
+  const [copied, setCopied] = useState(false);
+  const { shareText, url } = shareKurral(kurralId, text);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(`${shareText}\n${url}`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { /* clipboard not available */ }
+  };
+
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${shareText}\n${url}`)}`;
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(url)}`;
+
+  return (
+    <div className="tk-share-bar">
+      <button className="tk-share-btn" onClick={handleCopy} title="Copy">
+        {copied ? '✅' : '📋'}
+      </button>
+      <a className="tk-share-btn" href={whatsappUrl} target="_blank" rel="noreferrer" title="WhatsApp">
+        💬
+      </a>
+      <a className="tk-share-btn" href={twitterUrl} target="_blank" rel="noreferrer" title="Twitter / X">
+        🐦
+      </a>
+    </div>
+  );
+};
+
+const BookmarkButton = ({ kurralId }: { kurralId: number }) => {
+  const [bookmarked, setBookmarked] = useState(() => isBookmarked(kurralId));
+
+  const handleToggle = useCallback(() => {
+    const added = toggleBookmark(kurralId);
+    setBookmarked(added);
+  }, [kurralId]);
+
+  return (
+    <button
+      className={`tk-bookmark-btn${bookmarked ? ' active' : ''}`}
+      onClick={handleToggle}
+      title={bookmarked ? 'Remove bookmark' : 'Bookmark this kurral'}
+      aria-label={bookmarked ? 'Remove bookmark' : 'Bookmark this kurral'}
+    >
+      {bookmarked ? '★' : '☆'}
+    </button>
+  );
+};
 
 
 const KurralExplorer = () => {
@@ -279,6 +337,10 @@ const KurralExplorer = () => {
                     </button>
                     {expandedKurralId === kurral.Index && (
                       <div className="tk-kurral-card__body">
+                        <div className="tk-kurral-card__actions">
+                          <BookmarkButton kurralId={kurral.Index} />
+                          <ShareButtons kurralId={kurral.Index} text={kurral.Tamil} />
+                        </div>
                         {kurral.MuVaUrai && (
                           <div className="tk-explanation">
                             <span className="tk-explanation__author">ம.வ உரை</span>
@@ -313,6 +375,10 @@ const KurralExplorer = () => {
             </div>
             {selectedKurral && (
               <div className="tk-kurral-detail">
+                <div className="tk-kurral-card__actions">
+                  <BookmarkButton kurralId={selectedKurral.Index} />
+                  <ShareButtons kurralId={selectedKurral.Index} text={selectedKurral.Tamil} />
+                </div>
                 <div className="tk-kurral-detail__verse">
                   {selectedKurral.Tamil?.split(/<br \/>/).map((line: string, i: number) => (
                     <span key={i} className="tk-kurral-detail__verse-line">{line}</span>

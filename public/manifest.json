@@ -1,0 +1,20 @@
+{
+  "name": "Thirukkural - Learn Tamil",
+  "short_name": "Thirukkural",
+  "description": "Interactive Tamil learning platform — Thirukkural, letters, exercises, and more.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3498db",
+  "orientation": "portrait-primary",
+  "lang": "ta",
+  "categories": ["education"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

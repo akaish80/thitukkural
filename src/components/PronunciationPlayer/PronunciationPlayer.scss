@@ -1,0 +1,268 @@
+/* ───────────────────────────────────────────────
+   Pronunciation Player & shared audio controls
+   ─────────────────────────────────────────────── */
+
+/* ── Speak button (icon only) ── */
+.speak-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background: var(--bg-secondary);
+  transition: all 0.15s;
+  flex-shrink: 0;
+  line-height: 1;
+  padding: 0;
+
+  &--sm {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+
+  &--md {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  &--lg {
+    width: 48px;
+    height: 48px;
+    font-size: 1.3rem;
+  }
+
+  &:hover {
+    background: var(--color-primary-alpha, rgba(88, 100, 242, 0.1));
+    transform: scale(1.08);
+  }
+
+  &--active {
+    background: var(--color-primary);
+    animation: pulse-ring 1s ease-out infinite;
+  }
+}
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 var(--color-primary-alpha, rgba(88, 100, 242, 0.3)); }
+  70% { box-shadow: 0 0 0 8px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+/* ── Speed toggle ── */
+.speed-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 99px;
+  border: 1.5px solid var(--border-primary);
+  background: var(--bg-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: all 0.15s;
+
+  &:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+}
+
+/* ── Waveform ── */
+.waveform {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 16px;
+
+  &__bar {
+    display: block;
+    width: 3px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--color-primary);
+    transition: height 0.15s;
+  }
+
+  &--active &__bar {
+    animation: wave-bounce 0.6s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes wave-bounce {
+  0% { height: 4px; }
+  50% { height: 14px; }
+  100% { height: 6px; }
+}
+
+/* ── Full pronunciation player card ── */
+.pronunciation-player {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg, 12px);
+  padding: 1rem 1.25rem;
+  transition: box-shadow 0.2s;
+
+  &:hover {
+    box-shadow: 0 4px 16px var(--shadow-light, rgba(0, 0, 0, 0.06));
+  }
+
+  &__main {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__play {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 2px solid var(--color-primary);
+    background: var(--color-primary-alpha, rgba(88, 100, 242, 0.08));
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s;
+
+    &:hover {
+      background: var(--color-primary);
+
+      .pronunciation-player__icon {
+        color: #fff;
+      }
+
+      .waveform__bar {
+        background: #fff;
+      }
+    }
+
+    &--active {
+      background: var(--color-primary);
+
+      .pronunciation-player__icon {
+        color: #fff;
+      }
+
+      .waveform__bar {
+        background: #fff;
+      }
+    }
+  }
+
+  &__icon {
+    font-size: 1.1rem;
+    color: var(--color-primary);
+    line-height: 1;
+    transition: color 0.15s;
+  }
+
+  &__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+  }
+
+  &__label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-tertiary);
+  }
+
+  &__text {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    font-family: var(--font-family-tamil);
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__roman {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+
+  &__meaning {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+
+  &__speed {
+    align-self: flex-start;
+  }
+
+  /* ── Example words ── */
+  &__examples {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-primary);
+  }
+
+  &__examples-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-tertiary);
+    margin-bottom: 0.5rem;
+  }
+
+  &__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  &__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 99px;
+    border: 1.5px solid var(--border-primary);
+    background: var(--bg-primary);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+
+    &:hover {
+      border-color: var(--color-primary);
+      background: var(--color-primary-alpha, rgba(88, 100, 242, 0.06));
+    }
+
+    &--active {
+      border-color: var(--color-primary);
+      background: var(--color-primary-alpha, rgba(88, 100, 242, 0.1));
+    }
+
+    &-tamil {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: var(--font-family-tamil);
+    }
+
+    &-en {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+  }
+}

@@ -536,3 +536,99 @@
     50%       { opacity: 0.4; }
   }
 }
+
+// ── Share & Bookmark ──
+.tk-kurral-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.tk-bookmark-btn {
+  background: none;
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 0.3rem 0.5rem;
+  color: var(--text-tertiary);
+  transition: all 0.2s ease;
+  line-height: 1;
+
+  &:hover {
+    color: #f59e0b;
+    border-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.08);
+  }
+
+  &.active {
+    color: #f59e0b;
+    border-color: #f59e0b;
+  }
+}
+
+.tk-share-bar {
+  display: flex;
+  gap: 0.35rem;
+  margin-left: auto;
+}
+
+.tk-share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--border-primary);
+  background: var(--bg-tertiary);
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: var(--color-primary);
+    background: var(--color-primary-alpha);
+    transform: translateY(-1px);
+  }
+}
+
+// ── Print styles ──
+@media print {
+  .tk-explorer {
+    display: block !important;
+  }
+
+  .tk-col--paal,
+  .tk-col--adikaram,
+  .tk-breadcrumb,
+  .tk-kurral-card__actions,
+  .tk-share-bar,
+  .tk-bookmark-btn {
+    display: none !important;
+  }
+
+  .tk-col--kurrals,
+  .tk-col--kurral-detail {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .tk-kurral-card {
+    break-inside: avoid;
+    border: 1px solid #ccc !important;
+    margin-bottom: 1rem;
+  }
+
+  .tk-kurral-card__body {
+    display: block !important;
+  }
+
+  .tk-explanation {
+    break-inside: avoid;
+  }
+}

@@ -20,11 +20,17 @@ const nav = [
     isClicked: false,
     children: [
       { text: 'Tamil Letters', link: '/tamil-letters', isClicked: false },
+      { text: 'Tamil Numbers', link: '/tamil-numbers', isClicked: false },
       { text: 'Letter Exercise', link: '/letter-exercise', isClicked: false },
       // { text: 'Practice Writing Tamil', link: '/practice', isClicked: false },
       { text: 'Draw Tamil Letters', link: '/draw-letter', isClicked: false },
       { text: 'Free-Type Tamil', link: '/free-type', isClicked: false },
     ],
+  },
+  {
+    text: 'Learning Path',
+    link: '/learn',
+    isClicked: false,
   },
   {
     text: 'Aathichudi',

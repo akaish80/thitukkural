@@ -1,4 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
+import { speakTamil } from '../../utils/pronunciationEngine';
+import { SpeakButton, SpeedToggle, Waveform } from '../../components/PronunciationPlayer/PronunciationPlayer';
+import { onSpeakingChange } from '../../utils/pronunciationEngine';
 import './tamilletters.styles.scss';
 
 interface LetterGroup {
@@ -58,24 +61,19 @@ const letterDetails: Record<string, LetterDetail> = {
   'ன்': { word: 'மின்', meaning: 'Electricity', type: 'consonant', typeLabel: 'மெல்லினம்', typeLabelEn: 'Soft Consonant', romanization: 'ṉ', pronunciation: 'Like "n" in "fun" (alveolar)', exampleSentence: 'மின்சாரம் தேவை', exampleTranslation: 'Electricity is needed' },
 };
 
-// Helper to speak Tamil text using browser TTS
-const speakTamil = (text: string) => {
-  if (!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = 'ta-IN';
-  utter.rate = 0.8;
-  window.speechSynthesis.speak(utter);
-};
-
-// Letter detail modal component
+// Letter detail modal component with pronunciation player
 const LetterModal = ({ letter, onClose }: { letter: string; onClose: () => void }) => {
   const detail = letterDetails[letter];
-  if (!detail) return null;
+  const [speaking, setSpeaking] = useState(false);
+
+  useEffect(() => onSpeakingChange(setSpeaking), []);
+
+  // NOTE: auto-speak removed — useEffect runs outside user gesture context
+  // so browsers block it silently. Users click 🔊 instead.
 
   const typeColor =
-    detail.type === 'vowel' ? '#58cc02'
-    : detail.type === 'consonant' ? '#ce82ff'
+    detail?.type === 'vowel' ? '#58cc02'
+    : detail?.type === 'consonant' ? '#ce82ff'
     : '#ff9600';
 
   // Close on Escape key
@@ -87,18 +85,22 @@ const LetterModal = ({ letter, onClose }: { letter: string; onClose: () => void 
     return () => document.removeEventListener('keydown', handleKey);
   }, [onClose]);
 
+  if (!detail) return null;
+
   return (
     <div className="letter-modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label={`Details for ${letter}`}>
       <div className="letter-modal" onClick={(e) => e.stopPropagation()}>
         <button className="letter-modal__close" onClick={onClose} aria-label="Close">✕</button>
 
         <div className="letter-modal__header" style={{ '--type-color': typeColor } as React.CSSProperties}>
-          <div className="letter-modal__letter">{letter}</div>
-          <button className="letter-modal__speak" onClick={() => speakTamil(letter)} aria-label={`Listen to ${letter}`}>
-            🔊
-          </button>
+          <div className="letter-modal__letter-row">
+            <div className="letter-modal__letter">{letter}</div>
+            <Waveform active={speaking} bars={5} className="letter-modal__waveform" />
+          </div>
+          <SpeakButton text={letter} size="lg" className="letter-modal__speak" />
           <div className="letter-modal__romanization">{detail.romanization}</div>
           <span className="letter-modal__type-badge">{detail.typeLabel} · {detail.typeLabelEn}</span>
+          <SpeedToggle className="letter-modal__speed-toggle" />
         </div>
 
         <div className="letter-modal__body">
@@ -111,9 +113,7 @@ const LetterModal = ({ letter, onClose }: { letter: string; onClose: () => void 
             <h4>📝 Example Word</h4>
             <div className="letter-modal__word-row">
               <span className="letter-modal__tamil-word">{detail.word}</span>
-              <button className="letter-modal__speak-sm" onClick={() => speakTamil(detail.word)} aria-label={`Listen to ${detail.word}`}>
-                🔊
-              </button>
+              <SpeakButton text={detail.word} size="sm" />
               <span className="letter-modal__word-meaning">— {detail.meaning}</span>
             </div>
           </div>
@@ -122,9 +122,7 @@ const LetterModal = ({ letter, onClose }: { letter: string; onClose: () => void 
             <h4>💬 Example Sentence</h4>
             <div className="letter-modal__sentence-row">
               <p className="letter-modal__tamil-sentence">{detail.exampleSentence}</p>
-              <button className="letter-modal__speak-sm" onClick={() => speakTamil(detail.exampleSentence)} aria-label="Listen to sentence">
-                🔊
-              </button>
+              <SpeakButton text={detail.exampleSentence} size="sm" />
             </div>
             <p className="letter-modal__translation">{detail.exampleTranslation}</p>
           </div>
@@ -175,6 +173,10 @@ const TamilLetters = () => {
       <section className="tamil-letters-hero">
         <h1>தமிழ் எழுத்துகள்</h1>
         <p>Tamil script has 12 vowels, 18 consonants, and 216 compound letters</p>
+        <div className="tamil-letters-hero__audio-controls">
+          <SpeedToggle />
+          <span className="tamil-letters-hero__hint">Click any letter to hear it</span>
+        </div>
       </section>
 
       <div className="tamil-letters-tabs">
@@ -226,6 +228,7 @@ const TamilLetters = () => {
                           <span className="letter-tile__english">{info.meaning}</span>
                         </span>
                       )}
+                      <SpeakButton text={letter} size="sm" className="letter-tile__speak" />
                     </div>
                   );
                 })}

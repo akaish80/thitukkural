@@ -16,6 +16,12 @@ const DrawLetter = lazy(() => import('./pages/practice/drawletter/draw.letter'))
 const FreeType = lazy(() => import('./pages/practice/freetype/free.type'));
 const TamilLetters = lazy(() => import('./pages/tamilletters/tamilletters.component'));
 const LetterExercise = lazy(() => import('./pages/tamilletters/letterexercise.component'));
+const About = lazy(() => import('./pages/about/about.component'));
+const Contact = lazy(() => import('./pages/contact/contact.component'));
+const Privacy = lazy(() => import('./pages/privacy/privacy.component'));
+const TamilNumbers = lazy(() => import('./pages/tamilnumbers/tamilnumbers.component'));
+const LearningPath = lazy(() => import('./pages/learningpath/LearningPath'));
+const LessonPage = lazy(() => import('./pages/learningpath/LessonPage'));
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -52,6 +58,12 @@ const AppRoutes = () => (
       <Route path="/letter-exercise" element={<LetterExercise />} />
       <Route path="/aathichudi" element={<Aathichudi />} />
       <Route path="/arthichudi" element={<Aathichudi />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/privacy" element={<Privacy />} />
+      <Route path="/tamil-numbers" element={<TamilNumbers />} />
+      <Route path="/learn" element={<LearningPath />} />
+      <Route path="/learn/:stepId/:lessonId" element={<LessonPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   </Suspense>

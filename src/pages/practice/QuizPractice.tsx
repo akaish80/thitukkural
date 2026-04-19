@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import './QuizPractice.scss';
 import fetchWrapper from '../../utils/fetchWrapper';
+import { saveQuizResult, recordActivity, recordSpacedResult } from '../../utils/learningStore';
 
 interface QuizQuestion {
   question: string;
@@ -130,6 +131,8 @@ const QuizPractice: React.FC = () => {
         { ...q, options: shuffle(q.options) },
       ]);
     }
+    // Track spaced repetition
+    recordSpacedResult(q.id, isCorrect);
   }, [answerState, current, queue]);
 
   const handleContinue = useCallback(() => {
@@ -137,6 +140,10 @@ const QuizPractice: React.FC = () => {
       setCurrent((p) => p + 1);
     } else {
       setShowResult(true);
+      // Save progress
+      const acc = (totalAnswered + 1) > 0 ? Math.round((score / (totalAnswered)) * 100) : 0;
+      saveQuizResult({ date: new Date().toISOString(), score, total: initialTotal, accuracy: acc, type: 'quiz' });
+      recordActivity();
     }
     setSelected(null);
     setAnswerState('idle');
@@ -165,6 +172,7 @@ const QuizPractice: React.FC = () => {
 
   if (showResult) {
     const failedCount = totalAnswered - score;
+    const accuracy = totalAnswered > 0 ? Math.round((score / totalAnswered) * 100) : 0;
     return (
       <div className="duo-quiz">
         <div className="duo-quiz__result">

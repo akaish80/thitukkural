@@ -388,3 +388,45 @@ body {
     transform: translateY(0);
   }
 }
+
+// ── Print-friendly styles ──
+@media print {
+  .App-header,
+  .navigation,
+  .skip-nav,
+  footer,
+  .chatbot-container,
+  .hero-visual,
+  .hero-actions,
+  .floating-card {
+    display: none !important;
+  }
+
+  .App {
+    background: #fff !important;
+
+    &::before {
+      display: none;
+    }
+  }
+
+  #content {
+    min-height: auto;
+  }
+
+  body {
+    font-size: 12pt;
+    color: #000;
+    background: #fff;
+  }
+
+  a {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}

@@ -1,0 +1,303 @@
+.tamil-numbers-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+// ── Hero ──
+.numbers-hero {
+  text-align: center;
+  padding: 3rem 0 2rem;
+
+  &__title {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  &__tamil {
+    font-size: 2.5rem;
+    font-weight: 800;
+    font-family: var(--font-family-tamil);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  &__en {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-tertiary);
+  }
+
+  &__subtitle {
+    margin-top: 1rem;
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 580px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @media (max-width: 600px) {
+    &__tamil { font-size: 1.8rem; }
+  }
+}
+
+// ── Tabs ──
+.numbers-tabs {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.numbers-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-primary);
+  border-radius: 12px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+
+  &__label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-family: var(--font-family-tamil);
+  }
+
+  &__sub {
+    font-size: 0.72rem;
+    color: var(--text-tertiary);
+  }
+
+  &:hover {
+    border-color: var(--color-primary);
+  }
+
+  &.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+
+    .numbers-tab__label,
+    .numbers-tab__sub {
+      color: #fff;
+    }
+  }
+}
+
+// ── Number grid ──
+.number-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 0.75rem;
+  }
+}
+
+.number-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-primary);
+  border-radius: 16px;
+  padding: 1.25rem 0.75rem;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: var(--card-accent, var(--color-primary));
+    box-shadow: 0 8px 24px var(--shadow-medium);
+
+    .number-card__speak {
+      opacity: 1;
+    }
+  }
+
+  &__tamil {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--card-accent, var(--color-primary));
+    font-family: var(--font-family-tamil);
+    line-height: 1;
+  }
+
+  &__arabic {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0.15rem 0;
+  }
+
+  &__word {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-family: var(--font-family-tamil);
+  }
+
+  &__en {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+  }
+
+  &__speak {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 0.85rem;
+    opacity: 0.3;
+    transition: opacity 0.15s;
+  }
+}
+
+// ── Converter ──
+.number-converter {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  text-align: center;
+  margin-bottom: 2.5rem;
+
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 0.5rem;
+  }
+
+  &__info {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    margin: 0 0 1.5rem;
+  }
+
+  &__input-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+
+  &__input {
+    width: 100%;
+    max-width: 300px;
+    padding: 0.7rem 1rem;
+    font-size: 1.1rem;
+    font-family: inherit;
+    border: 2px solid var(--border-secondary);
+    border-radius: var(--radius-md);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    text-align: center;
+    transition: border-color 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: var(--focus-ring);
+    }
+
+    &::placeholder {
+      color: var(--text-muted);
+    }
+  }
+
+  &__result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__tamil {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    font-family: var(--font-family-tamil);
+    letter-spacing: 0.08em;
+  }
+
+  &__speak {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--color-primary-alpha);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    border-radius: 99px;
+    padding: 0.4rem 1rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+
+    &:hover {
+      background: var(--color-primary);
+      color: #fff;
+    }
+  }
+}
+
+// ── Info section ──
+.numbers-info {
+  margin-top: 1rem;
+
+  h2 {
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.25rem;
+  }
+
+  &__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+
+  &__card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px var(--shadow-medium);
+    }
+  }
+
+  &__icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+}

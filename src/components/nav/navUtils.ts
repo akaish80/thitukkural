@@ -20,6 +20,18 @@ export const getIcon = (text: string) => {
     return '🎯';
   } else if (lower === 'aathichudi') {
     return '🪔';
+  } else if (lower === 'about') {
+    return 'ℹ️';
+  } else if (lower === 'contact') {
+    return '✉️';
+  } else if (lower === 'tamil numbers') {
+    return '🔢';
+  } else if (lower === 'learning path') {
+    return '🛤️';
+  } else if (lower === 'tamil letters') {
+    return '✍️';
+  } else if (lower === 'exercise kurral') {
+    return '🎯';
   } else {
     return '📄';
   }

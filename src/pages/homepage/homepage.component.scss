@@ -85,10 +85,20 @@
 
 .hero-visual {
   position: relative;
-  height: 400px;
+  min-height: 320px;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: 968px) {
+    min-height: 260px;
+  }
+}
+
+.floating-cards-fallback {
+  position: relative;
+  width: 100%;
+  height: 400px;
 
   @media (max-width: 968px) {
     height: 300px;
@@ -317,4 +327,164 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+// ── Streak Banner ──
+.streak-banner {
+  display: flex;
+  gap: 1.25rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 1.5rem 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 14px;
+    padding: 1rem 1.5rem;
+    min-width: 110px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px var(--shadow-medium);
+    }
+
+    &--fire {
+      border-color: #f59e0b;
+      background: rgba(245, 158, 11, 0.06);
+    }
+  }
+
+  &__icon {
+    font-size: 1.5rem;
+  }
+
+  &__value {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--color-primary);
+  }
+
+  &__label {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  @media (max-width: 480px) {
+    gap: 0.75rem;
+    padding: 1rem;
+
+    &__item {
+      padding: 0.75rem 1rem;
+      min-width: 90px;
+    }
+  }
+}
+
+// ── Daily Kurral (inside hero-visual) ──
+.daily-kurral {
+  width: 100%;
+  max-width: 420px;
+  padding: 2rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  animation: fadeInUp 0.5s ease-out;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  }
+
+  &:hover {
+    box-shadow: 0 8px 30px var(--shadow-medium);
+  }
+
+  &__badge {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+    background: var(--color-primary-alpha);
+    padding: 0.3rem 0.85rem;
+    border-radius: 99px;
+    margin-bottom: 1rem;
+  }
+
+  &__verse {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-family: var(--font-family-tamil);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.7;
+    margin-bottom: 0.75rem;
+  }
+
+  &__line {
+    display: block;
+  }
+
+  &__meaning {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0 0 1rem;
+    font-style: italic;
+  }
+
+  &__link {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.15s;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  @media (max-width: 600px) {
+    max-width: none;
+    padding: 1.25rem 1rem;
+
+    &__verse {
+      font-size: 1.1rem;
+    }
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

@@ -1,4 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
+import { speakTamil } from '../../utils/pronunciationEngine';
+import { SpeakButton, SpeedToggle } from '../../components/PronunciationPlayer/PronunciationPlayer';
 import './letterexercise.styles.scss';
 
 // ---------------------------------------------------------------------------
@@ -239,6 +241,7 @@ const LetterExercise = () => {
           <div className="setup-info">
             <p>{QUESTION_COUNT} questions — multiple choice</p>
             <p>Identify letters, transliterations & classify vowel/consonant</p>
+            <SpeedToggle />
           </div>
 
           <button
@@ -341,7 +344,10 @@ const LetterExercise = () => {
       {/* Question */}
       <div className="letter-exercise__card">
         {q.mode !== 'roman-to-tamil' && (
-          <div className="card-letter">{q.letter.tamil}</div>
+          <div className="card-letter">
+            {q.letter.tamil}
+            <SpeakButton text={q.letter.tamil} size="sm" />
+          </div>
         )}
         {q.mode === 'roman-to-tamil' && (
           <div className="card-roman">{q.letter.roman}</div>
