@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Container } from '../../Common/common.styles';
 import './thirukurral.styles.scss';
-import IntroSection from './components/IntroSection';
 import fetchWrapper from '../../utils/fetchWrapper';
 
 
@@ -14,10 +13,11 @@ const KurralExplorer = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [expandedKurralId, setExpandedKurralId] = useState<number | null>(null);
-  const [mobileStep, setMobileStep] = useState<'paal' | 'adikaram' | 'kurrals'>('paal');
+  const [mobileStep, setMobileStep] = useState<'paal' | 'adikaram' | 'kurrals' | 'kurral-detail'>('paal');
 
   const selectedPaal = paalList.find((p) => p.Index === selectedPaalId);
   const selectedAdikaram = adikaramList.find((a) => a.Index === selectedAdikaramId);
+  const selectedKurral = kurralData.find((k) => k.Index === expandedKurralId);
 
   useEffect(() => {
     let isMounted = true;
@@ -33,9 +33,6 @@ const KurralExplorer = () => {
             Transliteration: paal.transliteration,
           }));
           setPaalList(mappedPaals);
-          if (mappedPaals.length > 0) {
-            setSelectedPaalId(Number(mappedPaals[0].Index));
-          }
         }
       } catch (error) {
         if (isMounted) {
@@ -150,7 +147,7 @@ const KurralExplorer = () => {
         }}
       >
         <h1 className="page-title">திருக்குறள் பட்டியல்</h1>
-        <IntroSection />
+        
 
         {/* Mobile breadcrumb */}
         <nav className="tk-breadcrumb">
@@ -167,10 +164,19 @@ const KurralExplorer = () => {
               >{selectedPaal.Tamil}</button>
             </>
           )}
-          {selectedAdikaram && mobileStep === 'kurrals' && (
+          {selectedAdikaram && (mobileStep === 'kurrals' || mobileStep === 'kurral-detail') && (
             <>
               <span className="tk-breadcrumb__sep">›</span>
-              <span className="tk-breadcrumb__crumb active">{selectedAdikaram.Tamil}</span>
+              <button
+                className={`tk-breadcrumb__crumb${mobileStep === 'kurrals' ? ' active' : ''}`}
+                onClick={() => { setMobileStep('kurrals'); setExpandedKurralId(null); }}
+              >{selectedAdikaram.Tamil}</button>
+            </>
+          )}
+          {selectedKurral && mobileStep === 'kurral-detail' && (
+            <>
+              <span className="tk-breadcrumb__sep">›</span>
+              <span className="tk-breadcrumb__crumb active">குறள் {selectedKurral.Index}</span>
             </>
           )}
         </nav>
@@ -255,9 +261,11 @@ const KurralExplorer = () => {
                   >
                     <button
                       className="tk-kurral-card__header"
-                      onClick={() =>
-                        setExpandedKurralId(expandedKurralId === kurral.Index ? null : kurral.Index)
-                      }
+                      onClick={() => {
+                        const newId = expandedKurralId === kurral.Index ? null : kurral.Index;
+                        setExpandedKurralId(newId);
+                        if (newId !== null) setMobileStep('kurral-detail');
+                      }}
                     >
                       <span className="tk-kurral-card__num">{kurral.Index}</span>
                       <span className="tk-kurral-card__verse">
@@ -294,6 +302,41 @@ const KurralExplorer = () => {
                   </li>
                 ))}
               </ul>
+            )}
+          </section>
+
+          {/* Panel 4 — Kurral Detail (mobile only) */}
+          <section className={`tk-col tk-col--kurral-detail${mobileStep === 'kurral-detail' ? ' mobile-active' : ''}`}>
+            <div className="tk-col__title">
+              <button className="tk-col__back" onClick={() => { setMobileStep('kurrals'); setExpandedKurralId(null); }}>‹</button>
+              குறள் {selectedKurral?.Index}
+            </div>
+            {selectedKurral && (
+              <div className="tk-kurral-detail">
+                <div className="tk-kurral-detail__verse">
+                  {selectedKurral.Tamil?.split(/<br \/>/).map((line: string, i: number) => (
+                    <span key={i} className="tk-kurral-detail__verse-line">{line}</span>
+                  ))}
+                </div>
+                {selectedKurral.MuVaUrai && (
+                  <div className="tk-explanation">
+                    <span className="tk-explanation__author">ம.வ உரை</span>
+                    <p className="tk-explanation__text">{selectedKurral.MuVaUrai}</p>
+                  </div>
+                )}
+                {selectedKurral.SolomonPaapaiyaUrai && (
+                  <div className="tk-explanation">
+                    <span className="tk-explanation__author">சாலமன் பாப்பையா</span>
+                    <p className="tk-explanation__text">{selectedKurral.SolomonPaapaiyaUrai}</p>
+                  </div>
+                )}
+                {selectedKurral.KalaignarUrai && (
+                  <div className="tk-explanation">
+                    <span className="tk-explanation__author">கலைஞர்</span>
+                    <p className="tk-explanation__text">{selectedKurral.KalaignarUrai}</p>
+                  </div>
+                )}
+              </div>
             )}
           </section>
         </div>

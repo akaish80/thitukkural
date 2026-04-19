@@ -12,6 +12,10 @@ const Aathichudi = lazy(() => import('./pages/aathichudi/aathichudi.component.ts
 
 // const PracticeLetter = lazy(() => import('./pages/practiceletter/practice.letter'));
 const PracticeLetter = lazy(() => import('./pages/practice/practiceletter/practice.letter'));
+const DrawLetter = lazy(() => import('./pages/practice/drawletter/draw.letter'));
+const FreeType = lazy(() => import('./pages/practice/freetype/free.type'));
+const TamilLetters = lazy(() => import('./pages/tamilletters/tamilletters.component'));
+const LetterExercise = lazy(() => import('./pages/tamilletters/letterexercise.component'));
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -33,8 +37,13 @@ const AppRoutes = () => (
         <Route path="explore" element={<KurralExplorer />} />
         <Route path=":id" element={<KurralExplorer />} />
       </Route>
-      <Route path="/excercise" element={<Exercise />} />
+      <Route path="/kurral/exercise" element={<Exercise />} />
+      <Route path="/kurral/exercise/:exerciseType" element={<Exercise />} />
       <Route path="/practice" element={<PracticeLetter />} />
+      <Route path="/draw-letter" element={<DrawLetter />} />
+      <Route path="/free-type" element={<FreeType />} />
+      <Route path="/tamil-letters" element={<TamilLetters />} />
+      <Route path="/letter-exercise" element={<LetterExercise />} />
       <Route path="/aathichudi" element={<Aathichudi />} />
       <Route path="/arthichudi" element={<Aathichudi />} />
       <Route path="*" element={<NotFound />} />

@@ -7,7 +7,7 @@
         "title": "சிக்ஷணம்",
         "links": [
           { "href": "/kurral", "label": "குறள் கற்க" },
-          { "href": "/excercise", "label": "பயிற்சி" },
+          { "href": "/kurral/exercise", "label": "பயிற்சி" },
           { "href": "/adhikarams", "label": "அதிகாரங்கள்" }
         ]
       },
@@ -30,7 +30,7 @@
     "nav": [
       { "label": "முகப்பு", "link": "/" },
       { "label": "குறள்", "link": "/kurral" },
-      { "label": "பயிற்சி", "link": "/excercise" }
+      { "label": "பயிற்சி", "link": "/kurral/exercise" }
     ]
   },
   "practice": {

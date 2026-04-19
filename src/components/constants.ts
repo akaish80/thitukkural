@@ -5,24 +5,26 @@ const nav = [
     isClicked: true,
   },
   {
-    text: 'Kurral',
-    link: '/kurral',
+    text: 'Thirukkural',
+    link: '',
     isClicked: false,
+    children: [
+      { text: 'Kurral', link: '/kurral', isClicked: false },
+      { text: 'Explore Kurral', link: '/kurral/explore', isClicked: false },
+      { text: 'Excercise Kurral', link: '/kurral/exercise', isClicked: false },
+    ],
   },
   {
-    text: 'Explore Kurral',
-    link: '/kurral/explore',
+    text: 'Tamil Letter',
+    link: '',
     isClicked: false,
-  },
-  {
-    text: 'Excercise Kurral',
-    link: '/excercise',
-    isClicked: false,
-  },
-  {
-    text: 'Practice Writing Tamil',
-    link: '/practice',
-    isClicked: false,
+    children: [
+      { text: 'Tamil Letters', link: '/tamil-letters', isClicked: false },
+      { text: 'Letter Exercise', link: '/letter-exercise', isClicked: false },
+      // { text: 'Practice Writing Tamil', link: '/practice', isClicked: false },
+      { text: 'Draw Tamil Letters', link: '/draw-letter', isClicked: false },
+      { text: 'Free-Type Tamil', link: '/free-type', isClicked: false },
+    ],
   },
   {
     text: 'Aathichudi',

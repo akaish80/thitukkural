@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import './kurralLanding.scss';
+import IntroSection from './components/IntroSection';
 
 const KurralLanding = () => {
   const features = [
@@ -14,16 +15,16 @@ const KurralLanding = () => {
       icon: '🎯',
       title: 'Exercise Kurral',
       description: 'Test your knowledge with engaging Thirukkural-based exercises.',
-      link: '/excercise',
+      link: '/kurral/exercise',
       color: 'purple',
     },
-    {
-      icon: '🎨',
-      title: 'Themes',
-      description: 'Customize your reading experience with beautiful themes.',
-      link: '/',
-      color: 'orange',
-    },
+    // {
+    //   icon: '🎨',
+    //   title: 'Themes',
+    //   description: 'Customize your reading experience with beautiful themes.',
+    //   link: '/',
+    //   color: 'orange',
+    // },
   ];
 
   return (
@@ -43,7 +44,7 @@ const KurralLanding = () => {
               <span>🚀</span>
               Start Exploring
             </Link>
-            <Link to="/excercise" className="btn btn-secondary btn-large">
+            <Link to="/kurral/exercise" className="btn btn-secondary btn-large">
               <span>✨</span>
               Practice Now
             </Link>
@@ -72,6 +73,7 @@ const KurralLanding = () => {
       </div>
 
       <div className="features-section">
+        <IntroSection />
         <div className="container">
           <h2 className="section-title">Explore Thirukkural</h2>
           <div className="features-grid">

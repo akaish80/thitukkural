@@ -1,14 +1,7 @@
-import { useEffect, useState } from 'react';
-import { getRandomList, isEmpty } from '../../../components/utils';
+import { useEffect, useState, useCallback } from 'react';
+import { getRandomList } from '../../../components/utils';
 import './match.adhikaram.to.paal.scss';
-import { DropContainer } from '../../../components/DragAndDrop/DropContainer';
-import { DragContainer } from '../../../components/DragAndDrop/DragContainer';
 import fetchWrapper from '../../../utils/fetchWrapper';
-
-interface MatchAdhikaramToPaalProps {
-  selPractice: any;
-}
-
 
 interface AdikaramItem {
   Index: number;
@@ -37,193 +30,251 @@ interface MatchListOption {
   label: string;
 }
 
-interface MatchPromptItem extends AdikaramItem {
-  displayName: string;
+interface QueueItem {
+  adhikaram: AdikaramItem;
+  correctPaal: PaalItem;
+  options: PaalItem[];
 }
 
+type AnswerState = 'idle' | 'correct' | 'wrong';
+
 const MATCH_LIST_OPTIONS: MatchListOption[] = [
-  { key: 'Tamil', label: 'தமிழ் பட்டியல்' },
-  { key: 'English', label: 'English List' },
-  { key: 'Transliteration', label: 'Transliteration List' },
+  { key: 'Tamil', label: 'தமிழ்' },
+  { key: 'English', label: 'English' },
+  { key: 'Transliteration', label: 'Transliteration' },
 ];
 
-const MatchAdhikaramToPaal = ({ selPractice }: MatchAdhikaramToPaalProps) => {
-  const [listOfAdhikaram, setListOfAdhikaram] = useState<MatchPromptItem[]>([]);
-  const [currentPaalList, setCurrentPaalList] = useState<PaalItem[]>([]);
-  const [allAdikaram, setAllAdikaram] = useState<AdikaramItem[]>([]);
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const MatchAdhikaramToPaal = () => {
   const [allPaalList, setAllPaalList] = useState<PaalItem[]>([]);
+  const [allAdikaram, setAllAdikaram] = useState<AdikaramItem[]>([]);
+  const [queue, setQueue] = useState<QueueItem[]>([]);
+  const [current, setCurrent] = useState(0);
+  const [answerState, setAnswerState] = useState<AnswerState>('idle');
+  const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+  const [score, setScore] = useState(0);
+  const [totalAnswered, setTotalAnswered] = useState(0);
+  const [showResult, setShowResult] = useState(false);
+  const [initialTotal, setInitialTotal] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [activeListType, setActiveListType] = useState<MatchListType>('Tamil');
-  const [correctCount, setCorrectCount] = useState(0);
-  const [attemptCount, setAttemptCount] = useState(0);
-  const [dropMessage, setDropMessage] = useState('');
-  const [dropStatus, setDropStatus] = useState<'correct' | 'wrong' | ''>('');
-  const totalItems = 10;
-  const matchedCount = totalItems - listOfAdhikaram.length;
-  const scorePercent = attemptCount === 0 ? 0 : Math.round((correctCount / attemptCount) * 100);
 
+  const buildQueue = useCallback(
+    (adikarams: AdikaramItem[], paals: PaalItem[]): QueueItem[] => {
+      const randomItems = getRandomList(adikarams, 10) as AdikaramItem[];
+      return randomItems.map((adh) => {
+        const correctPaal = paals.find(
+          (p) => adh.Index >= p.adikaramStart && adh.Index <= p.adikaramEnd,
+        )!;
+        const wrongPaals = shuffle(paals.filter((p) => p.Index !== correctPaal.Index)).slice(0, 2);
+        const options = shuffle([correctPaal, ...wrongPaals]);
+        return { adhikaram: adh, correctPaal, options };
+      });
+    },
+    [],
+  );
 
-  // Fetch and flatten data from thirukkural_complete_nested.json
   useEffect(() => {
+    let isMounted = true;
     async function fetchData() {
-      const data = await fetchWrapper(`${import.meta.env.VITE_API_BASE_URL}/api/getPaalsAndAdikarams`);
-      setAllPaalList(data.paals);
-      setAllAdikaram(data.adikarams);
-      // Build initial practice list
-      buildPracticeList(activeListType, data.adikarams, data.paals);
+      try {
+        const data = await fetchWrapper(
+          `${import.meta.env.VITE_API_BASE_URL}/api/getPaalsAndAdikarams`,
+        );
+        if (isMounted) {
+          setAllPaalList(data.paals);
+          setAllAdikaram(data.adikarams);
+          const q = buildQueue(data.adikarams, data.paals);
+          setQueue(q);
+          setInitialTotal(q.length);
+        }
+      } catch {
+        if (isMounted) setLoadError('Unable to load data. Please refresh and try again.');
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
     }
     fetchData();
-    
-  }, []);
+    return () => {
+      isMounted = false;
+    };
+  }, [buildQueue]);
 
-  // Rebuild practice list when list type changes
-  useEffect(() => {
-    if (allAdikaram.length && allPaalList.length) {
-      buildPracticeList(activeListType, allAdikaram, allPaalList);
+  const handleSelect = useCallback(
+    (paal: PaalItem, idx: number) => {
+      if (answerState !== 'idle') return;
+      setSelectedIdx(idx);
+      setTotalAnswered((p) => p + 1);
+      const q = queue[current];
+      if (paal.Index === q.correctPaal.Index) {
+        setAnswerState('correct');
+        setScore((p) => p + 1);
+      } else {
+        setAnswerState('wrong');
+        // Re-queue with reshuffled options
+        setQueue((prev) => [
+          ...prev,
+          { ...q, options: shuffle(q.options) },
+        ]);
+      }
+    },
+    [answerState, current, queue],
+  );
+
+  const handleContinue = useCallback(() => {
+    if (current + 1 < queue.length) {
+      setCurrent((p) => p + 1);
+    } else {
+      setShowResult(true);
     }
-    // eslint-disable-next-line
-  }, [activeListType]);
+    setAnswerState('idle');
+    setSelectedIdx(null);
+  }, [current, queue.length]);
 
-  const buildPracticeList = (
-    listType: MatchListType,
-    adikaramSource: AdikaramItem[] = allAdikaram,
-    paalSource: PaalItem[] = allPaalList
-  ) => {
-    const randomItems = getRandomList(adikaramSource, totalItems) as AdikaramItem[];
-    const prepared = randomItems.map((item) => ({
-      ...item,
-      displayName: item[listType],
-    }));
-    setListOfAdhikaram(prepared);
-    setCurrentPaalList(paalSource.map((p) => ({ ...p, count: 0 })));
-    setCorrectCount(0);
-    setAttemptCount(0);
-    setDropMessage('');
-    setDropStatus('');
-  };
+  const handleRetry = useCallback(() => {
+    const q = buildQueue(allAdikaram, allPaalList);
+    setQueue(q);
+    setInitialTotal(q.length);
+    setCurrent(0);
+    setScore(0);
+    setTotalAnswered(0);
+    setShowResult(false);
+    setAnswerState('idle');
+    setSelectedIdx(null);
+  }, [allAdikaram, allPaalList, buildQueue]);
 
-  const handleDrop = (item: { name: string }, targetPaal: PaalItem) => {
-    const droppedItem = listOfAdhikaram.find((adikaramItem) => adikaramItem.displayName === item.name);
-    if (!droppedItem) return;
+  const getDisplayName = (item: AdikaramItem | PaalItem) => item[activeListType];
 
-    setAttemptCount((prev) => prev + 1);
+  const progressPercent = initialTotal > 0 ? Math.round((score / initialTotal) * 100) : 0;
 
-    const isCorrectMatch =
-      droppedItem.Index >= targetPaal.adikaramStart && droppedItem.Index <= targetPaal.adikaramEnd;
-
-    if (!isCorrectMatch) {
-      setDropStatus('wrong');
-      setDropMessage('தவறு! வேறு பாலில் முயற்சி செய்யவும்.');
-      return;
-    }
-
-    setDropStatus('correct');
-    setDropMessage('சரியான பொருத்தம்!');
-    setCorrectCount((prev) => prev + 1);
-
-    setCurrentPaalList((prevPaalList) =>
-      prevPaalList.map((paalItem) =>
-        paalItem.Index === targetPaal.Index ? { ...paalItem, count: paalItem.count + 1 } : paalItem,
-      ),
+  if (isLoading) {
+    return (
+      <div className="duo-match">
+        <div className="duo-match__loading">Loading exercise...</div>
+      </div>
     );
-    setListOfAdhikaram((prevList) =>
-      prevList.filter((adikaramItem) => adikaramItem.displayName !== item.name),
+  }
+  if (loadError) {
+    return (
+      <div className="duo-match">
+        <div className="duo-match__loading">{loadError}</div>
+      </div>
     );
-  };
+  }
+  if (queue.length === 0) {
+    return (
+      <div className="duo-match">
+        <div className="duo-match__loading">No data available.</div>
+      </div>
+    );
+  }
+
+  if (showResult) {
+    return (
+      <div className="duo-match">
+        <div className="duo-match__result">
+          <div className="duo-match__result-icon">🎉</div>
+          <h2>பயிற்சி முடிந்தது!</h2>
+          <div className="duo-match__result-score">
+            <span className="big">{score}</span>
+            <span className="sep">/</span>
+            <span className="big">{initialTotal}</span>
+          </div>
+          <p className="duo-match__result-detail">
+            முயற்சிகள்: {totalAnswered} &middot; துல்லியம்:{' '}
+            {totalAnswered > 0 ? Math.round((score / totalAnswered) * 100) : 0}%
+          </p>
+          <button className="duo-match__btn duo-match__btn--primary" onClick={handleRetry}>
+            மீண்டும் விளையாடு
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const q = queue[current];
+  const isRetry = current >= initialTotal;
 
   return (
-    <div className="match-adhikaram-paal-page">
-      <div className="page-head">
-        <h2 className="title">பால் மற்றும் அதிகாரம் பொருத்து</h2>
-        <p className="subtitle">அதிகாரங்களை சரியான பாலுடன் இணைக்கவும்.</p>
+    <div className="duo-match">
+      {/* Progress bar */}
+      <div className="duo-match__progress">
+        <div className="duo-match__progress-bar" style={{ width: `${progressPercent}%` }} />
+      </div>
+      <div className="duo-match__meta">
+        <span>
+          {score}/{initialTotal} சரி
+        </span>
+        {isRetry && <span className="duo-match__retry-badge">மீண்டும்</span>}
       </div>
 
-      <div className="progress-strip">
-        <div className="progress-item">
-          <span className="label">முடிந்தவை</span>
-          <span className="value">{matchedCount}</span>
-        </div>
-        <div className="progress-item">
-          <span className="label">மீதமுள்ளவை</span>
-          <span className="value">{listOfAdhikaram.length}</span>
-        </div>
-        <div className="progress-item">
-          <span className="label">முயற்சிகள்</span>
-          <span className="value">{attemptCount}</span>
-        </div>
-        <div className="progress-item">
-          <span className="label">Score</span>
-          <span className="value">{scorePercent}%</span>
-        </div>
-      </div>
-
-      <div className="list-switcher">
-        {MATCH_LIST_OPTIONS.map((option) => (
+      {/* Language switcher */}
+      <div className="duo-match__switcher">
+        {MATCH_LIST_OPTIONS.map((opt) => (
           <button
-            key={option.key}
+            key={opt.key}
             type="button"
-            className={`switch-btn ${activeListType === option.key ? 'active' : ''}`}
-            onClick={() => setActiveListType(option.key)}
+            className={`duo-match__switch-btn${activeListType === opt.key ? ' active' : ''}`}
+            onClick={() => setActiveListType(opt.key)}
           >
-            {option.label}
+            {opt.label}
           </button>
         ))}
       </div>
 
-      {dropMessage && <div className={`drop-status ${dropStatus}`}>{dropMessage}</div>}
+      {/* Question card */}
+      <div className="duo-match__card">
+        <p className="duo-match__prompt">இந்த அதிகாரம் எந்தப் பாலைச் சேர்ந்தது?</p>
+        <div className="duo-match__adhikaram">{getDisplayName(q.adhikaram)}</div>
 
-      {listOfAdhikaram.length > 0 ? (
-        <div className="tableContainer">
-          <div className="tableHeader">
-            <span>{activeListType === 'Tamil' ? 'அதிகாரம்' : activeListType}</span>
-            <span>பால்</span>
-          </div>
-          {!isEmpty(selPractice) && (
-            <div className="examContainer">
-              <div className="dragDropSection">
-                <h3 className="section-title">பால்கள்</h3>
-                <div className="dragDropContainer">
-                  {currentPaalList.map((item, index) => (
-                    <div className="drop-item" key={index}>
-                      <DropContainer
-                        name={`${item.Tamil} (${item.count})`}
-                        accept={listOfAdhikaram.map((adikaramItem) => adikaramItem.displayName)}
-                        onDrop={(draggedItem) => handleDrop(draggedItem, item)}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="dragDropSection">
-                <h3 className="section-title">அதிகாரங்கள்</h3>
-                <div className="dragDropContainer">
-                  {listOfAdhikaram.map((item, idx) => (
-                    <div className="drag-item" key={idx}>
-                      <DragContainer
-                        name={item.displayName}
-                        type={item.displayName}
-                        isDropped={false}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
+        <ul className="duo-match__options">
+          {q.options.map((paal, idx) => {
+            let cls = 'duo-match__option';
+            if (answerState !== 'idle') {
+              if (paal.Index === q.correctPaal.Index) cls += ' correct';
+              else if (idx === selectedIdx) cls += ' wrong';
+              else cls += ' dimmed';
+            }
+            return (
+              <li key={idx}>
+                <button
+                  className={cls}
+                  onClick={() => handleSelect(paal, idx)}
+                  disabled={answerState !== 'idle'}
+                >
+                  {getDisplayName(paal)}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      {/* Feedback */}
+      {answerState !== 'idle' && (
+        <div className={`duo-match__feedback duo-match__feedback--${answerState}`}>
+          {answerState === 'correct' ? (
+            <p className="duo-match__feedback-text">✅ சரியான பொருத்தம்!</p>
+          ) : (
+            <div>
+              <p className="duo-match__feedback-text">❌ தவறான பொருத்தம்</p>
+              <p className="duo-match__feedback-answer">
+                சரியான பால்: <strong>{getDisplayName(q.correctPaal)}</strong>
+              </p>
             </div>
           )}
-        </div>
-      ) : (
-        <div className="success-message">
-          <span role="img" aria-label="celebrate">
-            🎉
-          </span>{' '}
-          வாழ்த்துகள்! அனைத்தையும் பொருத்திவிட்டீர்கள்! <br />
-          <strong>
-            Score: {correctCount}/{attemptCount} ({scorePercent}%)
-          </strong>
-          <div>
-            <button type="button" className="retry-btn" onClick={() => buildPracticeList(activeListType)}>
-              மீண்டும் விளையாடு
-            </button>
-          </div>
+          <button className="duo-match__btn duo-match__btn--continue" onClick={handleContinue}>
+            தொடரவும் →
+          </button>
         </div>
       )}
     </div>

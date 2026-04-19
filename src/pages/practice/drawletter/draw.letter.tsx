@@ -188,6 +188,7 @@ const DrawLetter = () => {
     setCurrentLetter(letter);
     setStrokeCount(0);
     setFeedback('');
+    setShowLetterPicker(false);
     // The useEffect will handle redrawing the canvas with the new letter
   };
 
@@ -240,6 +241,64 @@ const DrawLetter = () => {
             {showLetterPicker ? 'Hide Letter List' : 'Choose Letter'}
           </button>
         </div>
+
+        {showLetterPicker && (
+          <div className="letter-picker-overlay" onClick={() => setShowLetterPicker(false)}>
+            <div
+              className="letter-picker-modal"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="letter-picker-modal__header">
+                <h4>Select a Tamil Letter to Practice:</h4>
+                <button
+                  type="button"
+                  className="letter-picker-modal__close"
+                  onClick={() => setShowLetterPicker(false)}
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="letter-categories">
+              <div className="vowels-section">
+                <h5>உயிர் எழுத்துகள் (Vowels)</h5>
+                <div className="letter-grid">
+                  {tamilLetters
+                    .filter((item) => item.type === 'Vowel')
+                    .map((item) => (
+                      <button
+                        key={item.letter}
+                        className={`letter-button ${currentLetter === item.letter ? 'selected' : ''}`}
+                        onClick={() => selectLetter(item.letter)}
+                        title={`${item.name} - ${item.sound}`}
+                      >
+                        {item.letter}
+                      </button>
+                    ))}
+                </div>
+              </div>
+
+              <div className="consonants-section">
+                <h5>மெய் எழுத்துகள் (Consonants)</h5>
+                <div className="letter-grid">
+                  {tamilLetters
+                    .filter((item) => item.type === 'Consonant')
+                    .map((item) => (
+                      <button
+                        key={item.letter}
+                        className={`letter-button ${currentLetter === item.letter ? 'selected' : ''}`}
+                        onClick={() => selectLetter(item.letter)}
+                        title={`${item.name} - ${item.sound}`}
+                      >
+                        {item.letter}
+                      </button>
+                    ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        )}
 
         <div className="current-letter-display">
           <h4>Practice Letter:</h4>
@@ -297,51 +356,6 @@ const DrawLetter = () => {
           </div>
         </div>
 
-        {showLetterPicker && (
-          <div className="letter-selection-section">
-            <div className="selection-header-row">
-              <h4>Select a Tamil Letter to Practice:</h4>
-            </div>
-
-            <div className="letter-categories">
-              <div className="vowels-section">
-                <h5>உயிர் எழுத்துகள் (Vowels)</h5>
-                <div className="letter-grid">
-                  {tamilLetters
-                    .filter((item) => item.type === 'Vowel')
-                    .map((item) => (
-                      <button
-                        key={item.letter}
-                        className={`letter-button ${currentLetter === item.letter ? 'selected' : ''}`}
-                        onClick={() => selectLetter(item.letter)}
-                        title={`${item.name} - ${item.sound}`}
-                      >
-                        {item.letter}
-                      </button>
-                    ))}
-                </div>
-              </div>
-
-              <div className="consonants-section">
-                <h5>மெய் எழுத்துகள் (Consonants)</h5>
-                <div className="letter-grid">
-                  {tamilLetters
-                    .filter((item) => item.type === 'Consonant')
-                    .map((item) => (
-                      <button
-                        key={item.letter}
-                        className={`letter-button ${currentLetter === item.letter ? 'selected' : ''}`}
-                        onClick={() => selectLetter(item.letter)}
-                        title={`${item.name} - ${item.sound}`}
-                      >
-                        {item.letter}
-                      </button>
-                    ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 
         <div className="instructions-section">
           <h4>Drawing Instructions:</h4>

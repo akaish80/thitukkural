@@ -225,6 +225,72 @@
         .kb-tamil { color: var(--color-error, #dc3545); }
       }
     }
+
+    // ── QWERTY layout (Branah parser simulation) ─────────────────────────
+    &.qwerty-layout {
+      .kb-qwerty-row {
+        display: flex;
+        justify-content: center;
+        gap: 3px;
+        margin-bottom: 3px;
+
+        // Stagger rows like a real keyboard
+        &.row-q  { padding-left: 24px; }
+        &.row-a  { padding-left: 42px; }
+        &.row-z  { padding-left: 0; }
+      }
+
+      .kb-key {
+        width: 44px;
+        height: 44px;
+        font-size: 0.85rem;
+        padding: 2px 0;
+        gap: 0;
+
+        .kb-roman {
+          font-size: 0.72rem;
+          font-style: normal;
+          font-weight: 600;
+          color: var(--text-tertiary);
+        }
+
+        .kb-tamil {
+          font-size: 0.9rem;
+          line-height: 1.1;
+        }
+
+        &.no-tamil {
+          opacity: 0.6;
+        }
+
+        &.fn-key {
+          width: auto;
+          min-width: 48px;
+          padding: 0 8px;
+          font-size: 0.7rem;
+          background: var(--bg-secondary);
+          opacity: 0.8;
+
+          &:disabled {
+            cursor: default;
+            opacity: 0.45;
+          }
+        }
+
+        &.shift-toggle {
+          cursor: pointer;
+          opacity: 1;
+          &:hover {
+            border-color: var(--color-primary);
+          }
+        }
+
+        &.wide-key {
+          width: 260px;
+          height: 34px;
+        }
+      }
+    }
   }
 
   // ── Stats ─────────────────────────────────────────────────────────────────

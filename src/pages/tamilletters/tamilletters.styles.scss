@@ -1,0 +1,322 @@
+.tamil-letters-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  color: var(--text-primary);
+}
+
+// ── Hero ──
+.tamil-letters-hero {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent, #ce82ff));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0 0 0.5rem;
+
+    @media (max-width: 768px) {
+      font-size: 1.6rem;
+    }
+  }
+
+  p {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    margin: 0;
+
+    @media (max-width: 768px) {
+      font-size: 0.88rem;
+    }
+  }
+}
+
+// ── Tabs ──
+.tamil-letters-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+
+  .tab-btn {
+    padding: 0.6rem 1.4rem;
+    border: 2px solid var(--border-primary, #e0e0e0);
+    border-radius: 99px;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &.active {
+      border-color: var(--color-primary, #1cb0f6);
+      background: var(--color-primary, #1cb0f6);
+      color: #fff;
+    }
+
+    &:hover:not(.active) {
+      border-color: var(--color-primary, #1cb0f6);
+      color: var(--text-primary);
+    }
+
+    @media (max-width: 768px) {
+      font-size: 0.82rem;
+      padding: 0.5rem 1rem;
+    }
+  }
+}
+
+// ── Letter groups (overview) ──
+.letter-group {
+  margin-bottom: 2rem;
+
+  &__header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--group-color, var(--text-primary));
+      margin: 0;
+
+      @media (max-width: 768px) {
+        font-size: 1.1rem;
+      }
+    }
+  }
+
+  &__badge {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-tertiary, #f0f0f0);
+    padding: 0.2rem 0.7rem;
+    border-radius: 99px;
+  }
+
+  &__grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+}
+
+.letter-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  border-radius: 14px;
+  border: 2px solid var(--border-primary, #e0e0e0);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+  cursor: default;
+
+  &:hover {
+    border-color: var(--group-color, var(--color-primary));
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--group-color, var(--color-primary)) 20%, transparent);
+  }
+
+  &--special {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+    border-width: 3px;
+    border-style: dashed;
+  }
+
+  @media (max-width: 768px) {
+    width: 48px;
+    height: 48px;
+    font-size: 1.2rem;
+    border-radius: 10px;
+
+    &--special {
+      width: 60px;
+      height: 60px;
+      font-size: 1.5rem;
+    }
+  }
+}
+
+// ── Summary ──
+.tamil-letters-summary {
+  margin-top: 2.5rem;
+
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 1rem;
+    text-align: center;
+
+    @media (max-width: 768px) {
+      font-size: 1.1rem;
+    }
+  }
+}
+
+.summary-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.summary-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-radius: 16px;
+  border: 2px solid var(--border-primary, #e0e0e0);
+  background: var(--bg-secondary);
+  min-width: 120px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: var(--card-color, var(--color-primary));
+    transform: translateY(-3px);
+  }
+
+  &__number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--card-color, var(--text-primary));
+    line-height: 1.1;
+  }
+
+  &__label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-top: 0.3rem;
+    text-align: center;
+  }
+
+  &--total {
+    border-width: 3px;
+    border-style: dashed;
+  }
+
+  @media (max-width: 768px) {
+    min-width: 90px;
+    padding: 0.9rem 1rem;
+
+    &__number {
+      font-size: 1.5rem;
+    }
+
+    &__label {
+      font-size: 0.72rem;
+    }
+  }
+}
+
+// ── Uyirmey table ──
+.tamil-letters-uyirmey {
+  .uyirmey-info {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin: 0 0 1.5rem;
+    line-height: 1.6;
+
+    @media (max-width: 768px) {
+      font-size: 0.82rem;
+    }
+  }
+}
+
+.uyirmey-table-wrapper {
+  overflow-x: auto;
+  border-radius: 16px;
+  border: 1px solid var(--border-primary, #e0e0e0);
+  background: var(--bg-secondary);
+}
+
+.uyirmey-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  white-space: nowrap;
+
+  th,
+  td {
+    padding: 0.55rem 0.65rem;
+    text-align: center;
+    border: 1px solid var(--border-primary, #e0e0e0);
+    min-width: 44px;
+  }
+
+  thead th {
+    background: var(--bg-tertiary, #f5f5f5);
+    font-weight: 700;
+    color: #58cc02;
+    font-size: 1.1rem;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+
+  .row-header {
+    font-weight: 700;
+    color: #ce82ff;
+    background: var(--bg-tertiary, #f5f5f5);
+    font-size: 1.1rem;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+  }
+
+  tbody tr {
+    cursor: pointer;
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: rgba(28, 176, 246, 0.06);
+    }
+
+    &.highlighted {
+      background: rgba(28, 176, 246, 0.12);
+
+      td {
+        font-weight: 600;
+        color: var(--color-primary, #1cb0f6);
+      }
+
+      .row-header {
+        color: var(--color-primary, #1cb0f6);
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.82rem;
+
+    th,
+    td {
+      padding: 0.4rem;
+      min-width: 34px;
+    }
+
+    thead th,
+    .row-header {
+      font-size: 0.9rem;
+    }
+  }
+}

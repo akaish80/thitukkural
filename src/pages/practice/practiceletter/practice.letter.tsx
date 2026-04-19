@@ -1,14 +1,11 @@
-﻿import { useRef, useState } from 'react';
+﻿import { useState } from 'react';
 import { Container } from '../../../Common/common.styles';
 import './practice.letter.scss';
-import TextAreaComp from '../../../components/TextAreaComp';
-// import TextAreaComp from '../../`components/TextAreaComp';
 
 // ---------------------------------------------------------------------------
 // Data — structure mirrors Lexilogos Tamil keyboard
 // ---------------------------------------------------------------------------
 type Key = { roman: string; tamil: string };
-
 
 const CONSONANTS: Key[] = [
   { roman: 'ka', tamil: 'க' }, { roman: 'ṅa', tamil: 'ங' },
@@ -22,15 +19,6 @@ const CONSONANTS: Key[] = [
   { roman: 'ṟa', tamil: 'ற' }, { roman: 'ṉa', tamil: 'ன' },
 ];
 
-const GRANTHA: Key[] = [
-  { roman: 'ja', tamil: 'ஜ' },
-  { roman: 'śa', tamil: 'ஶ' },
-  { roman: 'Ṣa', tamil: 'ஷ' },
-  { roman: 'sa', tamil: 'ஸ' },
-  { roman: 'ha', tamil: 'ஹ' },
-  { roman: 'kṢa', tamil: 'க்ஷ' },
-];
-
 const VOWELS: Key[] = [
   { roman: 'a', tamil: 'அ' }, { roman: 'ā', tamil: 'ஆ' },
   { roman: 'i', tamil: 'இ' }, { roman: 'ī', tamil: 'ஈ' },
@@ -40,24 +28,15 @@ const VOWELS: Key[] = [
   { roman: 'ō', tamil: 'ஓ' }, { roman: 'au', tamil: 'ஔ' },
 ];
 
-const SPECIAL: Key[] = [
-  { roman: '்', tamil: '்' },   // virama / pulli
-  { roman: 'ḥ', tamil: 'ஃ' },   // āytam
-];
-
 // ---------------------------------------------------------------------------
 // Practice mode uses standalone base letters only
 // ---------------------------------------------------------------------------
 const PRACTICE_LETTERS: Key[] = [...CONSONANTS, ...VOWELS];
 
-type Mode = 'practice' | 'free';
-
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 const PracticeLetter = () => {
-  const [mode, setMode] = useState<Mode>('practice');
-
   // — Practice mode state —
   const [target, setTarget] = useState<Key>(PRACTICE_LETTERS[0]);
   const [lastPressed, setLastPressed] = useState<string | null>(null);
@@ -65,9 +44,7 @@ const PracticeLetter = () => {
   const [attempts, setAttempts] = useState(0);
   const [score, setScore] = useState(0);
 
-  // — Free-type mode state —
-  const [freeText, setFreeText] = useState('');
-  const freeRef = useRef<HTMLTextAreaElement>(null);
+
 
   // ---------------------------------------------------------------------------
   // Practice helpers
@@ -127,34 +104,11 @@ const PracticeLetter = () => {
     return `${base} ${tamil === target.tamil ? 'key-correct' : 'key-incorrect'}`;
   };
 
-  // ---------------------------------------------------------------------------
-  // Free-type helpers
-  // ---------------------------------------------------------------------------
-  const handleFreeKey = (key: Key) => {
-    setFreeText((prev) => prev + key.tamil);
-    freeRef.current?.focus();
-  };
 
-  const handleBackspace = () => setFreeText((prev) => [...prev].slice(0, -1).join(''));
-  const handleClear = () => setFreeText('');
-  const handleCopy = () => navigator.clipboard.writeText(freeText);
 
   // ---------------------------------------------------------------------------
-  // Shared keyboard renderer
+  // Keyboard renderer
   // ---------------------------------------------------------------------------
-  const renderKey = (key: Key, onClick: (k: Key) => void, extraClass = '') => (
-    <button
-      key={key.tamil}
-      type="button"
-      className={`kb-key ${extraClass}`}
-      onClick={() => onClick(key)}
-      title={`${key.roman}  ${key.tamil}`}
-    >
-      <span className="kb-roman">{key.roman}</span>
-      <span className="kb-tamil">{key.tamil}</span>
-    </button>
-  );
-
   // In practice mode we re-use keyClass for highlighting
   const renderPracticeKey = (key: Key) => (
     <button
@@ -181,30 +135,12 @@ const PracticeLetter = () => {
       <div className="practice-letter-container">
         <div className="header-section">
           <h2>தமிழ் எழுத்து பயிற்சி — Tamil Letter Practice</h2>
-
-          {/* Mode switcher */}
-          <div className="mode-switcher">
-            <button
-              type="button"
-              className={`mode-btn ${mode === 'practice' ? 'active' : ''}`}
-              onClick={() => setMode('practice')}
-            >
-              Practice Mode
-            </button>
-            <button
-              type="button"
-              className={`mode-btn ${mode === 'free' ? 'active' : ''}`}
-              onClick={() => setMode('free')}
-            >
-              Free-Type Mode
-            </button>
-          </div>
         </div>
 
         {/* ------------------------------------------------------------------ */}
         {/* PRACTICE MODE                                                       */}
         {/* ------------------------------------------------------------------ */}
-        {mode === 'practice' && (
+        {
           <div className="practice-section">
             {/* Target letter card */}
             <div className="letter-display">
@@ -264,66 +200,13 @@ const PracticeLetter = () => {
               <button onClick={randomTarget} className="action-btn" type="button">Random</button>
             </div>
           </div>
-        )}
-
-        {/* ------------------------------------------------------------------ */}
-        {/* FREE-TYPE MODE                                                      */}
-        {/* ------------------------------------------------------------------ */}
-        {mode === 'free' && (
-          <div className="practice-section">
-            {/* Output area */}
-            <div className="free-output-wrapper">
-              <TextAreaComp freeRef={freeRef} freeText={freeText} setFreeText={setFreeText} />
-              <div className="free-actions">
-                <button type="button" className="action-btn" onClick={handleCopy}>Copy</button>
-                <button type="button" className="action-btn secondary" onClick={handleBackspace}>⌫ Backspace</button>
-                <button type="button" className="action-btn secondary" onClick={handleClear}>Clear</button>
-              </div>
-            </div>
-
-            {/* Full keyboard */}
-            <div className="virtual-keyboard">
-              <div className="keyboard-group">
-                <span className="kb-group-label">Consonants (மெய் எழுத்து)</span>
-                <div className="kb-row">
-                  {CONSONANTS.map((k) => renderKey(k, handleFreeKey))}
-                </div>
-              </div>
-
-              <div className="keyboard-group grantha">
-                <span className="kb-group-label">Grantha</span>
-                <div className="kb-row">
-                  {GRANTHA.map((k) => renderKey(k, handleFreeKey, 'grantha-key'))}
-                </div>
-              </div>
-
-              <div className="keyboard-group">
-                <span className="kb-group-label">Vowels (உயிர் எழுத்து)</span>
-                <div className="kb-row">
-                  {VOWELS.map((k) => renderKey(k, handleFreeKey))}
-                </div>
-              </div>
-
-              <div className="keyboard-group">
-                <span className="kb-group-label">Special</span>
-                <div className="kb-row">
-                  {SPECIAL.map((k) => renderKey(k, handleFreeKey, 'special-key'))}
-                </div>
-              </div>
-            </div>
-
-            <p className="free-hint">
-              Tip: Click <strong>்</strong> (virama / pulli) after a consonant to drop the inherent vowel 'a'.
-            </p>
-          </div>
-        )}
+        }
 
         {/* Tips */}
         <div className="tips-section">
           <h4>Tips</h4>
           <ul>
-            <li><strong>Practice mode:</strong> A target letter is shown — find and click it on the keyboard.</li>
-            <li><strong>Free-type mode:</strong> Click any key to build words; edit freely in the text area.</li>
+            <li>A target letter is shown — find and click it on the keyboard.</li>
             <li>Hover a key to see its romanisation.</li>
             <li>Use <em>Next</em> or <em>Random</em> to switch target letters any time.</li>
           </ul>

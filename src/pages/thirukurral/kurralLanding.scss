@@ -172,9 +172,14 @@
   }
 
   .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+
+    .feature-card {
+      flex: 1 1 280px;
+    }
   }
 }
 

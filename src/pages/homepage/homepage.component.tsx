@@ -21,7 +21,7 @@ const Homepage = () => {
       icon: '🎯',
       title: 'Interactive Exercises',
       description: 'Test your Tamil knowledge with quizzes, matching games, and fill-in-the-blank challenges.',
-      link: '/excercise',
+      link: '/kurral/exercise',
       color: 'purple',
     },
     {
