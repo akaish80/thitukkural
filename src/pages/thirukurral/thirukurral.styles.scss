@@ -1,5 +1,5 @@
 .thirukurral-page {
-  font-family: 'Noto Sans Tamil', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--font-family-tamil);
   background: var(--bg-primary);
   color: var(--text-primary);
   min-height: calc(100vh - 200px);

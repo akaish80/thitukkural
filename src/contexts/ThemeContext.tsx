@@ -176,14 +176,18 @@ const getThemeVariables = (theme: string, colorScheme: string) => {
       '--border-primary': '#404040',
       '--border-secondary': '#555555',
       '--shadow-light': 'rgba(255, 255, 255, 0.1)',
+      '--shadow-medium': 'rgba(0, 0, 0, 0.25)',
       '--shadow-dark': 'rgba(0, 0, 0, 0.3)',
       '--color-primary': colors.primary,
       '--color-primary-dark': colors.primaryDark,
       '--color-primary-light': colors.primaryLight,
+      '--color-primary-alpha': `${colors.primary}26`,
       '--color-accent': colors.accent,
+      '--color-accent-alpha': `${colors.accent}26`,
       '--canvas-bg': '#2d2d2d',
       '--canvas-border': '#555555',
       '--button-hover-bg': '#404040',
+      '--focus-ring': `0 0 0 3px ${colors.primary}66`,
     };
   } else {
     return {
@@ -198,14 +202,18 @@ const getThemeVariables = (theme: string, colorScheme: string) => {
       '--border-primary': '#dee2e6',
       '--border-secondary': '#ced4da',
       '--shadow-light': 'rgba(0, 0, 0, 0.1)',
+      '--shadow-medium': 'rgba(0, 0, 0, 0.12)',
       '--shadow-dark': 'rgba(0, 0, 0, 0.15)',
       '--color-primary': colors.primary,
       '--color-primary-dark': colors.primaryDark,
       '--color-primary-light': colors.primaryLight,
+      '--color-primary-alpha': `${colors.primary}26`,
       '--color-accent': colors.accent,
+      '--color-accent-alpha': `${colors.accent}26`,
       '--canvas-bg': '#ffffff',
       '--canvas-border': '#dee2e6',
       '--button-hover-bg': '#f8f9fa',
+      '--focus-ring': `0 0 0 3px ${colors.primary}66`,
     };
   }
 };

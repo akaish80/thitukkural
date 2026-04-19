@@ -112,18 +112,48 @@
 
 .letter-tile {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 60px;
-  height: 60px;
-  font-size: 1.5rem;
+  width: 100px;
+  min-height: 100px;
+  padding: 0.5rem 0.25rem;
   font-weight: 700;
   border-radius: 14px;
   border: 2px solid var(--border-primary, #e0e0e0);
   background: var(--bg-secondary);
   color: var(--text-primary);
   transition: all 0.2s ease;
-  cursor: default;
+  cursor: pointer;
+  gap: 0.25rem;
+
+  &__char {
+    font-size: 1.6rem;
+    line-height: 1.2;
+    font-family: var(--font-family-tamil, inherit);
+  }
+
+  &__meaning {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+  }
+
+  &__word {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    font-family: var(--font-family-tamil, inherit);
+    line-height: 1.2;
+  }
+
+  &__english {
+    font-size: 0.62rem;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    line-height: 1.2;
+  }
 
   &:hover {
     border-color: var(--group-color, var(--color-primary));
@@ -132,23 +162,41 @@
   }
 
   &--special {
-    width: 80px;
-    height: 80px;
-    font-size: 2rem;
+    width: 110px;
+    min-height: 110px;
     border-width: 3px;
     border-style: dashed;
+
+    .letter-tile__char {
+      font-size: 2rem;
+    }
   }
 
   @media (max-width: 768px) {
-    width: 48px;
-    height: 48px;
-    font-size: 1.2rem;
+    width: 80px;
+    min-height: 80px;
     border-radius: 10px;
+    padding: 0.35rem 0.2rem;
+
+    &__char {
+      font-size: 1.3rem;
+    }
+
+    &__word {
+      font-size: 0.65rem;
+    }
+
+    &__english {
+      font-size: 0.55rem;
+    }
 
     &--special {
-      width: 60px;
-      height: 60px;
-      font-size: 1.5rem;
+      width: 90px;
+      min-height: 90px;
+
+      .letter-tile__char {
+        font-size: 1.6rem;
+      }
     }
   }
 }
@@ -319,4 +367,257 @@
       font-size: 0.9rem;
     }
   }
+}
+
+.uyirmey-cell {
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: var(--color-primary-alpha, rgba(28, 176, 246, 0.12)) !important;
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  &:active {
+    transform: scale(0.92);
+  }
+}
+
+// ── Letter detail modal ──
+.letter-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1rem;
+  animation: modalOverlayIn 0.2s ease;
+}
+
+@keyframes modalOverlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.letter-modal {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 20px;
+  box-shadow: 0 24px 64px var(--shadow-dark, rgba(0,0,0,0.2));
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalSlideIn 0.25s ease;
+
+  @media (max-width: 480px) {
+    max-width: 100%;
+    border-radius: 16px;
+  }
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.letter-modal__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, transform 0.15s ease;
+  z-index: 1;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(1.1);
+  }
+}
+
+.letter-modal__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem 1.5rem 1.5rem;
+  background: linear-gradient(135deg, var(--type-color, var(--color-primary)), color-mix(in srgb, var(--type-color, var(--color-primary)) 70%, #000));
+  border-radius: 20px 20px 0 0;
+  color: #fff;
+  text-align: center;
+
+  @media (max-width: 480px) {
+    padding: 1.5rem 1rem 1rem;
+    border-radius: 16px 16px 0 0;
+  }
+}
+
+.letter-modal__letter {
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1;
+  font-family: var(--font-family-tamil, inherit);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+  @media (max-width: 480px) {
+    font-size: 3rem;
+  }
+}
+
+.letter-modal__speak {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 1.3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: #fff;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.letter-modal__romanization {
+  font-size: 1.3rem;
+  font-weight: 600;
+  opacity: 0.9;
+  font-style: italic;
+}
+
+.letter-modal__type-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.25rem 0.75rem;
+  border-radius: 99px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.letter-modal__body {
+  padding: 1.25rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+  }
+}
+
+.letter-modal__section {
+  h4 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0 0 0.4rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+}
+
+.letter-modal__word-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.letter-modal__tamil-word {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  font-family: var(--font-family-tamil, inherit);
+}
+
+.letter-modal__speak-sm {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background: var(--color-primary);
+    color: #fff;
+    border-color: var(--color-primary);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+.letter-modal__word-meaning {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.letter-modal__sentence-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.letter-modal__tamil-sentence {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  font-family: var(--font-family-tamil, inherit);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.letter-modal__translation {
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+  margin-top: 0.25rem;
 }

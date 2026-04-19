@@ -14,7 +14,7 @@ const Homepage = () => {
       icon: '✍️',
       title: 'Practice Writing',
       description: 'Learn to write Tamil letters with interactive drawing and tracing exercises.',
-      link: '/practice',
+      link: '/free-type',
       color: 'green',
     },
     {
@@ -50,7 +50,7 @@ const Homepage = () => {
               <span>📖</span>
               Thirukkural
             </Link>
-            <Link to="/practice" className="btn btn-secondary btn-large">
+            <Link to="/free-type" className="btn btn-secondary btn-large">
               <span>✍️</span>
               Practice Writing
             </Link>

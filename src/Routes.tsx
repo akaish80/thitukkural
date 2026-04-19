@@ -21,14 +21,20 @@ const ScrollToTop = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [pathname]);
 
   return null;
 };
 
+const LoadingSkeleton = () => (
+  <div className="page-loading">
+    <div className="loading-spinner" />
+  </div>
+);
+
 const AppRoutes = () => (
-  <Suspense fallback={<div>Loading...</div>}>
+  <Suspense fallback={<LoadingSkeleton />}>
     <ScrollToTop />
     <Routes> 
       <Route path="/" element={<HomePage />} />

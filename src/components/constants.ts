@@ -11,7 +11,7 @@ const nav = [
     children: [
       { text: 'Kurral', link: '/kurral', isClicked: false },
       { text: 'Explore Kurral', link: '/kurral/explore', isClicked: false },
-      { text: 'Excercise Kurral', link: '/kurral/exercise', isClicked: false },
+      { text: 'Exercise Kurral', link: '/kurral/exercise', isClicked: false },
     ],
   },
   {

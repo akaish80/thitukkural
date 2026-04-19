@@ -12,11 +12,14 @@
   --border-primary: #dee2e6;
   --border-secondary: #ced4da;
   --shadow-light: rgba(0, 0, 0, 0.1);
+  --shadow-medium: rgba(0, 0, 0, 0.12);
   --shadow-dark: rgba(0, 0, 0, 0.15);
   --color-primary: #3498db;
   --color-primary-dark: #2980b9;
   --color-primary-light: #5dade2;
+  --color-primary-alpha: rgba(52, 152, 219, 0.15);
   --color-accent: #e74c3c;
+  --color-accent-alpha: rgba(231, 76, 60, 0.15);
   --canvas-bg: #ffffff;
   --canvas-border: #dee2e6;
   --button-hover-bg: #f8f9fa;
@@ -41,6 +44,8 @@
   --spacing-2xl: 48px;
 
   // Typography
+  --font-family: 'Inter', 'Noto Sans Tamil', 'Segoe UI', 'Roboto', sans-serif;
+  --font-family-tamil: 'Noto Sans Tamil', 'Inter', sans-serif;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
@@ -48,4 +53,52 @@
   --font-size-xl: 1.25rem;
   --font-size-2xl: 1.5rem;
   --font-size-3xl: 1.875rem;
+
+  // Focus ring
+  --focus-ring: 0 0 0 3px rgba(52, 152, 219, 0.4);
+  --focus-ring-offset: 2px;
+
+  // Scrollbar
+  scroll-behavior: smooth;
+}
+
+// Global focus-visible styles
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-sm);
+}
+
+// Skip navigation link
+.skip-nav {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-primary);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  text-decoration: none;
+  z-index: 10000;
+  transition: top 0.2s ease;
+
+  &:focus {
+    top: 0;
+    outline: none;
+  }
+}
+
+// Prefers-reduced-motion: disable all animations/transitions
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

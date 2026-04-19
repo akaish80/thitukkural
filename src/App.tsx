@@ -23,6 +23,7 @@ function App() {
   return (
     <ThemeProvider>
       <div className="App">
+        <a className="skip-nav" href="#content">Skip to content</a>
         <header className="App-header">
           <Header />
         </header>

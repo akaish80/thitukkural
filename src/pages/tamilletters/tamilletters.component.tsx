@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import './tamilletters.styles.scss';
 
 interface LetterGroup {
@@ -7,6 +7,132 @@ interface LetterGroup {
   letters: string[];
   color: string;
 }
+
+interface LetterDetail {
+  word: string;
+  meaning: string;
+  type: 'vowel' | 'consonant' | 'special';
+  typeLabel: string;
+  typeLabelEn: string;
+  romanization: string;
+  pronunciation: string;
+  exampleSentence: string;
+  exampleTranslation: string;
+}
+
+// Full explanations for each Tamil letter
+const letterDetails: Record<string, LetterDetail> = {
+  // உயிர் எழுத்துகள் (Vowels)
+  'அ': { word: 'அம்மா', meaning: 'Mother', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Short Vowel', romanization: 'a', pronunciation: 'Like "u" in "but"', exampleSentence: 'அம்மா வீட்டில் இருக்கிறாள்', exampleTranslation: 'Mother is at home' },
+  'ஆ': { word: 'ஆடு', meaning: 'Goat', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Long Vowel', romanization: 'ā', pronunciation: 'Like "a" in "father"', exampleSentence: 'ஆடு புல் தின்கிறது', exampleTranslation: 'The goat eats grass' },
+  'இ': { word: 'இலை', meaning: 'Leaf', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Short Vowel', romanization: 'i', pronunciation: 'Like "i" in "sit"', exampleSentence: 'இலை மரத்தில் உள்ளது', exampleTranslation: 'The leaf is on the tree' },
+  'ஈ': { word: 'ஈ', meaning: 'Fly', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Long Vowel', romanization: 'ī', pronunciation: 'Like "ee" in "see"', exampleSentence: 'ஈ பறக்கிறது', exampleTranslation: 'The fly is flying' },
+  'உ': { word: 'உடல்', meaning: 'Body', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Short Vowel', romanization: 'u', pronunciation: 'Like "u" in "put"', exampleSentence: 'உடல் ஆரோக்கியம் முக்கியம்', exampleTranslation: 'Body health is important' },
+  'ஊ': { word: 'ஊஞ்சல்', meaning: 'Swing', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Long Vowel', romanization: 'ū', pronunciation: 'Like "oo" in "moon"', exampleSentence: 'ஊஞ்சல் ஆடு', exampleTranslation: 'Play on the swing' },
+  'எ': { word: 'எலி', meaning: 'Rat', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Short Vowel', romanization: 'e', pronunciation: 'Like "e" in "pet"', exampleSentence: 'எலி ஓடுகிறது', exampleTranslation: 'The rat is running' },
+  'ஏ': { word: 'ஏணி', meaning: 'Ladder', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Long Vowel', romanization: 'ē', pronunciation: 'Like "a" in "gate"', exampleSentence: 'ஏணி மேல் ஏறு', exampleTranslation: 'Climb up the ladder' },
+  'ஐ': { word: 'ஐந்து', meaning: 'Five', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Diphthong', romanization: 'ai', pronunciation: 'Like "ai" in "aisle"', exampleSentence: 'ஐந்து விரல்கள் உள்ளன', exampleTranslation: 'There are five fingers' },
+  'ஒ': { word: 'ஒட்டகம்', meaning: 'Camel', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Short Vowel', romanization: 'o', pronunciation: 'Like "o" in "go" (short)', exampleSentence: 'ஒட்டகம் பாலையில் நடக்கிறது', exampleTranslation: 'The camel walks in the desert' },
+  'ஓ': { word: 'ஓடம்', meaning: 'Boat', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Long Vowel', romanization: 'ō', pronunciation: 'Like "o" in "go" (long)', exampleSentence: 'ஓடம் ஆற்றில் செல்கிறது', exampleTranslation: 'The boat goes in the river' },
+  'ஔ': { word: 'ஔவை', meaning: 'Avvai (poetess)', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Diphthong', romanization: 'au', pronunciation: 'Like "ow" in "cow"', exampleSentence: 'ஔவையார் பெரும் கவிஞர்', exampleTranslation: 'Avvaiyar is a great poet' },
+  // ஆய்த எழுத்து
+  'ஃ': { word: 'அஃது', meaning: 'That', type: 'special', typeLabel: 'ஆய்தம்', typeLabelEn: 'Aytham (Special)', romanization: 'ḵ', pronunciation: 'A brief pause or glottal stop', exampleSentence: 'அஃது நல்லது', exampleTranslation: 'That is good' },
+  // மெய் எழுத்துகள் (Consonants)
+  'க்': { word: 'கல்', meaning: 'Stone', type: 'consonant', typeLabel: 'வல்லினம்', typeLabelEn: 'Hard Consonant', romanization: 'k', pronunciation: 'Like "k" in "kite"', exampleSentence: 'கல்வி கரை இல', exampleTranslation: 'Education has no shore (is endless)' },
+  'ங்': { word: 'மாங்காய்', meaning: 'Mango (raw)', type: 'consonant', typeLabel: 'மெல்லினம்', typeLabelEn: 'Soft Consonant', romanization: 'ṅ', pronunciation: 'Like "ng" in "sing"', exampleSentence: 'மாங்காய் புளிக்கும்', exampleTranslation: 'Raw mango is sour' },
+  'ச்': { word: 'சட்டி', meaning: 'Pot', type: 'consonant', typeLabel: 'வல்லினம்', typeLabelEn: 'Hard Consonant', romanization: 'c', pronunciation: 'Like "ch" in "chat"', exampleSentence: 'சட்டியில் சோறு இருக்கிறது', exampleTranslation: 'There is rice in the pot' },
+  'ஞ்': { word: 'ஞாயிறு', meaning: 'Sun / Sunday', type: 'consonant', typeLabel: 'மெல்லினம்', typeLabelEn: 'Soft Consonant', romanization: 'ñ', pronunciation: 'Like "ny" in "canyon"', exampleSentence: 'ஞாயிறு விடுமுறை நாள்', exampleTranslation: 'Sunday is a holiday' },
+  'ட்': { word: 'வட்டம்', meaning: 'Circle', type: 'consonant', typeLabel: 'வல்லினம்', typeLabelEn: 'Hard Consonant', romanization: 'ṭ', pronunciation: 'Like "t" in "top" (retroflex)', exampleSentence: 'வட்டம் வரையவும்', exampleTranslation: 'Draw a circle' },
+  'ண்': { word: 'மண்', meaning: 'Soil', type: 'consonant', typeLabel: 'மெல்லினம்', typeLabelEn: 'Soft Consonant', romanization: 'ṇ', pronunciation: 'Like "n" in "under" (retroflex)', exampleSentence: 'மண் வளமானது', exampleTranslation: 'The soil is fertile' },
+  'த்': { word: 'தமிழ்', meaning: 'Tamil', type: 'consonant', typeLabel: 'வல்லினம்', typeLabelEn: 'Hard Consonant', romanization: 't', pronunciation: 'Like "th" in "the" (dental)', exampleSentence: 'தமிழ் இனிய மொழி', exampleTranslation: 'Tamil is a sweet language' },
+  'ந்': { word: 'நண்டு', meaning: 'Crab', type: 'consonant', typeLabel: 'மெல்லினம்', typeLabelEn: 'Soft Consonant', romanization: 'n', pronunciation: 'Like "n" in "name" (dental)', exampleSentence: 'நண்டு கடலில் வாழும்', exampleTranslation: 'Crabs live in the sea' },
+  'ப்': { word: 'பழம்', meaning: 'Fruit', type: 'consonant', typeLabel: 'வல்லினம்', typeLabelEn: 'Hard Consonant', romanization: 'p', pronunciation: 'Like "p" in "put"', exampleSentence: 'பழம் சாப்பிடு', exampleTranslation: 'Eat the fruit' },
+  'ம்': { word: 'மரம்', meaning: 'Tree', type: 'consonant', typeLabel: 'மெல்லினம்', typeLabelEn: 'Soft Consonant', romanization: 'm', pronunciation: 'Like "m" in "moon"', exampleSentence: 'மரம் நிழல் தருகிறது', exampleTranslation: 'The tree gives shade' },
+  'ய்': { word: 'யானை', meaning: 'Elephant', type: 'consonant', typeLabel: 'இடையினம்', typeLabelEn: 'Medium Consonant', romanization: 'y', pronunciation: 'Like "y" in "yes"', exampleSentence: 'யானை பெரிய விலங்கு', exampleTranslation: 'Elephant is a big animal' },
+  'ர்': { word: 'ரோஜா', meaning: 'Rose', type: 'consonant', typeLabel: 'இடையினம்', typeLabelEn: 'Medium Consonant', romanization: 'r', pronunciation: 'Like "r" in "run" (alveolar tap)', exampleSentence: 'ரோஜா மலர் அழகானது', exampleTranslation: 'The rose flower is beautiful' },
+  'ல்': { word: 'லட்டு', meaning: 'Laddu (sweet)', type: 'consonant', typeLabel: 'இடையினம்', typeLabelEn: 'Medium Consonant', romanization: 'l', pronunciation: 'Like "l" in "love"', exampleSentence: 'லட்டு இனிப்பானது', exampleTranslation: 'Laddu is sweet' },
+  'வ்': { word: 'வாழை', meaning: 'Banana', type: 'consonant', typeLabel: 'இடையினம்', typeLabelEn: 'Medium Consonant', romanization: 'v', pronunciation: 'Like "v" in "vine"', exampleSentence: 'வாழைப்பழம் நல்லது', exampleTranslation: 'Banana is good' },
+  'ழ்': { word: 'தாழ்', meaning: 'Lock', type: 'consonant', typeLabel: 'இடையினம்', typeLabelEn: 'Medium Consonant', romanization: 'ḻ', pronunciation: 'Unique Tamil retroflex "zh" sound', exampleSentence: 'தாழ் போடு', exampleTranslation: 'Lock it' },
+  'ள்': { word: 'வெள்ளம்', meaning: 'Flood', type: 'consonant', typeLabel: 'இடையினம்', typeLabelEn: 'Medium Consonant', romanization: 'ḷ', pronunciation: 'Like "l" with tongue curled back', exampleSentence: 'வெள்ளம் வந்தது', exampleTranslation: 'The flood came' },
+  'ற்': { word: 'கற்றை', meaning: 'Bundle', type: 'consonant', typeLabel: 'வல்லினம்', typeLabelEn: 'Hard Consonant', romanization: 'ṟ', pronunciation: 'Like rolled "rr" in "parrot"', exampleSentence: 'கற்றது கைமண் அளவு', exampleTranslation: 'What is learnt is a handful' },
+  'ன்': { word: 'மின்', meaning: 'Electricity', type: 'consonant', typeLabel: 'மெல்லினம்', typeLabelEn: 'Soft Consonant', romanization: 'ṉ', pronunciation: 'Like "n" in "fun" (alveolar)', exampleSentence: 'மின்சாரம் தேவை', exampleTranslation: 'Electricity is needed' },
+};
+
+// Helper to speak Tamil text using browser TTS
+const speakTamil = (text: string) => {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'ta-IN';
+  utter.rate = 0.8;
+  window.speechSynthesis.speak(utter);
+};
+
+// Letter detail modal component
+const LetterModal = ({ letter, onClose }: { letter: string; onClose: () => void }) => {
+  const detail = letterDetails[letter];
+  if (!detail) return null;
+
+  const typeColor =
+    detail.type === 'vowel' ? '#58cc02'
+    : detail.type === 'consonant' ? '#ce82ff'
+    : '#ff9600';
+
+  // Close on Escape key
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [onClose]);
+
+  return (
+    <div className="letter-modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label={`Details for ${letter}`}>
+      <div className="letter-modal" onClick={(e) => e.stopPropagation()}>
+        <button className="letter-modal__close" onClick={onClose} aria-label="Close">✕</button>
+
+        <div className="letter-modal__header" style={{ '--type-color': typeColor } as React.CSSProperties}>
+          <div className="letter-modal__letter">{letter}</div>
+          <button className="letter-modal__speak" onClick={() => speakTamil(letter)} aria-label={`Listen to ${letter}`}>
+            🔊
+          </button>
+          <div className="letter-modal__romanization">{detail.romanization}</div>
+          <span className="letter-modal__type-badge">{detail.typeLabel} · {detail.typeLabelEn}</span>
+        </div>
+
+        <div className="letter-modal__body">
+          <div className="letter-modal__section">
+            <h4>📣 Pronunciation</h4>
+            <p>{detail.pronunciation}</p>
+          </div>
+
+          <div className="letter-modal__section letter-modal__example-word">
+            <h4>📝 Example Word</h4>
+            <div className="letter-modal__word-row">
+              <span className="letter-modal__tamil-word">{detail.word}</span>
+              <button className="letter-modal__speak-sm" onClick={() => speakTamil(detail.word)} aria-label={`Listen to ${detail.word}`}>
+                🔊
+              </button>
+              <span className="letter-modal__word-meaning">— {detail.meaning}</span>
+            </div>
+          </div>
+
+          <div className="letter-modal__section">
+            <h4>💬 Example Sentence</h4>
+            <div className="letter-modal__sentence-row">
+              <p className="letter-modal__tamil-sentence">{detail.exampleSentence}</p>
+              <button className="letter-modal__speak-sm" onClick={() => speakTamil(detail.exampleSentence)} aria-label="Listen to sentence">
+                🔊
+              </button>
+            </div>
+            <p className="letter-modal__translation">{detail.exampleTranslation}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const uyirLetters = ['அ', 'ஆ', 'இ', 'ஈ', 'உ', 'ஊ', 'எ', 'ஏ', 'ஐ', 'ஒ', 'ஓ', 'ஔ'];
 const meyLetters = ['க்', 'ங்', 'ச்', 'ஞ்', 'ட்', 'ண்', 'த்', 'ந்', 'ப்', 'ம்', 'ய்', 'ர்', 'ல்', 'வ்', 'ழ்', 'ள்', 'ற்', 'ன்'];
@@ -34,6 +160,15 @@ type ActiveTab = 'overview' | 'uyirmey';
 const TamilLetters = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('overview');
   const [highlightedBase, setHighlightedBase] = useState<string | null>(null);
+  const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
+
+  const handleLetterClick = useCallback((letter: string) => {
+    setSelectedLetter(letter);
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
+    setSelectedLetter(null);
+  }, []);
 
   return (
     <div className="tamil-letters-page">
@@ -72,11 +207,28 @@ const TamilLetters = () => {
                 <span className="letter-group__badge">{group.subtitle}</span>
               </div>
               <div className="letter-group__grid">
-                {group.letters.map((letter) => (
-                  <div key={letter} className="letter-tile">
-                    {letter}
-                  </div>
-                ))}
+                {group.letters.map((letter) => {
+                  const info = letterDetails[letter];
+                  return (
+                    <div
+                      key={letter}
+                      className="letter-tile"
+                      title={info ? `${info.word} — ${info.meaning}` : ''}
+                      onClick={() => handleLetterClick(letter)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => e.key === 'Enter' && handleLetterClick(letter)}
+                    >
+                      <span className="letter-tile__char">{letter}</span>
+                      {info && (
+                        <span className="letter-tile__meaning">
+                          <span className="letter-tile__word">{info.word}</span>
+                          <span className="letter-tile__english">{info.meaning}</span>
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </section>
           ))}
@@ -90,7 +242,20 @@ const TamilLetters = () => {
               <span className="letter-group__badge">Special letter — 1</span>
             </div>
             <div className="letter-group__grid">
-              <div className="letter-tile letter-tile--special">{aytham}</div>
+              <div
+                className="letter-tile letter-tile--special"
+                title={`${letterDetails[aytham].word} — ${letterDetails[aytham].meaning}`}
+                onClick={() => handleLetterClick(aytham)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && handleLetterClick(aytham)}
+              >
+                <span className="letter-tile__char">{aytham}</span>
+                <span className="letter-tile__meaning">
+                  <span className="letter-tile__word">{letterDetails[aytham].word}</span>
+                  <span className="letter-tile__english">{letterDetails[aytham].meaning}</span>
+                </span>
+              </div>
             </div>
           </section>
 
@@ -126,7 +291,7 @@ const TamilLetters = () => {
         <div className="tamil-letters-uyirmey">
           <p className="uyirmey-info">
             ஒவ்வொரு மெய் எழுத்தும் 12 உயிர் எழுத்துகளுடன் சேர்ந்து 12 உயிர்மெய் எழுத்துகளை உருவாக்கும்.
-            Click a row to highlight it.
+            Click a row to highlight it, or click any letter to hear it spoken.
           </p>
           <div className="uyirmey-table-wrapper">
             <table className="uyirmey-table">
@@ -146,15 +311,29 @@ const TamilLetters = () => {
                     onClick={() => setHighlightedBase(highlightedBase === base ? null : base)}
                   >
                     <td className="row-header">{base}</td>
-                    {uyirSuffixes.map((suffix, i) => (
-                      <td key={i}>{base + suffix}</td>
-                    ))}
+                    {uyirSuffixes.map((suffix, i) => {
+                      const combined = base + suffix;
+                      return (
+                        <td
+                          key={i}
+                          className="uyirmey-cell"
+                          onClick={(e) => { e.stopPropagation(); speakTamil(combined); }}
+                          title={`Click to hear "${combined}"`}
+                        >
+                          {combined}
+                        </td>
+                      );
+                    })}
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         </div>
+      )}
+
+      {selectedLetter && (
+        <LetterModal letter={selectedLetter} onClose={handleCloseModal} />
       )}
     </div>
   );
