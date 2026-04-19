@@ -320,14 +320,107 @@ app.get("/api/getPaalsAndAdikarams", (_req: any, res: any) => {
   return res.json(flattened);
 });
 
-// console.log(`Arun -> ${process.env.NODE_ENV}`);
-
-// Mount chatbot service API routes so the chat API runs on the same origin
-
-
 // Dynamically import chatbotService for ES module compatibility (Vercel)
 let buildService: any = null;
 let chatbotReady = false;
+
+/* ── Standalone kurral & adikaram lookup (no chatbot dependency) ── */
+
+app.get("/api/kurral/:id", (req: any, res: any) => {
+  if (!thirukkuralNestedData || !Array.isArray(thirukkuralNestedData.paals)) {
+    return res.status(500).json({ error: "thirukkural data not loaded" });
+  }
+
+  const id = Number(req.params.id);
+  if (isNaN(id)) return res.status(400).json({ error: "invalid id" });
+
+  // If chatbot service is ready, delegate to its richer lookup
+  if (chatbotReady && buildService) {
+    const k = buildService.getKurralById(id);
+    if (!k) return res.status(404).json({ error: "not found" });
+    return res.json(k);
+  }
+
+  // Fallback: find directly in nested data
+  for (const paal of thirukkuralNestedData.paals) {
+    for (const adikaram of paal.adikarams || []) {
+      for (const kurral of adikaram.kurrals || []) {
+        if (Number(kurral.kurralId) === id) {
+          return res.json({
+            Kurral_id: kurral.kurralId,
+            Index: kurral.index,
+            adikaram_number: adikaram.adikaramNumber,
+            Tamil: kurral.tamil?.full || "",
+            line1: kurral.tamil?.line1 || "",
+            line2: kurral.tamil?.line2 || "",
+            English: kurral.english?.translation || "",
+            EnglishMeaning: kurral.english?.meaning || "",
+            Transliteration: kurral.transliteration || "",
+            KalaignarUrai: kurral.explanations?.kalaignar || "",
+            MuVaUrai: kurral.explanations?.muVa || "",
+            SolomonPaapaiyaUrai: kurral.explanations?.solomonPaapaiya || "",
+          });
+        }
+      }
+    }
+  }
+
+  return res.status(404).json({ error: "not found" });
+});
+
+app.get("/api/adikaram/:num", (req: any, res: any) => {
+  if (!thirukkuralNestedData || !Array.isArray(thirukkuralNestedData.paals)) {
+    return res.status(500).json({ error: "thirukkural data not loaded" });
+  }
+
+  const n = Number(req.params.num);
+  if (isNaN(n)) return res.status(400).json({ error: "invalid number" });
+
+  // If chatbot service is ready, delegate
+  if (chatbotReady && buildService) {
+    const a = buildService.getAdikaramInfo(n);
+    if (!a) return res.status(404).json({ error: "not found" });
+    const kurrals = buildService.kurrals.filter(
+      (k: { adikaram_number: number | string }) => Number(k.adikaram_number) === n,
+    );
+    return res.json({ adikaram: a, kurrals });
+  }
+
+  // Fallback: find in nested data
+  for (const paal of thirukkuralNestedData.paals) {
+    for (const adikaram of paal.adikarams || []) {
+      if (Number(adikaram.adikaramNumber) === n) {
+        const adikaramInfo = {
+          Index: adikaram.index,
+          adikaram_number: adikaram.adikaramNumber,
+          Tamil: adikaram.tamil,
+          English: adikaram.english,
+          Transliteration: adikaram.transliteration,
+          kurralStart: adikaram.kurralRange?.start,
+          kurralEnd: adikaram.kurralRange?.end,
+        };
+        const kurrals = (adikaram.kurrals || []).map((kurral: any) => ({
+          Kurral_id: kurral.kurralId,
+          Index: kurral.index,
+          adikaram_number: adikaram.adikaramNumber,
+          Tamil: kurral.tamil?.full || "",
+          line1: kurral.tamil?.line1 || "",
+          line2: kurral.tamil?.line2 || "",
+          English: kurral.english?.translation || "",
+          EnglishMeaning: kurral.english?.meaning || "",
+          Transliteration: kurral.transliteration || "",
+          KalaignarUrai: kurral.explanations?.kalaignar || "",
+          MuVaUrai: kurral.explanations?.muVa || "",
+          SolomonPaapaiyaUrai: kurral.explanations?.solomonPaapaiya || "",
+        }));
+        return res.json({ adikaram: adikaramInfo, kurrals });
+      }
+    }
+  }
+
+  return res.status(404).json({ error: "not found" });
+});
+
 async function setupChatbotRoutes() {
   try {
     // Prefer compiled JS, fallback to TS for local tsx runs
@@ -358,26 +451,6 @@ async function setupChatbotRoutes() {
     app.get("/api/health", (_req: any, res: any) =>
       res.json({ ok: true, kurrals: buildService.kurrals.length }),
     );
-
-    app.get("/api/kurral/:id", (req: any, res: any) => {
-      const id = Number(req.params.id);
-      if (isNaN(id)) return res.status(400).json({ error: "invalid id" });
-      const k = buildService.getKurralById(id);
-      if (!k) return res.status(404).json({ error: "not found" });
-      res.json(k);
-    });
-
-    app.get("/api/adikaram/:num", (req: any, res: any) => {
-      const n = Number(req.params.num);
-      if (isNaN(n)) return res.status(400).json({ error: "invalid number" });
-      const a = buildService.getAdikaramInfo(n);
-      if (!a) return res.status(404).json({ error: "not found" });
-      const kurrals = buildService.kurrals.filter(
-        (k: { adikaram_number: number | string }) =>
-          Number(k.adikaram_number) === n,
-      );
-      res.json({ adikaram: a, kurrals });
-    });
 
     app.post("/api/chat", (req: any, res: any) => {
       const { query, topN } = req.body || {};
