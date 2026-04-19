@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  getLearningPath,
   getLessonProgress,
   getBadges,
   getStreakData,
@@ -36,7 +35,6 @@ function overallProgress(): { done: number; total: number } {
 /* ── Component ── */
 const LearningPath = () => {
   const [tab, setTab] = useState<'path' | 'badges'>('path');
-  const path = useMemo(() => getLearningPath(), []);
   const badges = useMemo(() => getBadges(), []);
   const streak = useMemo(() => getStreakData(), []);
   const overall = useMemo(() => overallProgress(), []);

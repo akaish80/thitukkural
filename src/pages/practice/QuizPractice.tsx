@@ -172,7 +172,6 @@ const QuizPractice: React.FC = () => {
 
   if (showResult) {
     const failedCount = totalAnswered - score;
-    const accuracy = totalAnswered > 0 ? Math.round((score / totalAnswered) * 100) : 0;
     return (
       <div className="duo-quiz">
         <div className="duo-quiz__result">

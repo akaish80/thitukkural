@@ -1,5 +1,5 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useState, useCallback, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import {
   markItemCompleted,
   completeLesson,
@@ -10,7 +10,7 @@ import {
   recordActivity,
 } from '../../utils/learningStore';
 import { speakTamil, onSpeakingChange } from '../../utils/pronunciationEngine';
-import { SpeakButton, SpeedToggle, Waveform } from '../../components/PronunciationPlayer/PronunciationPlayer';
+import { SpeedToggle, Waveform } from '../../components/PronunciationPlayer/PronunciationPlayer';
 import { LEARNING_STEPS, type LessonItem } from './learningPathData';
 import './learningpath.styles.scss';
 
@@ -27,7 +27,6 @@ function shuffle<T>(arr: T[]): T[] {
 /* ── Lesson Page ── */
 const LessonPage = () => {
   const { stepId, lessonId } = useParams<{ stepId: string; lessonId: string }>();
-  const navigate = useNavigate();
 
   const step = LEARNING_STEPS.find((s) => s.id === stepId);
   const lesson = step?.lessons.find((l) => l.id === lessonId);
@@ -44,7 +43,7 @@ const LessonPage = () => {
   // Quiz state
   const [quizQuestions, setQuizQuestions] = useState<{ item: LessonItem; options: string[]; correct: string }[]>([]);
   const [quizIdx, setQuizIdx] = useState(0);
-  const [quizAnswers, setQuizAnswers] = useState<(string | null)[]>([]);
+  const [, setQuizAnswers] = useState<(string | null)[]>([]);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [score, setScore] = useState(0);
@@ -108,7 +107,6 @@ const LessonPage = () => {
       setShowAnswer(false);
     } else {
       // Quiz complete — save results
-      const finalScore = score + (selectedAnswer === quizQuestions[quizIdx].correct ? 0 : 0);
       // Score was already incremented in handleQuizAnswer
       if (lesson) {
         saveLessonQuiz(lesson.id, score, quizQuestions.length);

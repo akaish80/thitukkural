@@ -1,5 +1,4 @@
 import { useState, useCallback, useMemo } from 'react';
-import { speakTamil } from '../../utils/pronunciationEngine';
 import { SpeakButton, SpeedToggle } from '../../components/PronunciationPlayer/PronunciationPlayer';
 import './letterexercise.styles.scss';
 
