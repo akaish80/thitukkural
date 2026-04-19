@@ -19,36 +19,36 @@ export const SpeakButton = ({
   size?: 'sm' | 'md' | 'lg';
   className?: string;
 }) => {
-  const [speaking, setSpeaking] = useState(false);
-  const [activeText, setActiveText] = useState('');
+  const [active, setActive] = useState(false);
 
   useEffect(() => {
     const unsub = onSpeakingChange((val) => {
-      if (!val) { setSpeaking(false); setActiveText(''); }
+      if (!val) setActive(false);
     });
     return unsub;
   }, []);
 
   const handleClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    if (speaking && activeText === text) {
+    if (active) {
       stopSpeaking();
+      setActive(false);
     } else {
-      setActiveText(text);
-      setSpeaking(true);
+      // Just speak — no cancel, exactly like the working chatbot
+      setActive(true);
       speakTamil(text);
     }
-  }, [speaking, activeText, text]);
+  }, [active, text]);
 
   return (
     <button
-      className={`speak-btn speak-btn--${size} ${speaking && activeText === text ? 'speak-btn--active' : ''} ${className}`}
+      className={`speak-btn speak-btn--${size} ${active ? 'speak-btn--active' : ''} ${className}`}
       onClick={handleClick}
       aria-label={`Listen to ${text}`}
       title="Listen"
       type="button"
     >
-      {speaking && activeText === text ? '⏹' : '🔊'}
+      {active ? '⏹' : '🔊'}
     </button>
   );
 };
@@ -122,44 +122,45 @@ const PronunciationPlayer = ({
   showSpeedToggle = true,
   className = '',
 }: PronunciationPlayerProps) => {
-  const [speaking, setSpeaking] = useState(false);
+  const [active, setActive] = useState(false);
   const [activeText, setActiveText] = useState('');
 
   useEffect(() => {
     const unsub = onSpeakingChange((val) => {
-      if (!val) { setSpeaking(false); setActiveText(''); }
+      if (!val) { setActive(false); setActiveText(''); }
     });
     return unsub;
   }, []);
 
   const play = useCallback((t: string) => {
     setActiveText(t);
-    setSpeaking(true);
+    setActive(true);
     speakTamil(t);
   }, []);
 
   const handleMainPlay = useCallback(() => {
-    if (speaking && activeText === text) {
+    if (active && activeText === text) {
       stopSpeaking();
+      setActive(false);
     } else {
       play(text);
     }
-  }, [speaking, activeText, text, play]);
+  }, [active, activeText, text, play]);
 
   return (
     <div className={`pronunciation-player ${className}`}>
       {/* Main play area */}
       <div className="pronunciation-player__main">
         <button
-          className={`pronunciation-player__play ${speaking && activeText === text ? 'pronunciation-player__play--active' : ''}`}
+          className={`pronunciation-player__play ${active && activeText === text ? 'pronunciation-player__play--active' : ''}`}
           onClick={handleMainPlay}
           type="button"
           aria-label={`Listen to ${text}`}
         >
           <span className="pronunciation-player__icon">
-            {speaking && activeText === text ? '⏹' : '▶'}
+            {active && activeText === text ? '⏹' : '▶'}
           </span>
-          <Waveform active={speaking && activeText === text} bars={5} />
+          <Waveform active={active && activeText === text} bars={5} />
         </button>
 
         <div className="pronunciation-player__info">
@@ -180,13 +181,13 @@ const PronunciationPlayer = ({
             {exampleWords.map((w) => (
               <button
                 key={w.tamil}
-                className={`pronunciation-player__chip ${speaking && activeText === w.tamil ? 'pronunciation-player__chip--active' : ''}`}
+                className={`pronunciation-player__chip ${active && activeText === w.tamil ? 'pronunciation-player__chip--active' : ''}`}
                 onClick={() => play(w.tamil)}
                 type="button"
               >
                 <span className="pronunciation-player__chip-tamil">{w.tamil}</span>
                 <span className="pronunciation-player__chip-en">{w.meaning}</span>
-                {speaking && activeText === w.tamil && <Waveform active bars={3} />}
+                {active && activeText === w.tamil && <Waveform active bars={3} />}
               </button>
             ))}
           </div>

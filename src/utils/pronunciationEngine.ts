@@ -41,24 +41,12 @@ export function isSpeaking(): boolean {
   return isSpeakingNow;
 }
 
-/** Speak Tamil text. Stops any ongoing speech first. */
+/** Speak Tamil text.
+ *  Matches the exact pattern used by the working chatbot speech:
+ *  create utterance → set lang → speak(). No cancel() before speak. */
 export function speakTamil(text: string, speedOverride?: SpeechSpeed): void {
   if (!('speechSynthesis' in window) || !text) return;
 
-  // If something is already playing, stop it first and use a microtask
-  // to let the cancel settle before speaking again.
-  if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
-    window.speechSynthesis.cancel();
-    setSpeaking(false);
-    // Reschedule after cancel settles
-    requestAnimationFrame(() => doSpeak(text, speedOverride));
-    return;
-  }
-
-  doSpeak(text, speedOverride);
-}
-
-function doSpeak(text: string, speedOverride?: SpeechSpeed): void {
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = 'ta-IN';
   utter.rate = RATE[speedOverride ?? currentSpeed];
