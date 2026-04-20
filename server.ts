@@ -7,7 +7,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import fs from "fs";
 import dotenv from "dotenv";
-import buildChatbotService from "./src/services/chatbotService.js";
+import Fuse from "fuse.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -321,86 +321,50 @@ app.get("/api/getPaalsAndAdikarams", (_req: any, res: any) => {
   return res.json(flattened);
 });
 
-// Dynamically import chatbotService for ES module compatibility (Vercel)
-let buildService: any = null;
-let chatbotReady = false;
+/* ── Flatten nested data into lookup arrays (inline, no external import) ── */
 
-/* ── Standalone kurral & adikaram lookup (no chatbot dependency) ── */
+interface FlatKurral {
+  Kurral_id: number;
+  Index: number;
+  adikaram_number: number;
+  Tamil: string;
+  line1: string;
+  line2: string;
+  English: string;
+  EnglishMeaning: string;
+  Transliteration: string;
+  KalaignarUrai: string;
+  MuVaUrai: string;
+  SolomonPaapaiyaUrai: string;
+}
 
-app.get("/api/kurral/:id", (req: any, res: any) => {
-  if (!thirukkuralNestedData || !Array.isArray(thirukkuralNestedData.paals)) {
-    return res.status(500).json({ error: "thirukkural data not loaded" });
-  }
+interface FlatAdikaram {
+  Index: number;
+  adikaram_number: number;
+  Tamil: string;
+  English: string;
+  Transliteration: string;
+  kurralStart: number;
+  kurralEnd: number;
+}
 
-  const id = Number(req.params.id);
-  if (isNaN(id)) return res.status(400).json({ error: "invalid id" });
+const flatKurrals: FlatKurral[] = [];
+const flatAdikarams: FlatAdikaram[] = [];
 
-  // If chatbot service is ready, delegate to its richer lookup
-  if (chatbotReady && buildService) {
-    const k = buildService.getKurralById(id);
-    if (!k) return res.status(404).json({ error: "not found" });
-    return res.json(k);
-  }
-
-  // Fallback: find directly in nested data
+if (thirukkuralNestedData?.paals) {
   for (const paal of thirukkuralNestedData.paals) {
     for (const adikaram of paal.adikarams || []) {
+      flatAdikarams.push({
+        Index: adikaram.index,
+        adikaram_number: adikaram.adikaramNumber,
+        Tamil: adikaram.tamil,
+        English: adikaram.english,
+        Transliteration: adikaram.transliteration,
+        kurralStart: adikaram.kurralRange?.start,
+        kurralEnd: adikaram.kurralRange?.end,
+      });
       for (const kurral of adikaram.kurrals || []) {
-        if (Number(kurral.kurralId) === id) {
-          return res.json({
-            Kurral_id: kurral.kurralId,
-            Index: kurral.index,
-            adikaram_number: adikaram.adikaramNumber,
-            Tamil: kurral.tamil?.full || "",
-            line1: kurral.tamil?.line1 || "",
-            line2: kurral.tamil?.line2 || "",
-            English: kurral.english?.translation || "",
-            EnglishMeaning: kurral.english?.meaning || "",
-            Transliteration: kurral.transliteration || "",
-            KalaignarUrai: kurral.explanations?.kalaignar || "",
-            MuVaUrai: kurral.explanations?.muVa || "",
-            SolomonPaapaiyaUrai: kurral.explanations?.solomonPaapaiya || "",
-          });
-        }
-      }
-    }
-  }
-
-  return res.status(404).json({ error: "not found" });
-});
-
-app.get("/api/adikaram/:num", (req: any, res: any) => {
-  if (!thirukkuralNestedData || !Array.isArray(thirukkuralNestedData.paals)) {
-    return res.status(500).json({ error: "thirukkural data not loaded" });
-  }
-
-  const n = Number(req.params.num);
-  if (isNaN(n)) return res.status(400).json({ error: "invalid number" });
-
-  // If chatbot service is ready, delegate
-  if (chatbotReady && buildService) {
-    const a = buildService.getAdikaramInfo(n);
-    if (!a) return res.status(404).json({ error: "not found" });
-    const kurrals = buildService.kurrals.filter(
-      (k: { adikaram_number: number | string }) => Number(k.adikaram_number) === n,
-    );
-    return res.json({ adikaram: a, kurrals });
-  }
-
-  // Fallback: find in nested data
-  for (const paal of thirukkuralNestedData.paals) {
-    for (const adikaram of paal.adikarams || []) {
-      if (Number(adikaram.adikaramNumber) === n) {
-        const adikaramInfo = {
-          Index: adikaram.index,
-          adikaram_number: adikaram.adikaramNumber,
-          Tamil: adikaram.tamil,
-          English: adikaram.english,
-          Transliteration: adikaram.transliteration,
-          kurralStart: adikaram.kurralRange?.start,
-          kurralEnd: adikaram.kurralRange?.end,
-        };
-        const kurrals = (adikaram.kurrals || []).map((kurral: any) => ({
+        flatKurrals.push({
           Kurral_id: kurral.kurralId,
           Index: kurral.index,
           adikaram_number: adikaram.adikaramNumber,
@@ -413,65 +377,97 @@ app.get("/api/adikaram/:num", (req: any, res: any) => {
           KalaignarUrai: kurral.explanations?.kalaignar || "",
           MuVaUrai: kurral.explanations?.muVa || "",
           SolomonPaapaiyaUrai: kurral.explanations?.solomonPaapaiya || "",
-        }));
-        return res.json({ adikaram: adikaramInfo, kurrals });
+        });
       }
     }
   }
+}
 
-  return res.status(404).json({ error: "not found" });
+// Build Fuse.js search index
+let fuseIndex: Fuse<FlatKurral> | null = null;
+try {
+  if (flatKurrals.length > 0) {
+    fuseIndex = new Fuse(flatKurrals, {
+      keys: ["Tamil", "English", "Transliteration", "EnglishMeaning", "line1", "line2"],
+      threshold: 0.4,
+      ignoreLocation: true,
+      useExtendedSearch: true,
+      includeScore: true,
+    });
+  }
+} catch (e) {
+  console.warn("Fuse index creation failed:", e instanceof Error ? e.message : e);
+}
+
+console.log(`Indexed ${flatKurrals.length} kurrals, ${flatAdikarams.length} adikarams`);
+
+/* ── API routes: kurral, adikaram, health, chat ── */
+
+app.get("/api/kurral/:id", (req: any, res: any) => {
+  const id = Number(req.params.id);
+  if (isNaN(id)) return res.status(400).json({ error: "invalid id" });
+  const k = flatKurrals.find((k) => k.Kurral_id === id);
+  if (!k) return res.status(404).json({ error: "not found" });
+  return res.json(k);
 });
 
-async function setupChatbotRoutes() {
-  try {
-    buildService = buildChatbotService(thirukkuralNestedData);
-    chatbotReady = true;
+app.get("/api/adikaram/:num", (req: any, res: any) => {
+  const n = Number(req.params.num);
+  if (isNaN(n)) return res.status(400).json({ error: "invalid number" });
+  const a = flatAdikarams.find((a) => a.adikaram_number === n);
+  if (!a) return res.status(404).json({ error: "not found" });
+  const kurrals = flatKurrals.filter((k) => k.adikaram_number === n);
+  return res.json({ adikaram: a, kurrals });
+});
 
-    // Move all chatbot endpoints under /api for Vercel compatibility
-    app.get("/api/health", (_req: any, res: any) =>
-      res.json({ ok: true, kurrals: buildService.kurrals.length }),
-    );
+app.get("/api/health", (_req: any, res: any) =>
+  res.json({ ok: true, kurrals: flatKurrals.length }),
+);
 
-    app.post("/api/chat", (req: any, res: any) => {
-      const { query, topN } = req.body || {};
-      if (!query || typeof query !== "string")
-        return res.status(400).json({ error: "query (string) required" });
-      const result = buildService.search(query, topN || 10);
-      // append a small server-side log for auditing (timestamp, ip, query, result count)
-      try {
-        const logLine = JSON.stringify({
-          ts: Date.now(),
-          ip: req.ip || req.connection?.remoteAddress,
-          query,
-          topN: topN || 10,
-          resultCount:
-            result && result.results && result.results.length
-              ? result.results.length
-              : Array.isArray(result)
-                ? result.length
-                : result && result.kurral
-                  ? 1
-                  : 0,
-        });
-        const logPath = path.join(__dirname, "chat_queries.log");
-        fs.appendFile(
-          logPath,
-          `${logLine}\n`,
-          (err: NodeJS.ErrnoException | null) => {
-            if (err) console.warn("Failed to append chat log:", err.message);
-          },
-        );
-      } catch (e) {
-        // ignore logging errors
-      }
-      res.json({ query, result });
-    });
-  } catch (e) {
-    const message = e instanceof Error ? e.message : String(e);
-    console.warn("chatbotService not available:", message);
+app.post("/api/chat", (req: any, res: any) => {
+  const { query, topN } = req.body || {};
+  if (!query || typeof query !== "string")
+    return res.status(400).json({ error: "query (string) required" });
+
+  const q = query.trim();
+  const limit = topN || 10;
+  let result: any;
+
+  // Special patterns: adikaram:N, kurral:N, or bare number
+  const mAd = q.match(/adikaram[:#\s]*(\d+)/i);
+  const mK = q.match(/kurral[:#\s]*(\d+)/i) || q.match(/^(\d+)$/);
+
+  if (mAd) {
+    result = { adikaram: Number(mAd[1]), results: flatKurrals.filter((k) => k.adikaram_number === Number(mAd[1])) };
+  } else if (mK) {
+    result = { kurral: Number(mK[1]), results: flatKurrals.filter((k) => k.Kurral_id === Number(mK[1])) };
+  } else if (fuseIndex) {
+    const hits = fuseIndex.search(q, { limit });
+    result = { results: hits.map((h: any) => h.item) };
+  } else {
+    // Simple fallback search
+    const qLow = q.toLowerCase();
+    const matches = flatKurrals.filter((k) =>
+      [k.Tamil, k.English, k.Transliteration, k.EnglishMeaning, k.line1, k.line2]
+        .join(" ").toLowerCase().includes(qLow),
+    ).slice(0, limit);
+    result = { results: matches };
   }
-}
-setupChatbotRoutes();
+
+  // Audit log
+  try {
+    const logLine = JSON.stringify({
+      ts: Date.now(),
+      ip: req.ip || req.connection?.remoteAddress,
+      query,
+      topN: limit,
+      resultCount: Array.isArray(result?.results) ? result.results.length : 0,
+    });
+    fs.appendFile(path.join(__dirname, "chat_queries.log"), logLine + "\n", () => {});
+  } catch (_e) { /* ignore */ }
+
+  res.json({ query, result });
+});
 
 // Serve static build in production (skip on Vercel — it handles static files via CDN)
 if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
