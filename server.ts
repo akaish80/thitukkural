@@ -130,7 +130,7 @@ if (flatKurrals.length > 0) {
   }
 }
 
-console.log(`Ready: ${flatKurrals.length} kurrals, ${flatAdikarams.length} adikarams`);
+// console.log(`Ready: ${flatKurrals.length} kurrals, ${flatAdikarams.length} adikarams`);
 
 /* ────────────────────────────────────────────
    API Routes
