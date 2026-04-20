@@ -13,11 +13,23 @@
   ],
   "routes": [
     {
-      "handle": "filesystem"
+      "src": "/api/kurral/(.*)",
+      "dest": "/server.ts"
+    },
+    {
+      "src": "/api/adikaram/(.*)",
+      "dest": "/server.ts"
+    },
+    {
+      "src": "/api/paals/(.*)",
+      "dest": "/server.ts"
     },
     {
       "src": "/api/(.*)",
       "dest": "/server.ts"
+    },
+    {
+      "handle": "filesystem"
     }
   ]
 }
