@@ -7,6 +7,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import fs from "fs";
 import dotenv from "dotenv";
+import buildChatbotService from "./src/services/chatbotService.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -422,49 +423,7 @@ app.get("/api/adikaram/:num", (req: any, res: any) => {
 });
 
 async function setupChatbotRoutes() {
-  try {
-    // Prefer compiled JS, fallback to TS for local tsx runs
-    const chatbotModuleCandidates = [
-      "./src/services/chatbotService.js",
-      "./src/services/chatbotService" + ".ts",
-    ];
-
-    let chatbotModule: any = null;
-    let moduleLoadError: unknown = null;
-    for (const modulePath of chatbotModuleCandidates) {
-      try {
-        chatbotModule = await import(modulePath);
-        break;
-      } catch (err) {
-        moduleLoadError = err;
-      }
-    }
-
-    if (!chatbotModule) {
-      throw moduleLoadError || new Error("Failed to load chatbot service module");
-    }
-
-    buildService = chatbotModule.default(thirukkuralNestedData);
-    chatbotReady = true;
-
-    // Move all chatbot endpoints under /api for Vercel compatibility
-    app.get("/api/health", (_req: any, res: any) =>
-      res.json({ ok: true, kurrals: buildService.kurrals.length }),
-    );
-
-    app.post("/api/chat", (req: any, res: any) => {
-      const { query, topN } = req.body || {};
-      if (!query || typeof query !== "string")
-        return res.status(400).json({ error: "query (string) required" });
-      const result = buildService.search(query, topN || 10);
-      // append a small server-side log for auditing (timestamp, ip, query, result count)
-      try {
-        const logLine = JSON.stringify({
-          ts: Date.now(),
-          ip: req.ip || req.connection?.remoteAddress,
-          query,
-          topN: topN || 10,
-          resultCount:
+  trbuildService = buildChatbotService
             result && result.results && result.results.length
               ? result.results.length
               : Array.isArray(result)
