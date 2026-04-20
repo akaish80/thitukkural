@@ -1,127 +1,167 @@
----
+# Thirukkural (Vite + React + TypeScript)
 
-# Thirukkural Vite Migration
+Thirukkural learning app built with Vite, React, TypeScript, Redux Toolkit, and SCSS.
 
-This project was migrated from a Create React App (CRA) setup to a modern [Vite](https://vitejs.dev/) + React + TypeScript stack.
+## Prerequisites
 
-## Key Migration Notes
-- All source code, components, pages, and styles have been ported to Vite structure.
-- Uses Vite's fast dev server and build pipeline.
-- All original features and logic are preserved.
-- SCSS and modular CSS are supported out of the box.
-- Redux Toolkit is used for state management.
+- Node.js 22.12.0 or later
+- npm 10 or later
 
-## Getting Started
+Vite 8 requires Node.js 20.19+ or 22.12+. Using Node 18 in CI will fail.
+
+## Local Development
 
 ### Install dependencies
-```
+
+```bash
 npm install
 ```
 
-### Start the development server
-```
+### Run frontend
+
+```bash
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) to view it in your browser.
+App runs at http://localhost:5173.
 
-### Build for production
+### Run frontend + API server together
+
+```bash
+npm run dev:all
 ```
+
+## Build and Run
+
+### Build frontend
+
+```bash
 npm run build
 ```
 
-### Preview production build
-```
+Frontend output is generated in dist/.
+
+### Preview frontend build
+
+```bash
 npm run preview
 ```
 
-## Project Structure
-- `src/` — All source code (components, pages, redux, etc.)
-- `public/` — Static assets and content
-- `vite.config.ts` — Vite configuration
-- `tsconfig*.json` — TypeScript configuration
+### Build backend server
 
-## Learn More
-- [Vite Documentation](https://vitejs.dev/guide/)
-- [React Documentation](https://react.dev/)
-- [Redux Toolkit](https://redux-toolkit.js.org/)
-
----
-
-For any issues or migration questions, please refer to the original CRA README below or contact the maintainer.
-
----
-
-# React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build:server
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Server output is generated in build/server.js.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Run backend in development
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run server
 ```
+
+### Run backend in production mode
+
+```bash
+npm run start:prod
+```
+
+## Deployment (Vercel via GitHub Actions)
+
+Workflow file: .github/workflows/deploy-vercel.yml
+
+Current deployment flow:
+
+1. Uses Node.js 22.12.0 in GitHub Actions.
+2. Installs latest Vercel CLI.
+3. Runs vercel pull, vercel build, and vercel deploy --prebuilt --prod.
+
+Required GitHub repository secrets:
+
+- VERCEL_TOKEN
+- VERCEL_ORG_ID
+- VERCEL_PROJECT_ID
+
+## Common CI Errors
+
+### Error: Your Vercel CLI version is outdated
+
+Cause: old CLI from third-party deploy action.
+
+Fix: install and use latest Vercel CLI in workflow.
+
+### Error: Vite requires Node.js 20.19+ or 22.12+
+
+Cause: workflow running on Node 18.
+
+Fix: set workflow Node version to 22.12.0 (or newer).
+
+## Tech Stack
+
+- Vite
+- React 19
+- TypeScript
+- Redux Toolkit
+- SCSS
+- Express (server.ts)
+
+## Architecture
+
+### High-level Overview
+
+```text
+Browser (React + Vite)
+	-> Frontend routes and components
+	-> API calls (/api/*)
+
+Express API (server.ts)
+	-> Loads thirukkural_complete_nested.json
+	-> Builds flat lookup/search indexes
+	-> Exposes REST endpoints
+
+Vercel deployment
+	-> Frontend static build
+	-> Serverless API entry (api/index.ts -> server.js)
+```
+
+### Frontend
+
+- Entry point: src/main.tsx
+- Route config: src/Routes.tsx
+- Pages: src/pages/*
+- Shared UI: src/components/*
+- App state: src/redux/*
+
+Routes are lazy-loaded with React Suspense to reduce initial bundle size.
+
+### Backend API
+
+- Express app entry: server.ts
+- Vercel function bridge: api/index.ts
+- Primary data source: src/Common/thirukkural_complete_nested.json
+
+Server responsibilities:
+
+- Load and validate nested Thirukkural data.
+- Build flattened arrays for faster lookup.
+- Create Fuse.js search index for Tamil/English/transliteration queries.
+- Serve structured endpoints for paal/adikaram/kurral navigation.
+
+### Request and Data Flow
+
+1. User opens a route in the React app.
+2. Page/component requests content from /api/* endpoints.
+3. Express handler reads from in-memory loaded JSON/indexes.
+4. API response is rendered by page and component tree.
+
+### Build Outputs
+
+- Frontend build output: dist/
+- Backend build output: build/server.js
+
+### Deployment Model
+
+- GitHub Actions builds and deploys with Node.js 22.12.0.
+- Vercel CLI pulls project config, builds artifacts, and deploys production.
+- api/index.ts re-exports compiled server.js for serverless runtime.
