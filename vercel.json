@@ -1,35 +1,11 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "server.ts",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": [
-          "src/Common/thirukkural_complete_nested.json"
-        ]
-      }
+  "functions": {
+    "api/index.ts": {
+      "includeFiles": "src/Common/thirukkural_complete_nested.json"
     }
-  ],
-  "routes": [
-    {
-      "src": "/api/kurral/(.*)",
-      "dest": "/server.ts"
-    },
-    {
-      "src": "/api/adikaram/(.*)",
-      "dest": "/server.ts"
-    },
-    {
-      "src": "/api/paals/(.*)",
-      "dest": "/server.ts"
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "/server.ts"
-    },
-    {
-      "handle": "filesystem"
-    }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" }
   ]
 }
