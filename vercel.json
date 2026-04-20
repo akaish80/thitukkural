@@ -6,8 +6,7 @@
       "use": "@vercel/node",
       "config": {
         "includeFiles": [
-          "src/Common/thirukkural_complete_nested.json",
-          "src/services/chatbotService.ts"
+          "src/Common/thirukkural_complete_nested.json"
         ]
       }
     }

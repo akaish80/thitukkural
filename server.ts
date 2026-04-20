@@ -423,7 +423,28 @@ app.get("/api/adikaram/:num", (req: any, res: any) => {
 });
 
 async function setupChatbotRoutes() {
-  trbuildService = buildChatbotService
+  try {
+    buildService = buildChatbotService(thirukkuralNestedData);
+    chatbotReady = true;
+
+    // Move all chatbot endpoints under /api for Vercel compatibility
+    app.get("/api/health", (_req: any, res: any) =>
+      res.json({ ok: true, kurrals: buildService.kurrals.length }),
+    );
+
+    app.post("/api/chat", (req: any, res: any) => {
+      const { query, topN } = req.body || {};
+      if (!query || typeof query !== "string")
+        return res.status(400).json({ error: "query (string) required" });
+      const result = buildService.search(query, topN || 10);
+      // append a small server-side log for auditing (timestamp, ip, query, result count)
+      try {
+        const logLine = JSON.stringify({
+          ts: Date.now(),
+          ip: req.ip || req.connection?.remoteAddress,
+          query,
+          topN: topN || 10,
+          resultCount:
             result && result.results && result.results.length
               ? result.results.length
               : Array.isArray(result)
@@ -452,8 +473,8 @@ async function setupChatbotRoutes() {
 }
 setupChatbotRoutes();
 
-// Serve static build in production from the project's build/ folder
-if (process.env.NODE_ENV === "production") {
+// Serve static build in production (skip on Vercel — it handles static files via CDN)
+if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
   app.use(express.static(path.join(__dirname, "build")));
 
   // serve service worker if present
