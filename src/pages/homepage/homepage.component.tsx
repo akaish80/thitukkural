@@ -141,6 +141,10 @@ const Homepage = () => {
               <span>🛤️</span>
               Start Learning Path
             </Link>
+            <Link to="/planner" className="btn btn-primary btn-large">
+              <span>🗓️</span>
+              Open Planner
+            </Link>
             <Link to="/kurral" className="btn btn-secondary btn-large">
               <span>📖</span>
               Thirukkural

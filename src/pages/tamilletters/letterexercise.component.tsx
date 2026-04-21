@@ -14,26 +14,26 @@ interface LetterInfo {
 
 const VOWELS: LetterInfo[] = [
   { tamil: 'அ', roman: 'a', type: 'vowel', typeLabel: 'உயிர்' },
-  { tamil: 'ஆ', roman: 'ā', type: 'vowel', typeLabel: 'உயிர்' },
+  { tamil: 'ஆ', roman: 'aa', type: 'vowel', typeLabel: 'உயிர்' },
   { tamil: 'இ', roman: 'i', type: 'vowel', typeLabel: 'உயிர்' },
-  { tamil: 'ஈ', roman: 'ī', type: 'vowel', typeLabel: 'உயிர்' },
+  { tamil: 'ஈ', roman: 'ii', type: 'vowel', typeLabel: 'உயிர்' },
   { tamil: 'உ', roman: 'u', type: 'vowel', typeLabel: 'உயிர்' },
-  { tamil: 'ஊ', roman: 'ū', type: 'vowel', typeLabel: 'உயிர்' },
+  { tamil: 'ஊ', roman: 'uu', type: 'vowel', typeLabel: 'உயிர்' },
   { tamil: 'எ', roman: 'e', type: 'vowel', typeLabel: 'உயிர்' },
-  { tamil: 'ஏ', roman: 'ē', type: 'vowel', typeLabel: 'உயிர்' },
+  { tamil: 'ஏ', roman: 'ee', type: 'vowel', typeLabel: 'உயிர்' },
   { tamil: 'ஐ', roman: 'ai', type: 'vowel', typeLabel: 'உயிர்' },
   { tamil: 'ஒ', roman: 'o', type: 'vowel', typeLabel: 'உயிர்' },
-  { tamil: 'ஓ', roman: 'ō', type: 'vowel', typeLabel: 'உயிர்' },
+  { tamil: 'ஓ', roman: 'oo', type: 'vowel', typeLabel: 'உயிர்' },
   { tamil: 'ஔ', roman: 'au', type: 'vowel', typeLabel: 'உயிர்' },
 ];
 
 const CONSONANTS: LetterInfo[] = [
   { tamil: 'க', roman: 'ka', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ங', roman: 'ṅa', type: 'consonant', typeLabel: 'மெய்' },
+  { tamil: 'ங', roman: 'nga', type: 'consonant', typeLabel: 'மெய்' },
   { tamil: 'ச', roman: 'ca', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ஞ', roman: 'ña', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ட', roman: 'Ṭa', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ண', roman: 'Ṇa', type: 'consonant', typeLabel: 'மெய்' },
+  { tamil: 'ஞ', roman: 'nja', type: 'consonant', typeLabel: 'மெய்' },
+  { tamil: 'ட', roman: 'ta', type: 'consonant', typeLabel: 'மெய்' },
+  { tamil: 'ண', roman: 'na', type: 'consonant', typeLabel: 'மெய்' },
   { tamil: 'த', roman: 'ta', type: 'consonant', typeLabel: 'மெய்' },
   { tamil: 'ந', roman: 'na', type: 'consonant', typeLabel: 'மெய்' },
   { tamil: 'ப', roman: 'pa', type: 'consonant', typeLabel: 'மெய்' },
@@ -42,10 +42,10 @@ const CONSONANTS: LetterInfo[] = [
   { tamil: 'ர', roman: 'ra', type: 'consonant', typeLabel: 'மெய்' },
   { tamil: 'ல', roman: 'la', type: 'consonant', typeLabel: 'மெய்' },
   { tamil: 'வ', roman: 'va', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ழ', roman: 'ḻa', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ள', roman: 'Ḷa', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ற', roman: 'ṟa', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ன', roman: 'ṉa', type: 'consonant', typeLabel: 'மெய்' },
+  { tamil: 'ழ', roman: 'zha', type: 'consonant', typeLabel: 'மெய்' },
+  { tamil: 'ள', roman: 'la', type: 'consonant', typeLabel: 'மெய்' },
+  { tamil: 'ற', roman: 'ra', type: 'consonant', typeLabel: 'மெய்' },
+  { tamil: 'ன', roman: 'na', type: 'consonant', typeLabel: 'மெய்' },
 ];
 
 const ALL_LETTERS = [...VOWELS, ...CONSONANTS];

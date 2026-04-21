@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { speakTamil as speakTamilText } from '../../utils/pronunciationEngine';
 import './tamilnumbers.styles.scss';
 
 interface TamilNumber {
@@ -43,15 +44,6 @@ const tamilDigit = (n: number): string => {
   return String(n).split('').map(d => digits[parseInt(d)] || d).join('');
 };
 
-const speakTamil = (text: string) => {
-  if (!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = 'ta-IN';
-  utter.rate = 0.8;
-  window.speechSynthesis.speak(utter);
-};
-
 type TabType = 'digits' | 'tens' | 'special' | 'converter';
 
 const TamilNumbers = () => {
@@ -65,10 +57,10 @@ const TamilNumbers = () => {
           key={num.arabic}
           className="number-card"
           style={{ '--card-accent': color } as React.CSSProperties}
-          onClick={() => speakTamil(num.word)}
+          onClick={() => speakTamilText(num.word)}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => e.key === 'Enter' && speakTamil(num.word)}
+          onKeyDown={(e) => e.key === 'Enter' && speakTamilText(num.word)}
         >
           <span className="number-card__tamil">{num.tamil}</span>
           <span className="number-card__arabic">{num.arabic}</span>

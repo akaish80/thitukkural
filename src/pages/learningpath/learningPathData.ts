@@ -31,18 +31,18 @@ export interface Step {
 
 // ── Step 1 — Uyir (Vowels) ──
 const uyirLetters: LessonItem[] = [
-  { id: 'அ', tamil: 'அ', romanization: 'a', meaning: 'Short a' },
-  { id: 'ஆ', tamil: 'ஆ', romanization: 'aa', meaning: 'Long a' },
-  { id: 'இ', tamil: 'இ', romanization: 'i', meaning: 'Short i' },
-  { id: 'ஈ', tamil: 'ஈ', romanization: 'ee', meaning: 'Long i' },
-  { id: 'உ', tamil: 'உ', romanization: 'u', meaning: 'Short u' },
-  { id: 'ஊ', tamil: 'ஊ', romanization: 'oo', meaning: 'Long u' },
-  { id: 'எ', tamil: 'எ', romanization: 'e', meaning: 'Short e' },
-  { id: 'ஏ', tamil: 'ஏ', romanization: 'ae', meaning: 'Long e' },
-  { id: 'ஐ', tamil: 'ஐ', romanization: 'ai', meaning: 'Diphthong ai' },
-  { id: 'ஒ', tamil: 'ஒ', romanization: 'o', meaning: 'Short o' },
-  { id: 'ஓ', tamil: 'ஓ', romanization: 'oo', meaning: 'Long o' },
-  { id: 'ஔ', tamil: 'ஔ', romanization: 'au', meaning: 'Diphthong au' },
+  { id: 'அ', tamil: 'அ', romanization: 'a', meaning: 'Short a sound, as in about' },
+  { id: 'ஆ', tamil: 'ஆ', romanization: 'aa', meaning: 'Long aa sound, as in father' },
+  { id: 'இ', tamil: 'இ', romanization: 'i', meaning: 'Short i sound, as in bit' },
+  { id: 'ஈ', tamil: 'ஈ', romanization: 'ee', meaning: 'Long ee sound, as in see' },
+  { id: 'உ', tamil: 'உ', romanization: 'u', meaning: 'Short u sound, as in put' },
+  { id: 'ஊ', tamil: 'ஊ', romanization: 'oo', meaning: 'Long oo sound, as in food' },
+  { id: 'எ', tamil: 'எ', romanization: 'e', meaning: 'Short e sound, as in bed' },
+  { id: 'ஏ', tamil: 'ஏ', romanization: 'ae', meaning: 'Long e sound, as in they' },
+  { id: 'ஐ', tamil: 'ஐ', romanization: 'ai', meaning: 'Diphthong ai, as in aisle' },
+  { id: 'ஒ', tamil: 'ஒ', romanization: 'o', meaning: 'Short o sound, as in hot' },
+  { id: 'ஓ', tamil: 'ஓ', romanization: 'oo', meaning: 'Long o sound, as in go' },
+  { id: 'ஔ', tamil: 'ஔ', romanization: 'au', meaning: 'Diphthong au, as in cow' },
 ];
 
 const uyirLessons: Lesson[] = [
@@ -74,24 +74,24 @@ const uyirLessons: Lesson[] = [
 
 // ── Step 2 — Mei (Consonants) ──
 const meiLetters: LessonItem[] = [
-  { id: 'க்', tamil: 'க்', romanization: 'k', meaning: 'ka-class' },
-  { id: 'ங்', tamil: 'ங்', romanization: 'ng', meaning: 'ka-class nasal' },
-  { id: 'ச்', tamil: 'ச்', romanization: 'ch', meaning: 'cha-class' },
-  { id: 'ஞ்', tamil: 'ஞ்', romanization: 'nj', meaning: 'cha-class nasal' },
-  { id: 'ட்', tamil: 'ட்', romanization: 'ṭ', meaning: 'ṭa-class' },
-  { id: 'ண்', tamil: 'ண்', romanization: 'ṇ', meaning: 'ṭa-class nasal' },
-  { id: 'த்', tamil: 'த்', romanization: 'th', meaning: 'tha-class' },
-  { id: 'ந்', tamil: 'ந்', romanization: 'n', meaning: 'tha-class nasal' },
-  { id: 'ப்', tamil: 'ப்', romanization: 'p', meaning: 'pa-class' },
-  { id: 'ம்', tamil: 'ம்', romanization: 'm', meaning: 'pa-class nasal' },
-  { id: 'ய்', tamil: 'ய்', romanization: 'y', meaning: 'Semi-vowel' },
-  { id: 'ர்', tamil: 'ர்', romanization: 'r', meaning: 'Liquid' },
-  { id: 'ல்', tamil: 'ல்', romanization: 'l', meaning: 'Liquid' },
-  { id: 'வ்', tamil: 'வ்', romanization: 'v', meaning: 'Semi-vowel' },
-  { id: 'ழ்', tamil: 'ழ்', romanization: 'zh', meaning: 'Retroflex approx' },
-  { id: 'ள்', tamil: 'ள்', romanization: 'ḷ', meaning: 'Retroflex lateral' },
-  { id: 'ற்', tamil: 'ற்', romanization: 'ṟ', meaning: 'Alveolar trill' },
-  { id: 'ன்', tamil: 'ன்', romanization: 'ṉ', meaning: 'Alveolar nasal' },
+  { id: 'க்', tamil: 'க்', romanization: 'k', meaning: 'Hard k stop consonant' },
+  { id: 'ங்', tamil: 'ங்', romanization: 'ng', meaning: 'Nasal ng sound, as in sing' },
+  { id: 'ச்', tamil: 'ச்', romanization: 'ch', meaning: 'Ch sound, as in chair' },
+  { id: 'ஞ்', tamil: 'ஞ்', romanization: 'nj', meaning: 'Palatal nasal, as in canyon' },
+  { id: 'ட்', tamil: 'ட்', romanization: 't', meaning: 'Retroflex t with curled tongue' },
+  { id: 'ண்', tamil: 'ண்', romanization: 'n', meaning: 'Retroflex n with curled tongue' },
+  { id: 'த்', tamil: 'த்', romanization: 'th', meaning: 'Dental t/th made at the teeth' },
+  { id: 'ந்', tamil: 'ந்', romanization: 'n', meaning: 'Dental n made at the teeth' },
+  { id: 'ப்', tamil: 'ப்', romanization: 'p', meaning: 'Hard p stop consonant' },
+  { id: 'ம்', tamil: 'ம்', romanization: 'm', meaning: 'Bilabial m sound' },
+  { id: 'ய்', tamil: 'ய்', romanization: 'y', meaning: 'Glide y sound, as in yes' },
+  { id: 'ர்', tamil: 'ர்', romanization: 'r', meaning: 'Tapped r sound' },
+  { id: 'ல்', tamil: 'ல்', romanization: 'l', meaning: 'Light l sound' },
+  { id: 'வ்', tamil: 'வ்', romanization: 'v', meaning: 'Between v and w in speech' },
+  { id: 'ழ்', tamil: 'ழ்', romanization: 'zh', meaning: 'Unique Tamil zh sound' },
+  { id: 'ள்', tamil: 'ள்', romanization: 'l', meaning: 'Retroflex l with curled tongue' },
+  { id: 'ற்', tamil: 'ற்', romanization: 'r', meaning: 'Strong rolled or trilled r' },
+  { id: 'ன்', tamil: 'ன்', romanization: 'n', meaning: 'Alveolar n used in word endings' },
 ];
 
 const meiLessons: Lesson[] = [
@@ -123,7 +123,7 @@ const meiLessons: Lesson[] = [
 
 // ── Step 3 — Uyirmei (Combinations) ──
 const uyirSuffixes = ['', 'ா', 'ி', 'ீ', 'ு', 'ூ', 'ெ', 'ே', 'ை', 'ொ', 'ோ', 'ௌ'];
-const uyirRomans = ['a', 'aa', 'i', 'ee', 'u', 'oo', 'e', 'ae', 'ai', 'o', 'oa', 'au'];
+const uyirRomans = ['a', 'aa', 'i', 'ee', 'u', 'oo', 'e', 'ae', 'ai', 'o', 'oo', 'au'];
 const sampleBases = [
   { base: 'க', roman: 'k' },
   { base: 'ச', roman: 'ch' },
@@ -131,6 +131,8 @@ const sampleBases = [
   { base: 'ப', roman: 'p' },
   { base: 'ம', roman: 'm' },
   { base: 'ந', roman: 'n' },
+  { base: 'ர', roman: 'r' },
+  { base: 'வ', roman: 'v' },
 ];
 
 const uyirmeiLessons: Lesson[] = sampleBases.map((b, idx) => ({
@@ -154,13 +156,17 @@ const simpleWords: LessonItem[] = [
   { id: 'w-தமிழ்', tamil: 'தமிழ்', romanization: 'tamizh', meaning: 'Tamil' },
   { id: 'w-நன்றி', tamil: 'நன்றி', romanization: 'nandri', meaning: 'Thank you' },
   { id: 'w-வணக்கம்', tamil: 'வணக்கம்', romanization: 'vanakkam', meaning: 'Hello' },
-  { id: 'w-பள்ளி', tamil: 'பள்ளி', romanization: 'paḷḷi', meaning: 'School' },
+  { id: 'w-பள்ளி', tamil: 'பள்ளி', romanization: 'palli', meaning: 'School' },
   { id: 'w-நீர்', tamil: 'நீர்', romanization: 'neer', meaning: 'Water' },
   { id: 'w-மரம்', tamil: 'மரம்', romanization: 'maram', meaning: 'Tree' },
   { id: 'w-பூ', tamil: 'பூ', romanization: 'poo', meaning: 'Flower' },
   { id: 'w-கடல்', tamil: 'கடல்', romanization: 'kadal', meaning: 'Sea' },
   { id: 'w-வீடு', tamil: 'வீடு', romanization: 'veedu', meaning: 'House' },
   { id: 'w-சாப்பாடு', tamil: 'சாப்பாடு', romanization: 'saappaadu', meaning: 'Food' },
+  { id: 'w-புத்தகம்', tamil: 'புத்தகம்', romanization: 'puthagam', meaning: 'Book' },
+  { id: 'w-நண்பன்', tamil: 'நண்பன்', romanization: 'nanban', meaning: 'Friend' },
+  { id: 'w-காலை', tamil: 'காலை', romanization: 'kaalai', meaning: 'Morning' },
+  { id: 'w-இன்று', tamil: 'இன்று', romanization: 'indru', meaning: 'Today' },
 ];
 
 const wordLessons: Lesson[] = [
@@ -185,7 +191,15 @@ const wordLessons: Lesson[] = [
     title: 'Everyday Words',
     titleTamil: 'அன்றாட சொற்கள்',
     description: 'Essential Tamil words for daily use',
-    items: simpleWords.filter((w) => ['w-தமிழ்', 'w-சாப்பாடு'].includes(w.id)),
+    items: simpleWords.filter((w) => ['w-தமிழ்', 'w-சாப்பாடு', 'w-புத்தகம்'].includes(w.id)),
+    quizType: 'write',
+  },
+  {
+    id: 'words-4',
+    title: 'People & Time',
+    titleTamil: 'மக்கள் & நேரம்',
+    description: 'Useful words about people and everyday time references',
+    items: simpleWords.filter((w) => ['w-நண்பன்', 'w-காலை', 'w-இன்று'].includes(w.id)),
     quizType: 'write',
   },
 ];
@@ -196,10 +210,12 @@ const sentences: LessonItem[] = [
   { id: 's-2', tamil: 'இது என் வீடு', romanization: 'idhu en veedu', meaning: 'This is my house' },
   { id: 's-3', tamil: 'நீ எப்படி இருக்கிறாய்?', romanization: 'nee eppadi irukkiraai?', meaning: 'How are you?' },
   { id: 's-4', tamil: 'எனக்கு தமிழ் பிடிக்கும்', romanization: 'enakku tamizh pidikkum', meaning: 'I like Tamil' },
-  { id: 's-5', tamil: 'அவள் பள்ளிக்கு போகிறாள்', romanization: 'avaḷ paḷḷikku pokiraaḷ', meaning: 'She is going to school' },
+  { id: 's-5', tamil: 'அவள் பள்ளிக்கு போகிறாள்', romanization: 'aval pallikku pokiraal', meaning: 'She is going to school' },
   { id: 's-6', tamil: 'மழை பெய்கிறது', romanization: 'mazhai peykiRadhu', meaning: 'It is raining' },
   { id: 's-7', tamil: 'நான் சாப்பிட்டேன்', romanization: 'naan saappitten', meaning: 'I ate' },
   { id: 's-8', tamil: 'தமிழ் மிகவும் அழகான மொழி', romanization: 'tamizh mikavum azhagaana mozhi', meaning: 'Tamil is a very beautiful language' },
+  { id: 's-9', tamil: 'இன்று காலை நான் பள்ளிக்கு சென்றேன்', romanization: 'indru kaalai naan pallikku senren', meaning: 'This morning I went to school' },
+  { id: 's-10', tamil: 'என் நண்பன் ஒரு புத்தகம் படிக்கிறான்', romanization: 'en nanban oru puthagam padikkiraan', meaning: 'My friend is reading a book' },
 ];
 
 const sentenceLessons: Lesson[] = [
@@ -227,6 +243,60 @@ const sentenceLessons: Lesson[] = [
     items: sentences.filter((s) => ['s-6', 's-8'].includes(s.id)),
     quizType: 'read',
   },
+  {
+    id: 'sent-4',
+    title: 'Daily Life',
+    titleTamil: 'அன்றாட வாழ்க்கை',
+    description: 'Read practical sentences used in everyday conversations',
+    items: sentences.filter((s) => ['s-9', 's-10'].includes(s.id)),
+    quizType: 'read',
+  },
+];
+
+export interface ThirtyDayPlanItem {
+  day: number;
+  week: number;
+  focus: string;
+  goal: string;
+  stepId?: Step['id'];
+  minutes: number;
+}
+
+export const THIRTY_DAY_PLAN: ThirtyDayPlanItem[] = [
+  { day: 1, week: 1, focus: 'Tamil sounds and script intro', goal: 'Understand how Uyir, Mei, and Uyirmei are formed', minutes: 20 },
+  { day: 2, week: 1, focus: 'Short vowels', goal: 'Memorize அ, இ, உ, எ, ஒ with pronunciation', stepId: 'uyir', minutes: 20 },
+  { day: 3, week: 1, focus: 'Long vowels', goal: 'Practice ஆ, ஈ, ஊ, ஏ, ஓ and sound contrast', stepId: 'uyir', minutes: 20 },
+  { day: 4, week: 1, focus: 'Diphthongs', goal: 'Learn ஐ and ஔ with examples', stepId: 'uyir', minutes: 20 },
+  { day: 5, week: 1, focus: 'Vowel revision', goal: 'Read all 12 vowels without prompts', stepId: 'uyir', minutes: 20 },
+  { day: 6, week: 1, focus: 'Listening and speaking', goal: 'Repeat vowels aloud with audio support', stepId: 'uyir', minutes: 15 },
+  { day: 7, week: 1, focus: 'Weekly checkpoint', goal: 'Complete all Uyir quizzes with at least 70%', stepId: 'uyir', minutes: 25 },
+
+  { day: 8, week: 2, focus: 'Vallinam consonants', goal: 'Learn க், ச், ட், த், ப், ற்', stepId: 'mei', minutes: 20 },
+  { day: 9, week: 2, focus: 'Mellinam consonants', goal: 'Learn ங், ஞ், ண், ந், ம், ன்', stepId: 'mei', minutes: 20 },
+  { day: 10, week: 2, focus: 'Idaiyinam consonants', goal: 'Learn ய், ர், ல், வ், ழ், ள்', stepId: 'mei', minutes: 20 },
+  { day: 11, week: 2, focus: 'Consonant recall', goal: 'Identify all 18 Mei letters quickly', stepId: 'mei', minutes: 20 },
+  { day: 12, week: 2, focus: 'Pronunciation drills', goal: 'Practice tricky sounds like ழ் and ற்', stepId: 'mei', minutes: 20 },
+  { day: 13, week: 2, focus: 'Mixed letter reading', goal: 'Read random Uyir and Mei combinations', stepId: 'mei', minutes: 20 },
+  { day: 14, week: 2, focus: 'Weekly checkpoint', goal: 'Complete all Mei quizzes with at least 70%', stepId: 'mei', minutes: 25 },
+
+  { day: 15, week: 3, focus: 'Uyirmei concept', goal: 'Understand how vowel markers change consonants', stepId: 'uyirmei', minutes: 20 },
+  { day: 16, week: 3, focus: 'க and ச rows', goal: 'Read all 12 forms for க and ச', stepId: 'uyirmei', minutes: 20 },
+  { day: 17, week: 3, focus: 'த and ப rows', goal: 'Read all 12 forms for த and ப', stepId: 'uyirmei', minutes: 20 },
+  { day: 18, week: 3, focus: 'ம and ந rows', goal: 'Read all 12 forms for ம and ந', stepId: 'uyirmei', minutes: 20 },
+  { day: 19, week: 3, focus: 'ர and வ rows', goal: 'Read all 12 forms for ர and வ', stepId: 'uyirmei', minutes: 20 },
+  { day: 20, week: 3, focus: 'Pattern spotting', goal: 'Recognize repeating vowel marker patterns', stepId: 'uyirmei', minutes: 20 },
+  { day: 21, week: 3, focus: 'Weekly checkpoint', goal: 'Complete all Uyirmei lessons and quiz', stepId: 'uyirmei', minutes: 25 },
+
+  { day: 22, week: 4, focus: 'Core word set', goal: 'Practice family and greeting words', stepId: 'words', minutes: 20 },
+  { day: 23, week: 4, focus: 'Nature vocabulary', goal: 'Learn water, tree, flower, sea, and house words', stepId: 'words', minutes: 20 },
+  { day: 24, week: 4, focus: 'Daily words', goal: 'Use common words in short phrases', stepId: 'words', minutes: 20 },
+  { day: 25, week: 4, focus: 'People and time words', goal: 'Practice words like friend, morning, today', stepId: 'words', minutes: 20 },
+  { day: 26, week: 4, focus: 'Word writing practice', goal: 'Write 10 words from memory', stepId: 'words', minutes: 20 },
+  { day: 27, week: 4, focus: 'Sentence reading basics', goal: 'Read simple self and action sentences', stepId: 'sentences', minutes: 20 },
+  { day: 28, week: 4, focus: 'Weekly checkpoint', goal: 'Finish word lessons and start sentence quizzes', stepId: 'sentences', minutes: 25 },
+
+  { day: 29, week: 5, focus: 'Fluency day', goal: 'Read all learned words and sentences aloud', stepId: 'sentences', minutes: 25 },
+  { day: 30, week: 5, focus: 'Final review', goal: 'Complete all pending quizzes and celebrate progress', stepId: 'sentences', minutes: 30 },
 ];
 
 // ── All Steps ──

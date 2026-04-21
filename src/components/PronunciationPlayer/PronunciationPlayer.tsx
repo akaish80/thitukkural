@@ -5,6 +5,9 @@ import {
   getSpeed,
   toggleSpeed,
   onSpeakingChange,
+  getLastSpeechOutput,
+  onSpeechOutputChange,
+  type SpeechOutputMeta,
   type SpeechSpeed,
 } from '../../utils/pronunciationEngine';
 import './PronunciationPlayer.scss';
@@ -124,6 +127,7 @@ const PronunciationPlayer = ({
 }: PronunciationPlayerProps) => {
   const [active, setActive] = useState(false);
   const [activeText, setActiveText] = useState('');
+  const [speechOutput, setSpeechOutput] = useState<SpeechOutputMeta>(getLastSpeechOutput);
 
   useEffect(() => {
     const unsub = onSpeakingChange((val) => {
@@ -131,6 +135,19 @@ const PronunciationPlayer = ({
     });
     return unsub;
   }, []);
+
+  useEffect(() => {
+    const unsub = onSpeechOutputChange(setSpeechOutput);
+    return unsub;
+  }, []);
+
+  const voiceLabel = speechOutput.voiceName ?? 'System voice';
+  const sourceLabel =
+    speechOutput.source === 'tamil'
+      ? 'Tamil voice'
+      : speechOutput.source === 'loading'
+        ? 'Loading voice list'
+        : 'Fallback voice';
 
   const play = useCallback((t: string) => {
     setActiveText(t);
@@ -168,6 +185,12 @@ const PronunciationPlayer = ({
           <span className="pronunciation-player__text">{text}</span>
           {romanization && <span className="pronunciation-player__roman">{romanization}</span>}
           {meaning && <span className="pronunciation-player__meaning">{meaning}</span>}
+          <span
+            className="pronunciation-player__voice"
+            title={`${sourceLabel}: ${voiceLabel} (${speechOutput.lang})`}
+          >
+            Voice: {voiceLabel} ({speechOutput.lang})
+          </span>
         </div>
 
         {showSpeedToggle && <SpeedToggle className="pronunciation-player__speed" />}

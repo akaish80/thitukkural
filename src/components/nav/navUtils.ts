@@ -28,6 +28,8 @@ export const getIcon = (text: string) => {
     return '🔢';
   } else if (lower === 'learning path') {
     return '🛤️';
+  } else if (lower === 'planner') {
+    return '🗓️';
   } else if (lower === 'tamil letters') {
     return '✍️';
   } else if (lower === 'exercise kurral') {

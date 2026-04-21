@@ -186,6 +186,14 @@ export interface LearningPathData {
   lessons: Record<string, LessonProgress>;
 }
 
+export interface ThirtyDayProgressData {
+  completedDays: number[];
+  dayCompletedAt: Record<string, string>;
+  updatedAt: string;
+  startedAt: string;
+  seenMilestones: number[];
+}
+
 export function getLearningPath(): LearningPathData {
   return getJSON<LearningPathData>('learning-path', {
     currentStep: 0,
@@ -241,6 +249,117 @@ export function advanceStep(step: number): void {
     path.currentStep = step;
   }
   setJSON('learning-path', path);
+}
+
+export function getThirtyDayProgress(): ThirtyDayProgressData {
+  return getJSON<ThirtyDayProgressData>('thirty-day-plan', {
+    completedDays: [],
+    dayCompletedAt: {},
+    updatedAt: '',
+    startedAt: '',
+    seenMilestones: [],
+  });
+}
+
+export function isThirtyDayCompleted(day: number): boolean {
+  const data = getThirtyDayProgress();
+  return data.completedDays.includes(day);
+}
+
+export function toggleThirtyDayCompletion(day: number): ThirtyDayProgressData {
+  const data = getThirtyDayProgress();
+  if (!data.dayCompletedAt) data.dayCompletedAt = {};
+  const idx = data.completedDays.indexOf(day);
+  if (idx >= 0) {
+    data.completedDays.splice(idx, 1);
+    delete data.dayCompletedAt[String(day)];
+  } else {
+    data.completedDays.push(day);
+    data.completedDays.sort((a, b) => a - b);
+    data.dayCompletedAt[String(day)] = todayStr();
+    if (!data.startedAt) {
+      data.startedAt = todayStr();
+    }
+  }
+  data.updatedAt = todayStr();
+  setJSON('thirty-day-plan', data);
+  return data;
+}
+
+export function setThirtyDayCompletion(day: number, completed: boolean): ThirtyDayProgressData {
+  const data = getThirtyDayProgress();
+  if (!data.dayCompletedAt) data.dayCompletedAt = {};
+  const exists = data.completedDays.includes(day);
+
+  if (completed && !exists) {
+    data.completedDays.push(day);
+    data.completedDays.sort((a, b) => a - b);
+    data.dayCompletedAt[String(day)] = todayStr();
+    if (!data.startedAt) {
+      data.startedAt = todayStr();
+    }
+  }
+
+  if (!completed && exists) {
+    data.completedDays = data.completedDays.filter((d) => d !== day);
+    delete data.dayCompletedAt[String(day)];
+  }
+
+  data.updatedAt = todayStr();
+  setJSON('thirty-day-plan', data);
+  return data;
+}
+
+export function setThirtyDayStartDate(startedAt: string): ThirtyDayProgressData {
+  const data = getThirtyDayProgress();
+  data.startedAt = startedAt;
+  data.updatedAt = todayStr();
+  setJSON('thirty-day-plan', data);
+  return data;
+}
+
+export function getThirtyDayTodayDay(startedAt: string): number | null {
+  if (!startedAt) return null;
+  const start = new Date(`${startedAt}T00:00:00`);
+  if (Number.isNaN(start.getTime())) return null;
+
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const diffMs = today.getTime() - start.getTime();
+  const diffDays = Math.floor(diffMs / 86400000);
+  const dayNumber = diffDays + 1;
+
+  if (dayNumber < 1) return 1;
+  if (dayNumber > 30) return 30;
+  return dayNumber;
+}
+
+export function resetThirtyDayProgress(): void {
+  setJSON('thirty-day-plan', {
+    completedDays: [],
+    dayCompletedAt: {},
+    updatedAt: todayStr(),
+    startedAt: '',
+    seenMilestones: [],
+  } as ThirtyDayProgressData);
+}
+
+const THIRTY_DAY_MILESTONES = [7, 14, 21, 30] as const;
+
+export function consumeThirtyDayMilestone(): number | null {
+  const data = getThirtyDayProgress();
+  const completed = data.completedDays.length;
+  const reached = THIRTY_DAY_MILESTONES.filter((m) => completed >= m);
+  if (reached.length === 0) return null;
+
+  const newest = reached[reached.length - 1];
+  if (data.seenMilestones.includes(newest)) return null;
+
+  data.seenMilestones.push(newest);
+  data.seenMilestones.sort((a, b) => a - b);
+  data.updatedAt = todayStr();
+  setJSON('thirty-day-plan', data);
+  return newest;
 }
 
 // ── Badges ──

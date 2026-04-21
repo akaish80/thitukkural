@@ -21,6 +21,7 @@ const Contact = lazy(() => import('./pages/contact/contact.component'));
 const Privacy = lazy(() => import('./pages/privacy/privacy.component'));
 const TamilNumbers = lazy(() => import('./pages/tamilnumbers/tamilnumbers.component'));
 const LearningPath = lazy(() => import('./pages/learningpath/LearningPath'));
+const PlannerPage = lazy(() => import('./pages/learningpath/PlannerPage'));
 const LessonPage = lazy(() => import('./pages/learningpath/LessonPage'));
 
 const ScrollToTop = () => {
@@ -63,6 +64,7 @@ const AppRoutes = () => (
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/tamil-numbers" element={<TamilNumbers />} />
       <Route path="/learn" element={<LearningPath />} />
+      <Route path="/planner" element={<PlannerPage />} />
       <Route path="/learn/:stepId/:lessonId" element={<LessonPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   getLessonProgress,
@@ -35,10 +35,20 @@ function overallProgress(): { done: number; total: number } {
 /* ── Component ── */
 const LearningPath = () => {
   const [tab, setTab] = useState<'path' | 'badges'>('path');
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
+  const [mobileStepIndex, setMobileStepIndex] = useState(0);
   const badges = useMemo(() => getBadges(), []);
   const streak = useMemo(() => getStreakData(), []);
   const overall = useMemo(() => overallProgress(), []);
   const pct = overall.total > 0 ? Math.round((overall.done / overall.total) * 100) : 0;
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  const visibleSteps = isMobile ? [LEARNING_STEPS[mobileStepIndex]] : LEARNING_STEPS;
 
   return (
     <div className="learning-path-page">
@@ -93,7 +103,40 @@ const LearningPath = () => {
       {/* Path view */}
       {tab === 'path' && (
         <div className="lp-steps">
-          {LEARNING_STEPS.map((step, idx) => {
+          <section className="lp-planner-cta">
+            <h2 className="lp-planner-cta__title">30-Day Planner</h2>
+            <p className="lp-planner-cta__desc">
+              Track your daily schedule, challenge date, milestones, and momentum in a dedicated planner page.
+            </p>
+            <Link to="/planner" className="lp-planner-cta__btn">Open Planner</Link>
+          </section>
+
+          {isMobile && (
+            <div className="lp-mobile-step-nav">
+              <button
+                type="button"
+                className="lp-mobile-step-nav__btn"
+                onClick={() => setMobileStepIndex((i) => Math.max(0, i - 1))}
+                disabled={mobileStepIndex === 0}
+              >
+                ← Prev
+              </button>
+              <span className="lp-mobile-step-nav__label">
+                Step {mobileStepIndex + 1} / {LEARNING_STEPS.length}
+              </span>
+              <button
+                type="button"
+                className="lp-mobile-step-nav__btn"
+                onClick={() => setMobileStepIndex((i) => Math.min(LEARNING_STEPS.length - 1, i + 1))}
+                disabled={mobileStepIndex === LEARNING_STEPS.length - 1}
+              >
+                Next →
+              </button>
+            </div>
+          )}
+
+          {visibleSteps.map((step) => {
+            const idx = LEARNING_STEPS.findIndex((s) => s.id === step.id);
             const sc = stepCompletion(step.id);
             const isUnlocked = idx === 0 || stepCompletion(LEARNING_STEPS[idx - 1].id).done === stepCompletion(LEARNING_STEPS[idx - 1].id).total;
             const isComplete = sc.done === sc.total && sc.total > 0;

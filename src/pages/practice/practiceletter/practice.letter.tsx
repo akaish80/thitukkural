@@ -8,24 +8,24 @@ import './practice.letter.scss';
 type Key = { roman: string; tamil: string };
 
 const CONSONANTS: Key[] = [
-  { roman: 'ka', tamil: 'க' }, { roman: 'ṅa', tamil: 'ங' },
-  { roman: 'ca', tamil: 'ச' }, { roman: 'ña', tamil: 'ஞ' },
-  { roman: 'Ṭa', tamil: 'ட' }, { roman: 'Ṇa', tamil: 'ண' },
+  { roman: 'ka', tamil: 'க' }, { roman: 'nga', tamil: 'ங' },
+  { roman: 'ca', tamil: 'ச' }, { roman: 'nja', tamil: 'ஞ' },
+  { roman: 'ta', tamil: 'ட' }, { roman: 'na', tamil: 'ண' },
   { roman: 'ta', tamil: 'த' }, { roman: 'na', tamil: 'ந' },
   { roman: 'pa', tamil: 'ப' }, { roman: 'ma', tamil: 'ம' },
   { roman: 'ya', tamil: 'ய' }, { roman: 'ra', tamil: 'ர' },
   { roman: 'la', tamil: 'ல' }, { roman: 'va', tamil: 'வ' },
-  { roman: 'ḻa', tamil: 'ழ' }, { roman: 'Ḷa', tamil: 'ள' },
-  { roman: 'ṟa', tamil: 'ற' }, { roman: 'ṉa', tamil: 'ன' },
+  { roman: 'zha', tamil: 'ழ' }, { roman: 'la', tamil: 'ள' },
+  { roman: 'ra', tamil: 'ற' }, { roman: 'na', tamil: 'ன' },
 ];
 
 const VOWELS: Key[] = [
-  { roman: 'a', tamil: 'அ' }, { roman: 'ā', tamil: 'ஆ' },
-  { roman: 'i', tamil: 'இ' }, { roman: 'ī', tamil: 'ஈ' },
-  { roman: 'u', tamil: 'உ' }, { roman: 'ū', tamil: 'ஊ' },
-  { roman: 'e', tamil: 'எ' }, { roman: 'ē', tamil: 'ஏ' },
+  { roman: 'a', tamil: 'அ' }, { roman: 'aa', tamil: 'ஆ' },
+  { roman: 'i', tamil: 'இ' }, { roman: 'ii', tamil: 'ஈ' },
+  { roman: 'u', tamil: 'உ' }, { roman: 'uu', tamil: 'ஊ' },
+  { roman: 'e', tamil: 'எ' }, { roman: 'ee', tamil: 'ஏ' },
   { roman: 'ai', tamil: 'ஐ' }, { roman: 'o', tamil: 'ஒ' },
-  { roman: 'ō', tamil: 'ஓ' }, { roman: 'au', tamil: 'ஔ' },
+  { roman: 'oo', tamil: 'ஓ' }, { roman: 'au', tamil: 'ஔ' },
 ];
 
 // ---------------------------------------------------------------------------

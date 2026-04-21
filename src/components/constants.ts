@@ -29,8 +29,12 @@ const nav = [
   },
   {
     text: 'Learning Path',
-    link: '/learn',
+    link: '',
     isClicked: false,
+    children: [
+      { text: 'Learning Path', link: '/learn', isClicked: false },
+      { text: 'Planner', link: '/planner', isClicked: false },
+    ],
   },
   {
     text: 'Aathichudi',
