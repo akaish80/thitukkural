@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { speakTamil as speakTamilText } from '../../utils/pronunciationEngine';
+import { speakTamil, speakTamil as speakTamilText } from '../../utils/pronunciationEngine';
 import './tamilnumbers.styles.scss';
 
 interface TamilNumber {
