@@ -4,7 +4,8 @@
   box-shadow: 0 2px 20px var(--shadow-light);
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 1200;
+  isolation: isolate;
   backdrop-filter: blur(10px);
 
   .nav-container {
@@ -32,7 +33,7 @@
     border: none;
     cursor: pointer;
     padding: 0;
-    z-index: 60;
+    z-index: 1301;
 
     @media (max-width: 768px) {
       display: flex;
@@ -85,7 +86,7 @@
       transition: right 0.3s ease;
       border-left: 1px solid var(--border-primary);
       gap: 1rem;
-      z-index: 55;
+      z-index: 1300;
 
       &.mobile-open {
         right: 0;
@@ -313,7 +314,7 @@
         list-style: none;
         margin: 0;
         padding: 0.5rem;
-        z-index: 100;
+        z-index: 1400;
         animation: dropdownFadeIn 0.15s ease;
 
         @media (max-width: 768px) {

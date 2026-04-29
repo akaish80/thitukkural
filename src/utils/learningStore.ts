@@ -402,3 +402,34 @@ export function hasBadge(badgeId: string): boolean {
   const earned = getJSON<Record<string, string>>('badges', {});
   return !!earned[badgeId];
 }
+
+export type TamilExperienceLevel =
+  | 'Starter'
+  | 'Beginner'
+  | 'Intermediate'
+  | 'Advanced';
+
+export interface TamilEvaluationResult {
+  date: string;
+  score: number;
+  total: number;
+  accuracy: number;
+  xp: number;
+  level: TamilExperienceLevel;
+}
+
+export function saveTamilEvaluationResult(result: TamilEvaluationResult): void {
+  const history = getJSON<TamilEvaluationResult[]>('tamil-evaluation-history', []);
+  history.push(result);
+  if (history.length > 50) history.splice(0, history.length - 50);
+  setJSON('tamil-evaluation-history', history);
+  setJSON('tamil-evaluation-latest', result);
+}
+
+export function getTamilEvaluationHistory(): TamilEvaluationResult[] {
+  return getJSON<TamilEvaluationResult[]>('tamil-evaluation-history', []);
+}
+
+export function getLatestTamilEvaluation(): TamilEvaluationResult | null {
+  return getJSON<TamilEvaluationResult | null>('tamil-evaluation-latest', null);
+}

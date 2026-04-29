@@ -5,6 +5,9 @@ export interface LessonItem {
   tamil: string;
   romanization: string;
   meaning?: string;
+  imageSrc?: string;
+  imageEmoji?: string;
+  imageHint?: string;
 }
 
 export interface Lesson {
@@ -14,7 +17,7 @@ export interface Lesson {
   description: string;
   items: LessonItem[];
   /** mini-quiz: pick the right romanization for a given tamil letter */
-  quizType: 'identify' | 'match' | 'write' | 'read';
+  quizType: 'identify' | 'match' | 'write' | 'read' | 'picture';
 }
 
 export interface Step {
@@ -151,22 +154,22 @@ const uyirmeiLessons: Lesson[] = sampleBases.map((b, idx) => ({
 
 // ── Step 4 — Simple Words ──
 const simpleWords: LessonItem[] = [
-  { id: 'w-அம்மா', tamil: 'அம்மா', romanization: 'ammaa', meaning: 'Mother' },
-  { id: 'w-அப்பா', tamil: 'அப்பா', romanization: 'appaa', meaning: 'Father' },
-  { id: 'w-தமிழ்', tamil: 'தமிழ்', romanization: 'tamizh', meaning: 'Tamil' },
-  { id: 'w-நன்றி', tamil: 'நன்றி', romanization: 'nandri', meaning: 'Thank you' },
-  { id: 'w-வணக்கம்', tamil: 'வணக்கம்', romanization: 'vanakkam', meaning: 'Hello' },
-  { id: 'w-பள்ளி', tamil: 'பள்ளி', romanization: 'palli', meaning: 'School' },
-  { id: 'w-நீர்', tamil: 'நீர்', romanization: 'neer', meaning: 'Water' },
-  { id: 'w-மரம்', tamil: 'மரம்', romanization: 'maram', meaning: 'Tree' },
-  { id: 'w-பூ', tamil: 'பூ', romanization: 'poo', meaning: 'Flower' },
-  { id: 'w-கடல்', tamil: 'கடல்', romanization: 'kadal', meaning: 'Sea' },
-  { id: 'w-வீடு', tamil: 'வீடு', romanization: 'veedu', meaning: 'House' },
-  { id: 'w-சாப்பாடு', tamil: 'சாப்பாடு', romanization: 'saappaadu', meaning: 'Food' },
-  { id: 'w-புத்தகம்', tamil: 'புத்தகம்', romanization: 'puthagam', meaning: 'Book' },
-  { id: 'w-நண்பன்', tamil: 'நண்பன்', romanization: 'nanban', meaning: 'Friend' },
-  { id: 'w-காலை', tamil: 'காலை', romanization: 'kaalai', meaning: 'Morning' },
-  { id: 'w-இன்று', tamil: 'இன்று', romanization: 'indru', meaning: 'Today' },
+  { id: 'w-அம்மா', tamil: 'அம்மா', romanization: 'ammaa', meaning: 'Mother', imageEmoji: '👩', imageHint: 'Mother' },
+  { id: 'w-அப்பா', tamil: 'அப்பா', romanization: 'appaa', meaning: 'Father', imageEmoji: '👨', imageHint: 'Father' },
+  { id: 'w-தமிழ்', tamil: 'தமிழ்', romanization: 'tamizh', meaning: 'Tamil', imageEmoji: '🪔', imageHint: 'Tamil language' },
+  { id: 'w-நன்றி', tamil: 'நன்றி', romanization: 'nandri', meaning: 'Thank you', imageEmoji: '🙏', imageHint: 'Thank you gesture' },
+  { id: 'w-வணக்கம்', tamil: 'வணக்கம்', romanization: 'vanakkam', meaning: 'Hello', imageEmoji: '👋', imageHint: 'Greeting' },
+  { id: 'w-பள்ளி', tamil: 'பள்ளி', romanization: 'palli', meaning: 'School', imageEmoji: '🏫', imageHint: 'School building' },
+  { id: 'w-நீர்', tamil: 'நீர்', romanization: 'neer', meaning: 'Water', imageSrc: '/learning-images/png/water.png', imageEmoji: '💧', imageHint: 'Water drop' },
+  { id: 'w-மரம்', tamil: 'மரம்', romanization: 'maram', meaning: 'Tree', imageSrc: '/learning-images/png/tree.png', imageEmoji: '🌳', imageHint: 'Tree' },
+  { id: 'w-பூ', tamil: 'பூ', romanization: 'poo', meaning: 'Flower', imageSrc: '/learning-images/png/flower.png', imageEmoji: '🌸', imageHint: 'Flower' },
+  { id: 'w-கடல்', tamil: 'கடல்', romanization: 'kadal', meaning: 'Sea', imageEmoji: '🌊', imageHint: 'Sea waves' },
+  { id: 'w-வீடு', tamil: 'வீடு', romanization: 'veedu', meaning: 'House', imageSrc: '/learning-images/png/house.png', imageEmoji: '🏠', imageHint: 'House' },
+  { id: 'w-சாப்பாடு', tamil: 'சாப்பாடு', romanization: 'saappaadu', meaning: 'Food', imageSrc: '/learning-images/png/food.png', imageEmoji: '🍚', imageHint: 'Food plate' },
+  { id: 'w-புத்தகம்', tamil: 'புத்தகம்', romanization: 'puthagam', meaning: 'Book', imageSrc: '/learning-images/png/book.png', imageEmoji: '📘', imageHint: 'Book' },
+  { id: 'w-நண்பன்', tamil: 'நண்பன்', romanization: 'nanban', meaning: 'Friend', imageEmoji: '🧑‍🤝‍🧑', imageHint: 'Friends' },
+  { id: 'w-காலை', tamil: 'காலை', romanization: 'kaalai', meaning: 'Morning', imageEmoji: '🌅', imageHint: 'Morning sunrise' },
+  { id: 'w-இன்று', tamil: 'இன்று', romanization: 'indru', meaning: 'Today', imageEmoji: '📅', imageHint: 'Today on calendar' },
 ];
 
 const wordLessons: Lesson[] = [
@@ -202,7 +205,50 @@ const wordLessons: Lesson[] = [
     items: simpleWords.filter((w) => ['w-நண்பன்', 'w-காலை', 'w-இன்று'].includes(w.id)),
     quizType: 'write',
   },
+  {
+    id: 'words-5',
+    title: 'Picture Recognition',
+    titleTamil: 'படம் பார்த்து சொல்லு',
+    description: 'Identify the correct Tamil word from real picture cards',
+    items: [
+      { id: 'pic-மரம்', tamil: 'மரம்', romanization: 'maram', meaning: 'Tree', imageSrc: '/learning-images/png/tree.png', imageHint: 'Tree' },
+      { id: 'pic-பூ', tamil: 'பூ', romanization: 'poo', meaning: 'Flower', imageSrc: '/learning-images/png/flower.png', imageHint: 'Flower' },
+      { id: 'pic-நீர்', tamil: 'நீர்', romanization: 'neer', meaning: 'Water', imageSrc: '/learning-images/png/water.png', imageHint: 'Water' },
+      { id: 'pic-வீடு', tamil: 'வீடு', romanization: 'veedu', meaning: 'House', imageSrc: '/learning-images/png/house.png', imageHint: 'House' },
+      { id: 'pic-புத்தகம்', tamil: 'புத்தகம்', romanization: 'puthagam', meaning: 'Book', imageSrc: '/learning-images/png/book.png', imageHint: 'Book' },
+      { id: 'pic-சாப்பாடு', tamil: 'சாப்பாடு', romanization: 'saappaadu', meaning: 'Food', imageSrc: '/learning-images/png/food.png', imageHint: 'Food' },
+      { id: 'pic-பழம்', tamil: 'பழம்', romanization: 'pazham', meaning: 'Fruit', imageSrc: '/learning-images/png/fruit.png', imageHint: 'Fruit' },
+      { id: 'pic-பால்', tamil: 'பால்', romanization: 'paal', meaning: 'Milk', imageSrc: '/learning-images/png/milk.png', imageHint: 'Milk' },
+      { id: 'pic-மீன்', tamil: 'மீன்', romanization: 'meen', meaning: 'Fish', imageSrc: '/learning-images/png/fish.png', imageHint: 'Fish' },
+      { id: 'pic-பறவை', tamil: 'பறவை', romanization: 'paravai', meaning: 'Bird', imageSrc: '/learning-images/png/bird.png', imageHint: 'Bird' },
+      { id: 'pic-நாய்', tamil: 'நாய்', romanization: 'naai', meaning: 'Dog', imageSrc: '/learning-images/png/dog.png', imageHint: 'Dog' },
+      { id: 'pic-பூனை', tamil: 'பூனை', romanization: 'poonai', meaning: 'Cat', imageSrc: '/learning-images/png/cat.png', imageHint: 'Cat' },
+      { id: 'pic-கார்', tamil: 'கார்', romanization: 'kaar', meaning: 'Car', imageSrc: '/learning-images/png/car.png', imageHint: 'Car' },
+      { id: 'pic-பேருந்து', tamil: 'பேருந்து', romanization: 'perunthu', meaning: 'Bus', imageSrc: '/learning-images/png/bus.png', imageHint: 'Bus' },
+      { id: 'pic-மிதிவண்டி', tamil: 'மிதிவண்டி', romanization: 'mithivandi', meaning: 'Cycle', imageSrc: '/learning-images/png/cycle.png', imageHint: 'Cycle' },
+      { id: 'pic-தொலைபேசி', tamil: 'தொலைபேசி', romanization: 'tholaipesi', meaning: 'Phone', imageSrc: '/learning-images/png/phone.png', imageHint: 'Phone' },
+      { id: 'pic-கடிகாரம்', tamil: 'கடிகாரம்', romanization: 'kadigaram', meaning: 'Clock', imageSrc: '/learning-images/png/clock.png', imageHint: 'Clock' },
+      { id: 'pic-சூரியன்', tamil: 'சூரியன்', romanization: 'sooriyan', meaning: 'Sun', imageSrc: '/learning-images/png/sun.png', imageHint: 'Sun' },
+      { id: 'pic-நிலா', tamil: 'நிலா', romanization: 'nilaa', meaning: 'Moon', imageSrc: '/learning-images/png/moon.png', imageHint: 'Moon' },
+      { id: 'pic-மழை', tamil: 'மழை', romanization: 'mazhai', meaning: 'Rain', imageSrc: '/learning-images/png/rain.png', imageHint: 'Rain' },
+      { id: 'pic-மலை', tamil: 'மலை', romanization: 'malai', meaning: 'Mountain', imageSrc: '/learning-images/png/mountain.png', imageHint: 'Mountain' },
+      { id: 'pic-கடல்', tamil: 'கடல்', romanization: 'kadal', meaning: 'Sea', imageSrc: '/learning-images/png/sea.png', imageHint: 'Sea' },
+      { id: 'pic-நட்சத்திரம்', tamil: 'நட்சத்திரம்', romanization: 'natchathiram', meaning: 'Star', imageSrc: '/learning-images/png/star.png', imageHint: 'Star' },
+      { id: 'pic-பள்ளி', tamil: 'பள்ளி', romanization: 'palli', meaning: 'School', imageSrc: '/learning-images/png/school.png', imageHint: 'School' },
+      { id: 'pic-மருத்துவமனை', tamil: 'மருத்துவமனை', romanization: 'maruthuvamanai', meaning: 'Hospital', imageSrc: '/learning-images/png/hospital.png', imageHint: 'Hospital' },
+      { id: 'pic-கடை', tamil: 'கடை', romanization: 'kadai', meaning: 'Shop', imageSrc: '/learning-images/png/shop.png', imageHint: 'Shop' },
+      { id: 'pic-பந்து', tamil: 'பந்து', romanization: 'pandhu', meaning: 'Ball', imageSrc: '/learning-images/png/ball.png', imageHint: 'Ball' },
+      { id: 'pic-நாற்காலி', tamil: 'நாற்காலி', romanization: 'naarkaali', meaning: 'Chair', imageSrc: '/learning-images/png/chair.png', imageHint: 'Chair' },
+      { id: 'pic-மேசை', tamil: 'மேசை', romanization: 'mesai', meaning: 'Table', imageSrc: '/learning-images/png/table.png', imageHint: 'Table' },
+      { id: 'pic-பை', tamil: 'பை', romanization: 'pai', meaning: 'Bag', imageSrc: '/learning-images/png/bag.png', imageHint: 'Bag' },
+    ],
+    quizType: 'picture',
+  },
 ];
+
+export const PICTURE_WORD_ITEMS: LessonItem[] = (
+  wordLessons.find((lesson) => lesson.id === 'words-5')?.items || []
+).map((item) => ({ ...item }));
 
 // ── Step 5 — Short Sentences ──
 const sentences: LessonItem[] = [

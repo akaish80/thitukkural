@@ -62,12 +62,18 @@ const LessonPage = () => {
     const questions = shuffle(allItems).map((item) => {
       // Generate wrong options from other items
       const others = allItems.filter((i) => i.id !== item.id);
-      const wrongOptions = shuffle(others).slice(0, 3).map((i) =>
-        lesson.quizType === 'read' || lesson.quizType === 'write' ? i.meaning || i.romanization : i.romanization
-      );
-      const correct = lesson.quizType === 'read' || lesson.quizType === 'write'
-        ? item.meaning || item.romanization
-        : item.romanization;
+      const wrongOptions = shuffle(others).slice(0, 3).map((i) => {
+        if (lesson.quizType === 'picture') return i.tamil;
+        if (lesson.quizType === 'read' || lesson.quizType === 'write') {
+          return i.meaning || i.romanization;
+        }
+        return i.romanization;
+      });
+      const correct = lesson.quizType === 'picture'
+        ? item.tamil
+        : lesson.quizType === 'read' || lesson.quizType === 'write'
+          ? item.meaning || item.romanization
+          : item.romanization;
       const options = shuffle([correct, ...wrongOptions]);
       return { item, options, correct };
     });
@@ -173,9 +179,14 @@ const LessonPage = () => {
     }
   }, [currentIdx]);
 
-  // Mark current item learned
+  // Mark learned items
   useEffect(() => {
-    if (phase === 'learn' && lesson && items[currentIdx]) {
+    if (phase !== 'learn' || !lesson) return;
+    if (lesson.quizType === 'picture') {
+      items.forEach((item) => markItemCompleted(lesson.id, item.id));
+      return;
+    }
+    if (items[currentIdx]) {
       markItemCompleted(lesson.id, items[currentIdx].id);
     }
   }, [phase, lesson, currentIdx, items]);
@@ -190,9 +201,11 @@ const LessonPage = () => {
   }
 
   const currentItem = items[currentIdx];
-  const quizPrompt = lesson.quizType === 'read' || lesson.quizType === 'write'
-    ? 'What does this mean?'
-    : 'What is the romanization?';
+  const quizPrompt = lesson.quizType === 'picture'
+    ? 'Pick the correct Tamil word for this picture'
+    : lesson.quizType === 'read' || lesson.quizType === 'write'
+      ? 'What does this mean?'
+      : 'What is the romanization?';
 
   return (
     <div className="lesson-page" style={{ '--step-color': step.color } as React.CSSProperties}>
@@ -204,7 +217,7 @@ const LessonPage = () => {
           <span className="lesson-topbar__name">{lesson.title}</span>
         </div>
         <div className="lesson-topbar__progress">
-          {phase === 'learn' && `${currentIdx + 1}/${totalItems}`}
+          {phase === 'learn' && (lesson.quizType === 'picture' ? `Preview ${totalItems}` : `${currentIdx + 1}/${totalItems}`)}
           {phase === 'quiz' && `Q${quizIdx + 1}/${quizQuestions.length}`}
         </div>
       </div>
@@ -224,7 +237,7 @@ const LessonPage = () => {
       </div>
 
       {/* ── LEARN PHASE ── */}
-      {phase === 'learn' && currentItem && (
+      {phase === 'learn' && lesson.quizType !== 'picture' && currentItem && (
         <div className="lesson-learn">
           <div
             className={`lesson-card ${flipped ? 'lesson-card--flipped' : ''}`}
@@ -280,15 +293,61 @@ const LessonPage = () => {
         </div>
       )}
 
+      {phase === 'learn' && lesson.quizType === 'picture' && (
+        <div className="lesson-learn lesson-learn--picture">
+          <p className="lesson-picture-intro">Study these pictures and their Tamil words, then start the recognition quiz.</p>
+          <Link to="/learn/picture-chart" className="lesson-picture-print-link">Open Printable Chart ↗</Link>
+          <div className="lesson-picture-grid">
+            {items.map((item) => (
+              <div key={item.id} className="lesson-picture-card">
+                {item.imageSrc ? (
+                  <img src={item.imageSrc} alt={item.imageHint || item.meaning || item.tamil} className="lesson-picture-card__img" />
+                ) : (
+                  <div className="lesson-picture-card__fallback" role="img" aria-label={item.imageHint || item.meaning || item.tamil}>
+                    {item.imageEmoji || '🖼️'}
+                  </div>
+                )}
+                <span className="lesson-picture-card__tamil">{item.tamil}</span>
+                <span className="lesson-picture-card__meaning">{item.meaning}</span>
+              </div>
+            ))}
+          </div>
+          <div className="lesson-nav">
+            <button className="lesson-nav__btn lesson-nav__btn--primary" onClick={startQuiz}>
+              Start Picture Quiz 🎯
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* ── QUIZ PHASE ── */}
       {phase === 'quiz' && quizQuestions[quizIdx] && (
         <div className="lesson-quiz">
           <h2 className="lesson-quiz__prompt">{quizPrompt}</h2>
           <div className="lesson-quiz__question">
-            <span className="lesson-quiz__tamil">{quizQuestions[quizIdx].item.tamil}</span>
-            <button className="lesson-quiz__listen" onClick={() => speakTamil(quizQuestions[quizIdx].item.tamil)}>
-              🔊
-            </button>
+            {lesson.quizType === 'picture' ? (
+              <div className="lesson-quiz__picture-wrap">
+                {quizQuestions[quizIdx].item.imageSrc ? (
+                  <img
+                    src={quizQuestions[quizIdx].item.imageSrc}
+                    alt={quizQuestions[quizIdx].item.imageHint || quizQuestions[quizIdx].item.meaning || 'Picture clue'}
+                    className="lesson-quiz__picture-img"
+                  />
+                ) : (
+                  <span className="lesson-quiz__picture" role="img" aria-label={quizQuestions[quizIdx].item.imageHint || quizQuestions[quizIdx].item.meaning || 'Picture clue'}>
+                    {quizQuestions[quizIdx].item.imageEmoji || '🖼️'}
+                  </span>
+                )}
+                <span className="lesson-quiz__picture-hint">{quizQuestions[quizIdx].item.imageHint || quizQuestions[quizIdx].item.meaning || 'Identify the Tamil word'}</span>
+              </div>
+            ) : (
+              <>
+                <span className="lesson-quiz__tamil">{quizQuestions[quizIdx].item.tamil}</span>
+                <button className="lesson-quiz__listen" onClick={() => speakTamil(quizQuestions[quizIdx].item.tamil)}>
+                  🔊
+                </button>
+              </>
+            )}
           </div>
 
           <div className="lesson-quiz__options">

@@ -14,6 +14,7 @@ interface LetterGroup {
 interface LetterDetail {
   word: string;
   meaning: string;
+  imageSrc?: string;
   type: 'vowel' | 'consonant' | 'special';
   typeLabel: string;
   typeLabelEn: string;
@@ -26,18 +27,18 @@ interface LetterDetail {
 // Full explanations for each Tamil letter
 const letterDetails: Record<string, LetterDetail> = {
   // உயிர் எழுத்துகள் (Vowels)
-  'அ': { word: 'அம்மா', meaning: 'Mother', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Short Vowel', romanization: 'a', pronunciation: 'Like "u" in "but"', exampleSentence: 'அம்மா வீட்டில் இருக்கிறாள்', exampleTranslation: 'Mother is at home' },
-  'ஆ': { word: 'ஆடு', meaning: 'Goat', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Long Vowel', romanization: 'aa', pronunciation: 'Like "a" in "father"', exampleSentence: 'ஆடு புல் தின்கிறது', exampleTranslation: 'The goat eats grass' },
-  'இ': { word: 'இலை', meaning: 'Leaf', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Short Vowel', romanization: 'i', pronunciation: 'Like "i" in "sit"', exampleSentence: 'இலை மரத்தில் உள்ளது', exampleTranslation: 'The leaf is on the tree' },
-  'ஈ': { word: 'ஈ', meaning: 'Fly', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Long Vowel', romanization: 'ii', pronunciation: 'Like "ee" in "see"', exampleSentence: 'ஈ பறக்கிறது', exampleTranslation: 'The fly is flying' },
-  'உ': { word: 'உடல்', meaning: 'Body', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Short Vowel', romanization: 'u', pronunciation: 'Like "u" in "put"', exampleSentence: 'உடல் ஆரோக்கியம் முக்கியம்', exampleTranslation: 'Body health is important' },
-  'ஊ': { word: 'ஊஞ்சல்', meaning: 'Swing', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Long Vowel', romanization: 'uu', pronunciation: 'Like "oo" in "moon"', exampleSentence: 'ஊஞ்சல் ஆடு', exampleTranslation: 'Play on the swing' },
-  'எ': { word: 'எலி', meaning: 'Rat', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Short Vowel', romanization: 'e', pronunciation: 'Like "e" in "pet"', exampleSentence: 'எலி ஓடுகிறது', exampleTranslation: 'The rat is running' },
-  'ஏ': { word: 'ஏணி', meaning: 'Ladder', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Long Vowel', romanization: 'ee', pronunciation: 'Like "a" in "gate"', exampleSentence: 'ஏணி மேல் ஏறு', exampleTranslation: 'Climb up the ladder' },
-  'ஐ': { word: 'ஐந்து', meaning: 'Five', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Diphthong', romanization: 'ai', pronunciation: 'Like "ai" in "aisle"', exampleSentence: 'ஐந்து விரல்கள் உள்ளன', exampleTranslation: 'There are five fingers' },
-  'ஒ': { word: 'ஒட்டகம்', meaning: 'Camel', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Short Vowel', romanization: 'o', pronunciation: 'Like "o" in "go" (short)', exampleSentence: 'ஒட்டகம் பாலையில் நடக்கிறது', exampleTranslation: 'The camel walks in the desert' },
-  'ஓ': { word: 'ஓடம்', meaning: 'Boat', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Long Vowel', romanization: 'oo', pronunciation: 'Like "o" in "go" (long)', exampleSentence: 'ஓடம் ஆற்றில் செல்கிறது', exampleTranslation: 'The boat goes in the river' },
-  'ஔ': { word: 'ஔவை', meaning: 'Avvai (poetess)', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Diphthong', romanization: 'au', pronunciation: 'Like "ow" in "cow"', exampleSentence: 'ஔவையார் பெரும் கவிஞர்', exampleTranslation: 'Avvaiyar is a great poet' },
+  'அ': { word: 'அம்மா', meaning: 'Mother', imageSrc: '/learning-images/png/vowel-a.png', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Short Vowel', romanization: 'a', pronunciation: 'Like "u" in "but"', exampleSentence: 'அம்மா வீட்டில் இருக்கிறாள்', exampleTranslation: 'Mother is at home' },
+  'ஆ': { word: 'ஆடு', meaning: 'Goat', imageSrc: '/learning-images/png/vowel-aa.png', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Long Vowel', romanization: 'aa', pronunciation: 'Like "a" in "father"', exampleSentence: 'ஆடு புல் தின்கிறது', exampleTranslation: 'The goat eats grass' },
+  'இ': { word: 'இலை', meaning: 'Leaf', imageSrc: '/learning-images/png/vowel-i.png', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Short Vowel', romanization: 'i', pronunciation: 'Like "i" in "sit"', exampleSentence: 'இலை மரத்தில் உள்ளது', exampleTranslation: 'The leaf is on the tree' },
+  'ஈ': { word: 'ஈ', meaning: 'Fly', imageSrc: '/learning-images/png/vowel-ii.png', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Long Vowel', romanization: 'ii', pronunciation: 'Like "ee" in "see"', exampleSentence: 'ஈ பறக்கிறது', exampleTranslation: 'The fly is flying' },
+  'உ': { word: 'உணவு', meaning: 'Food', imageSrc: '/learning-images/png/vowel-u.png', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Short Vowel', romanization: 'u', pronunciation: 'Like "u" in "put"', exampleSentence: 'உணவு சாப்பிட வேண்டும்', exampleTranslation: 'You should eat food' },
+  'ஊ': { word: 'ஊஞ்சல்', meaning: 'Swing', imageSrc: '/learning-images/png/vowel-uu.png', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Long Vowel', romanization: 'uu', pronunciation: 'Like "oo" in "moon"', exampleSentence: 'ஊஞ்சல் ஆடு', exampleTranslation: 'Play on the swing' },
+  'எ': { word: 'எலி', meaning: 'Rat', imageSrc: '/learning-images/png/vowel-e.png', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Short Vowel', romanization: 'e', pronunciation: 'Like "e" in "pet"', exampleSentence: 'எலி ஓடுகிறது', exampleTranslation: 'The rat is running' },
+  'ஏ': { word: 'ஏணி', meaning: 'Ladder', imageSrc: '/learning-images/png/vowel-ee.png', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Long Vowel', romanization: 'ee', pronunciation: 'Like "a" in "gate"', exampleSentence: 'ஏணி மேல் ஏறு', exampleTranslation: 'Climb up the ladder' },
+  'ஐ': { word: 'ஐந்து', meaning: 'Five', imageSrc: '/learning-images/png/vowel-ai.png', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Diphthong', romanization: 'ai', pronunciation: 'Like "ai" in "aisle"', exampleSentence: 'ஐந்து விரல்கள் உள்ளன', exampleTranslation: 'There are five fingers' },
+  'ஒ': { word: 'ஒட்டகச்சிவிங்கி', meaning: 'Giraffe', imageSrc: '/learning-images/png/vowel-o.png', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Short Vowel', romanization: 'o', pronunciation: 'Like "o" in "go" (short)', exampleSentence: 'ஒட்டகச்சிவிங்கி உயரமான விலங்கு', exampleTranslation: 'The giraffe is a tall animal' },
+  'ஓ': { word: 'ஓடம்', meaning: 'Boat', imageSrc: '/learning-images/png/vowel-oo.png', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Long Vowel', romanization: 'oo', pronunciation: 'Like "o" in "go" (long)', exampleSentence: 'ஓடம் ஆற்றில் செல்கிறது', exampleTranslation: 'The boat goes in the river' },
+  'ஔ': { word: 'ஔடதம்', meaning: 'Medicine', imageSrc: '/learning-images/png/vowel-au.png', type: 'vowel', typeLabel: 'உயிர்', typeLabelEn: 'Diphthong', romanization: 'au', pronunciation: 'Like "ow" in "cow"', exampleSentence: 'ஔடதம் நேரத்தில் எடுத்துக்கொள்', exampleTranslation: 'Take medicine on time' },
   // ஆய்த எழுத்து
   'ஃ': { word: 'அஃது', meaning: 'That', type: 'special', typeLabel: 'ஆய்தம்', typeLabelEn: 'Aytham (Special)', romanization: 'kh', pronunciation: 'A brief pause or glottal stop', exampleSentence: 'அஃது நல்லது', exampleTranslation: 'That is good' },
   // மெய் எழுத்துகள் (Consonants)
@@ -111,6 +112,14 @@ const LetterModal = ({ letter, onClose }: { letter: string; onClose: () => void 
 
           <div className="letter-modal__section letter-modal__example-word">
             <h4>📝 Example Word</h4>
+            {detail.imageSrc && (
+              <img
+                src={detail.imageSrc}
+                alt={`${detail.word} visual`}
+                className="letter-modal__example-image"
+                loading="lazy"
+              />
+            )}
             <div className="letter-modal__word-row">
               <span className="letter-modal__tamil-word">{detail.word}</span>
               <SpeakButton text={detail.word} size="sm" />
@@ -222,6 +231,14 @@ const TamilLetters = () => {
                       onKeyDown={(e) => e.key === 'Enter' && handleLetterClick(letter)}
                     >
                       <span className="letter-tile__char">{letter}</span>
+                      {info?.imageSrc && (
+                        <img
+                          src={info.imageSrc}
+                          alt={`${info.word} image`}
+                          className="letter-tile__image"
+                          loading="lazy"
+                        />
+                      )}
                       {info && (
                         <span className="letter-tile__meaning">
                           <span className="letter-tile__word">{info.word}</span>

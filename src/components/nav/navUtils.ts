@@ -16,6 +16,12 @@ export const getIcon = (text: string) => {
     return '🎨';
   } else if (lower === 'tamil letter') {
     return '✍️';
+  } else if (lower === 'learn tamil') {
+    return '🧠';
+  } else if (lower === 'image & letter recognition' || lower === 'image recognition') {
+    return '🖼️';
+  } else if (lower === 'printable picture chart') {
+    return '🖨️';
   } else if (lower === 'excercise kurral') {
     return '🎯';
   } else if (lower === 'aathichudi') {
@@ -30,6 +36,8 @@ export const getIcon = (text: string) => {
     return '🛤️';
   } else if (lower === 'planner') {
     return '🗓️';
+  } else if (lower === 'tamil evaluation') {
+    return '🧪';
   } else if (lower === 'tamil letters') {
     return '✍️';
   } else if (lower === 'exercise kurral') {

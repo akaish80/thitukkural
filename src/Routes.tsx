@@ -8,6 +8,7 @@ const Thirukkural = lazy(() => import('./pages/thirukurral/thirukurral.component
 const KurralLanding = lazy(() => import('./pages/thirukurral/KurralLanding'));
 const KurralExplorer = lazy(() => import('./pages/thirukurral/KurralExplorer'));
 const Exercise = lazy(() => import('./pages/practice/practice.component'));
+const TamilExperienceAssessment = lazy(() => import('./pages/practice/TamilExperienceAssessment.tsx'));
 const Aathichudi = lazy(() => import('./pages/aathichudi/aathichudi.component.tsx'));
 
 // const PracticeLetter = lazy(() => import('./pages/practiceletter/practice.letter'));
@@ -23,6 +24,8 @@ const TamilNumbers = lazy(() => import('./pages/tamilnumbers/tamilnumbers.compon
 const LearningPath = lazy(() => import('./pages/learningpath/LearningPath'));
 const PlannerPage = lazy(() => import('./pages/learningpath/PlannerPage'));
 const LessonPage = lazy(() => import('./pages/learningpath/LessonPage'));
+const PictureWordChartPage = lazy(() => import('./pages/learningpath/PictureWordChartPage'));
+const LearnTamilImageRecognitionPage = lazy(() => import('./pages/learntamil/LearnTamilImageRecognitionPage'));
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -52,6 +55,7 @@ const AppRoutes = () => (
       </Route>
       <Route path="/kurral/exercise" element={<Exercise />} />
       <Route path="/kurral/exercise/:exerciseType" element={<Exercise />} />
+      <Route path="/tamil-evaluation" element={<TamilExperienceAssessment />} />
       <Route path="/practice" element={<PracticeLetter />} />
       <Route path="/draw-letter" element={<DrawLetter />} />
       <Route path="/free-type" element={<FreeType />} />
@@ -66,6 +70,9 @@ const AppRoutes = () => (
       <Route path="/learn" element={<LearningPath />} />
       <Route path="/planner" element={<PlannerPage />} />
       <Route path="/learn/:stepId/:lessonId" element={<LessonPage />} />
+      <Route path="/learn/picture-chart" element={<PictureWordChartPage />} />
+      <Route path="/learn-tamil/image-letter-recognition" element={<LearnTamilImageRecognitionPage />} />
+      <Route path="/learn-tamil/picture-chart" element={<PictureWordChartPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   </Suspense>

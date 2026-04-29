@@ -6,6 +6,7 @@ import './practice.styles.scss';
 const MatchAdhikaramToPaal = lazy(() => import('./matchadhikaramtopaal/match.adhikaram.to.paal'));
 const FillInKurral = lazy(() => import('./fillinkurral/fill.in.kurral'));
 const QuizPractice = lazy(() => import('./QuizPractice'));
+const TamilExperienceAssessment = lazy(() => import('./TamilExperienceAssessment.tsx'));
 
 const practiceTypes = [
   {
@@ -31,6 +32,14 @@ const practiceTypes = [
     icon: '❓',
     color: '#1cb0f6',
     description: 'திருக்குறள் Quiz பயிற்சி',
+  },
+  {
+    Tamil: 'Tamil Experience Test',
+    index: 6,
+    slug: 'tamil-evaluation',
+    icon: '🧪',
+    color: '#ff9600',
+    description: 'உங்கள் தமிழ் திறன் நிலையை மதிப்பிடுக',
   },
 ];
 
@@ -70,6 +79,8 @@ const Excercise = () => {
       return <FillInKurral />;
     } else if (selInd.index === 5) {
       return <QuizPractice />;
+    } else if (selInd.index === 6) {
+      return <TamilExperienceAssessment />;
     }
   };
 
