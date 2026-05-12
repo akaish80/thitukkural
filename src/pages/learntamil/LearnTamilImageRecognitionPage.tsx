@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { speakText } from '../../components/chatbot/speakText';
 import { PICTURE_WORD_ITEMS, type LessonItem } from '../learningpath/learningPathData';
 import './learntamil-image-recognition.styles.scss';
 
@@ -26,7 +27,38 @@ const VOWEL_ITEMS: LessonItem[] = [
   { id: 'vowel-ஔ', tamil: 'ஔ', romanization: 'au', meaning: 'ஔடதம் (Aoudhadham)', imageSrc: '/learning-images/png/vowel-au.png', imageHint: 'Tamil vowel ஔ with Aoudhadham' },
 ];
 
-const IMAGE_RECOGNITION_ITEMS: LessonItem[] = [...VOWEL_ITEMS, ...PICTURE_WORD_ITEMS];
+const CONSONANT_ITEMS: LessonItem[] = [
+  { id: 'consonant-க்', tamil: 'க்', romanization: 'k', meaning: 'கொக்கு (Stork)', imageSrc: '/learning-images/png/consonant-ka.png', imageHint: 'Tamil consonant க் with கொக்கு' },
+  { id: 'consonant-ப்', tamil: 'ப்', romanization: 'p', meaning: 'கப்பல் (Ship)', imageSrc: '/learning-images/png/consonant-pa.png', imageHint: 'Tamil consonant ப் with கப்பல்' },
+  { id: 'consonant-ம்', tamil: 'ம்', romanization: 'm', meaning: 'மரம் (Tree)', imageSrc: '/learning-images/png/consonant-ma.png', imageHint: 'Tamil consonant ம் with மரம்' },
+  { id: 'consonant-ய்', tamil: 'ய்', romanization: 'y', meaning: 'நாய் (Dog)', imageSrc: '/learning-images/png/consonant-ya.png', imageHint: 'Tamil consonant ய் with நாய்' },
+  { id: 'consonant-த்', tamil: 'த்', romanization: 'th', meaning: 'நத்தை (Snail)', imageSrc: '/learning-images/png/consonant-tha.png', imageHint: 'Tamil consonant த் with நத்தை' },
+  { id: 'consonant-ந்', tamil: 'ந்', romanization: 'n', meaning: 'ஆந்தை (Owl)', imageSrc: '/learning-images/png/consonant-na.png', imageHint: 'Tamil consonant ந் with ஆந்தை' },
+  { id: 'consonant-ர்', tamil: 'ர்', romanization: 'r', meaning: 'வேர் (Root)', imageSrc: '/learning-images/png/consonant-ra.png', imageHint: 'Tamil consonant ர் with வேர்' },
+  { id: 'consonant-ல்', tamil: 'ல்', romanization: 'l', meaning: 'பால் (Milk)', imageSrc: '/learning-images/png/consonant-la.png', imageHint: 'Tamil consonant ல் with பால்' },
+  { id: 'consonant-வ்', tamil: 'வ்', romanization: 'v', meaning: 'செவ்வாய் (Mars)', imageSrc: '/learning-images/png/consonant-va.png', imageHint: 'Tamil consonant வ் with செவ்வாய்' },
+  { id: 'consonant-ச்', tamil: 'ச்', romanization: 'ch', meaning: 'பச்சை (Green)', imageSrc: '/learning-images/png/consonant-sa.png', imageHint: 'Tamil consonant ச் with பச்சை' },
+  { id: 'consonant-ட்', tamil: 'ட்', romanization: 't', meaning: 'பட்டம் (Kite)', imageSrc: '/learning-images/png/consonant-ta.png', imageHint: 'Tamil consonant ட் with பட்டம்' },
+  { id: 'consonant-ஞ்', tamil: 'ஞ்', romanization: 'nj', meaning: 'இஞ்சி (Ginger)', imageSrc: '/learning-images/png/consonant-gna.png', imageHint: 'Tamil consonant ஞ் with இஞ்சி' },
+  { id: 'consonant-ங்', tamil: 'ங்', romanization: 'ng', meaning: 'சிங்கம் (Lion)', imageSrc: '/learning-images/png/consonant-nga.png', imageHint: 'Tamil consonant ங் with சிங்கம்' },
+  { id: 'consonant-ண்', tamil: 'ண்', romanization: 'nn', meaning: 'நண்டு (Crab)', imageSrc: '/learning-images/png/consonant-nna.png', imageHint: 'Tamil consonant ண் with நண்டு' },
+  { id: 'consonant-ழ்', tamil: 'ழ்', romanization: 'zh', meaning: 'யாழ் (Yaazh)', imageSrc: '/learning-images/png/consonant-zha.png', imageHint: 'Tamil consonant ழ் with யாழ்' },
+  { id: 'consonant-ள்', tamil: 'ள்', romanization: 'll', meaning: 'வாள் (Sword)', imageSrc: '/learning-images/png/consonant-lla.png', imageHint: 'Tamil consonant ள் with வாள்' },
+  { id: 'consonant-ற்', tamil: 'ற்', romanization: 'rr', meaning: 'பற்கள் (Teeth)', imageSrc: '/learning-images/png/consonant-rra.png', imageHint: 'Tamil consonant ற் with பற்கள்' },
+  { id: 'consonant-ன்', tamil: 'ன்', romanization: 'n2', meaning: 'மீன் (Fish)', imageSrc: '/learning-images/png/consonant-nna2.png', imageHint: 'Tamil consonant ன் with மீன்' },
+];
+
+const IMAGE_RECOGNITION_ITEMS: LessonItem[] = [
+  ...VOWEL_ITEMS,
+  ...CONSONANT_ITEMS,
+  ...PICTURE_WORD_ITEMS,
+];
+
+function getStudyStage(index: number): string {
+  if (index < VOWEL_ITEMS.length) return 'Vowels';
+  if (index < VOWEL_ITEMS.length + CONSONANT_ITEMS.length) return 'Consonants';
+  return 'Word Images';
+}
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -39,12 +71,10 @@ function shuffle<T>(arr: T[]): T[] {
 
 function buildQuestions(size = 12): QuizQuestion[] {
   const vowelCount = Math.min(VOWEL_ITEMS.length, Math.floor(size / 2));
-  const ordered = [
-    ...VOWEL_ITEMS.slice(0, vowelCount),
-    ...shuffle(PICTURE_WORD_ITEMS).slice(0, Math.max(0, size - vowelCount)),
-  ];
+  const selectedVowels = shuffle(VOWEL_ITEMS).slice(0, vowelCount);
+  const selectedPictures = shuffle(PICTURE_WORD_ITEMS).slice(0, Math.max(0, size - vowelCount));
+  const base = shuffle([...selectedVowels, ...selectedPictures]).slice(0, size);
 
-  const base = ordered.slice(0, size);
   return base.map((item) => {
     const wrong = shuffle(IMAGE_RECOGNITION_ITEMS.filter((x) => x.id !== item.id))
       .slice(0, 3)
@@ -111,7 +141,7 @@ const LearnTamilImageRecognitionPage = () => {
     <div className="lt-recognition-page">
       <header className="lt-recognition-page__header">
         <h1>Learn Tamil: Image Recognition</h1>
-        <p>One image at a time. Starts with Tamil vowels (Uyir Ezhuthukkal).</p>
+        <p>One image at a time with vowels, consonants, and everyday Tamil word cards.</p>
       </header>
 
       {phase === 'study' && (
@@ -129,9 +159,7 @@ const LearnTamilImageRecognitionPage = () => {
             <span>
               Card {studyIndex + 1}/{IMAGE_RECOGNITION_ITEMS.length}
             </span>
-            <span className="lt-study__stage">
-              {studyIndex < VOWEL_ITEMS.length ? 'Vowels' : 'Word Images'}
-            </span>
+            <span className="lt-study__stage">{getStudyStage(studyIndex)}</span>
           </div>
 
           <article className="lt-card lt-card--single">
@@ -140,6 +168,14 @@ const LearnTamilImageRecognitionPage = () => {
             ) : (
               <div className="lt-card__fallback">{studyItem?.imageEmoji || '🖼️'}</div>
             )}
+            <button
+              type="button"
+              className="lt-card__speak"
+              onClick={() => speakText(studyItem?.tamil ?? '')}
+              disabled={!studyItem?.tamil}
+            >
+              Hear word
+            </button>
             <h2>{studyItem?.tamil}</h2>
             <p>{studyItem?.meaning}</p>
           </article>
@@ -173,6 +209,13 @@ const LearnTamilImageRecognitionPage = () => {
             ) : (
               <div className="lt-quiz__fallback">{current.item.imageEmoji || '🖼️'}</div>
             )}
+            <button
+              type="button"
+              className="lt-quiz__speak"
+              onClick={() => speakText(current.item.tamil)}
+            >
+              Hear word
+            </button>
           </div>
 
           <div className="lt-quiz__options">

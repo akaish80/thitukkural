@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import './chatbot.scss';
 import fetchWrapper from '../../utils/fetchWrapper';
 
@@ -211,10 +211,15 @@ function MessageComponent({
   onRegenerate: () => void;
 }) {
   // m.text may be a string or a structured object { type, items }
+  const renderedMarkdown = useMemo(
+    () => (typeof m.text === 'string' ? renderMarkdown(m.text) : null),
+    [m.text],
+  );
+
   const renderText = () => {
     if (!m.text) return null;
     if (typeof m.text === 'string') {
-      return <div className="cb-message-text cb-markdown">{renderMarkdown(m.text)}</div>;
+      return <div className="cb-message-text cb-markdown">{renderedMarkdown}</div>;
     }
     if (typeof m.text === 'object' && m.text.type === 'list') {
       return (

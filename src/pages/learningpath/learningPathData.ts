@@ -1,4 +1,5 @@
 // ── Learning Path step & lesson definitions ──
+import { VOWELS as ALPHA_VOWELS, CONSONANTS as ALPHA_CONSONANTS } from '../../data/tamilAlphabet';
 
 export interface LessonItem {
   id: string;
@@ -32,21 +33,13 @@ export interface Step {
   lessons: Lesson[];
 }
 
-// ── Step 1 — Uyir (Vowels) ──
-const uyirLetters: LessonItem[] = [
-  { id: 'அ', tamil: 'அ', romanization: 'a', meaning: 'Short a sound, as in about' },
-  { id: 'ஆ', tamil: 'ஆ', romanization: 'aa', meaning: 'Long aa sound, as in father' },
-  { id: 'இ', tamil: 'இ', romanization: 'i', meaning: 'Short i sound, as in bit' },
-  { id: 'ஈ', tamil: 'ஈ', romanization: 'ee', meaning: 'Long ee sound, as in see' },
-  { id: 'உ', tamil: 'உ', romanization: 'u', meaning: 'Short u sound, as in put' },
-  { id: 'ஊ', tamil: 'ஊ', romanization: 'oo', meaning: 'Long oo sound, as in food' },
-  { id: 'எ', tamil: 'எ', romanization: 'e', meaning: 'Short e sound, as in bed' },
-  { id: 'ஏ', tamil: 'ஏ', romanization: 'ae', meaning: 'Long e sound, as in they' },
-  { id: 'ஐ', tamil: 'ஐ', romanization: 'ai', meaning: 'Diphthong ai, as in aisle' },
-  { id: 'ஒ', tamil: 'ஒ', romanization: 'o', meaning: 'Short o sound, as in hot' },
-  { id: 'ஓ', tamil: 'ஓ', romanization: 'oo', meaning: 'Long o sound, as in go' },
-  { id: 'ஔ', tamil: 'ஔ', romanization: 'au', meaning: 'Diphthong au, as in cow' },
-];
+// ── Step 1 — Uyir (Vowels) — derived from canonical tamilAlphabet ──
+const uyirLetters: LessonItem[] = ALPHA_VOWELS.map((l) => ({
+  id: l.tamil,
+  tamil: l.tamil,
+  romanization: l.romanization,
+  meaning: l.meaning,
+}));
 
 const uyirLessons: Lesson[] = [
   {
@@ -73,29 +66,36 @@ const uyirLessons: Lesson[] = [
     items: uyirLetters.filter((l) => ['ஐ', 'ஔ'].includes(l.id)),
     quizType: 'identify',
   },
+  {
+    id: 'uyir-4',
+    title: 'Vowel Picture Recognition',
+    titleTamil: 'படம் பார்த்து உயிர் கண்டுபிடி',
+    description: 'Identify the Tamil vowel from picture clues',
+    items: [
+      { id: 'img-அ', tamil: 'அ', romanization: 'a', meaning: 'அம்மா (Mother)', imageEmoji: '👩', imageHint: 'அம்மா — Mother (starts with அ)' },
+      { id: 'img-ஆ', tamil: 'ஆ', romanization: 'aa', meaning: 'ஆடு (Goat)', imageEmoji: '🐐', imageHint: 'ஆடு — Goat (starts with ஆ)' },
+      { id: 'img-இ', tamil: 'இ', romanization: 'i', meaning: 'இலை (Leaf)', imageEmoji: '🍃', imageHint: 'இலை — Leaf (starts with இ)' },
+      { id: 'img-ஈ', tamil: 'ஈ', romanization: 'ii', meaning: 'ஈ (Fly)', imageEmoji: '🪰', imageHint: 'ஈ — Fly (starts with ஈ)' },
+      { id: 'img-உ', tamil: 'உ', romanization: 'u', meaning: 'உணவு (Food)', imageEmoji: '🍚', imageHint: 'உணவு — Food (starts with உ)' },
+      { id: 'img-ஊ', tamil: 'ஊ', romanization: 'uu', meaning: 'ஊஞ்சல் (Swing)', imageEmoji: '🛝', imageHint: 'ஊஞ்சல் — Swing (starts with ஊ)' },
+      { id: 'img-எ', tamil: 'எ', romanization: 'e', meaning: 'எலி (Rat)', imageEmoji: '🐭', imageHint: 'எலி — Rat (starts with எ)' },
+      { id: 'img-ஏ', tamil: 'ஏ', romanization: 'ee', meaning: 'ஏணி (Ladder)', imageEmoji: '🪜', imageHint: 'ஏணி — Ladder (starts with ஏ)' },
+      { id: 'img-ஐ', tamil: 'ஐ', romanization: 'ai', meaning: 'ஐந்து (Five)', imageEmoji: '✋', imageHint: 'ஐந்து — Five fingers (starts with ஐ)' },
+      { id: 'img-ஒ', tamil: 'ஒ', romanization: 'o', meaning: 'ஒட்டகம் (Camel)', imageEmoji: '🐪', imageHint: 'ஒட்டகம் — Camel (starts with ஒ)' },
+      { id: 'img-ஓ', tamil: 'ஓ', romanization: 'oo', meaning: 'ஓடம் (Boat)', imageEmoji: '⛵', imageHint: 'ஓடம் — Boat (starts with ஓ)' },
+      { id: 'img-ஔ', tamil: 'ஔ', romanization: 'au', meaning: 'ஔடதம் (Medicine)', imageEmoji: '💊', imageHint: 'ஔடதம் — Medicine (starts with ஔ)' },
+    ],
+    quizType: 'picture',
+  },
 ];
 
-// ── Step 2 — Mei (Consonants) ──
-const meiLetters: LessonItem[] = [
-  { id: 'க்', tamil: 'க்', romanization: 'k', meaning: 'Hard k stop consonant' },
-  { id: 'ங்', tamil: 'ங்', romanization: 'ng', meaning: 'Nasal ng sound, as in sing' },
-  { id: 'ச்', tamil: 'ச்', romanization: 'ch', meaning: 'Ch sound, as in chair' },
-  { id: 'ஞ்', tamil: 'ஞ்', romanization: 'nj', meaning: 'Palatal nasal, as in canyon' },
-  { id: 'ட்', tamil: 'ட்', romanization: 't', meaning: 'Retroflex t with curled tongue' },
-  { id: 'ண்', tamil: 'ண்', romanization: 'n', meaning: 'Retroflex n with curled tongue' },
-  { id: 'த்', tamil: 'த்', romanization: 'th', meaning: 'Dental t/th made at the teeth' },
-  { id: 'ந்', tamil: 'ந்', romanization: 'n', meaning: 'Dental n made at the teeth' },
-  { id: 'ப்', tamil: 'ப்', romanization: 'p', meaning: 'Hard p stop consonant' },
-  { id: 'ம்', tamil: 'ம்', romanization: 'm', meaning: 'Bilabial m sound' },
-  { id: 'ய்', tamil: 'ய்', romanization: 'y', meaning: 'Glide y sound, as in yes' },
-  { id: 'ர்', tamil: 'ர்', romanization: 'r', meaning: 'Tapped r sound' },
-  { id: 'ல்', tamil: 'ல்', romanization: 'l', meaning: 'Light l sound' },
-  { id: 'வ்', tamil: 'வ்', romanization: 'v', meaning: 'Between v and w in speech' },
-  { id: 'ழ்', tamil: 'ழ்', romanization: 'zh', meaning: 'Unique Tamil zh sound' },
-  { id: 'ள்', tamil: 'ள்', romanization: 'l', meaning: 'Retroflex l with curled tongue' },
-  { id: 'ற்', tamil: 'ற்', romanization: 'r', meaning: 'Strong rolled or trilled r' },
-  { id: 'ன்', tamil: 'ன்', romanization: 'n', meaning: 'Alveolar n used in word endings' },
-];
+// ── Step 2 — Mei (Consonants) — derived from canonical tamilAlphabet ──
+const meiLetters: LessonItem[] = ALPHA_CONSONANTS.map((l) => ({
+  id: l.tamil,
+  tamil: l.tamil,
+  romanization: l.romanization,
+  meaning: l.meaning,
+}));
 
 const meiLessons: Lesson[] = [
   {
@@ -121,6 +121,25 @@ const meiLessons: Lesson[] = [
     description: 'Learn the 6 medium consonants: ய், ர், ல், வ், ழ், ள்',
     items: meiLetters.filter((l) => ['ய்', 'ர்', 'ல்', 'வ்', 'ழ்', 'ள்'].includes(l.id)),
     quizType: 'identify',
+  },
+  {
+    id: 'mei-4',
+    title: 'Consonant Picture Recognition',
+    titleTamil: 'படம் பார்த்து மெய் கண்டுபிடி',
+    description: 'Identify the Tamil consonant from picture clues',
+    items: [
+      { id: 'img-க்', tamil: 'க்', romanization: 'k', meaning: 'கல் (Stone)', imageEmoji: '🪨', imageHint: 'கல் — Stone (starts with க்)' },
+      { id: 'img-ச்', tamil: 'ச்', romanization: 'ch', meaning: 'சட்டி (Pot)', imageEmoji: '🪣', imageHint: 'சட்டி — Pot (starts with ச்)' },
+      { id: 'img-ட்', tamil: 'ட்', romanization: 't', meaning: 'வட்டம் (Circle)', imageEmoji: '⭕', imageHint: 'வட்டம் — Circle (starts with ட்)' },
+      { id: 'img-த்', tamil: 'த்', romanization: 'th', meaning: 'தமிழ் (Tamil)', imageEmoji: '🪔', imageHint: 'தமிழ் — Tamil (starts with த்)' },
+      { id: 'img-ப்', tamil: 'ப்', romanization: 'p', meaning: 'பழம் (Fruit)', imageEmoji: '🍎', imageHint: 'பழம் — Fruit (starts with ப்)' },
+      { id: 'img-ம்', tamil: 'ம்', romanization: 'm', meaning: 'மரம் (Tree)', imageEmoji: '🌳', imageHint: 'மரம் — Tree (starts with ம்)' },
+      { id: 'img-ய்', tamil: 'ய்', romanization: 'y', meaning: 'யானை (Elephant)', imageEmoji: '🐘', imageHint: 'யானை — Elephant (starts with ய்)' },
+      { id: 'img-வ்', tamil: 'வ்', romanization: 'v', meaning: 'வாழை (Banana)', imageEmoji: '🍌', imageHint: 'வாழை — Banana (starts with வ்)' },
+      { id: 'img-ந்', tamil: 'ந்', romanization: 'n', meaning: 'நண்டு (Crab)', imageEmoji: '🦀', imageHint: 'நண்டு — Crab (starts with ந்)' },
+      { id: 'img-ர்', tamil: 'ர்', romanization: 'r', meaning: 'ரோஜா (Rose)', imageEmoji: '🌹', imageHint: 'ரோஜா — Rose (starts with ர்)' },
+    ],
+    quizType: 'picture',
   },
 ];
 
@@ -299,8 +318,93 @@ const sentenceLessons: Lesson[] = [
   },
 ];
 
-export interface ThirtyDayPlanItem {
-  day: number;
+// ── Step 6 — Tamil Numbers & Counting ──
+const tamilNumberItems: LessonItem[] = [
+  { id: 'num-1',  tamil: 'ஒன்று',    romanization: 'ondru',    meaning: '1 — One',    imageEmoji: '1️⃣', imageHint: 'Number 1' },
+  { id: 'num-2',  tamil: 'இரண்டு',   romanization: 'irandu',   meaning: '2 — Two',    imageEmoji: '2️⃣', imageHint: 'Number 2' },
+  { id: 'num-3',  tamil: 'மூன்று',   romanization: 'moondru',  meaning: '3 — Three',  imageEmoji: '3️⃣', imageHint: 'Number 3' },
+  { id: 'num-4',  tamil: 'நான்கு',   romanization: 'naangu',   meaning: '4 — Four',   imageEmoji: '4️⃣', imageHint: 'Number 4' },
+  { id: 'num-5',  tamil: 'ஐந்து',    romanization: 'aindhu',   meaning: '5 — Five',   imageEmoji: '5️⃣', imageHint: 'Number 5' },
+  { id: 'num-6',  tamil: 'ஆறு',      romanization: 'aaru',     meaning: '6 — Six',    imageEmoji: '6️⃣', imageHint: 'Number 6' },
+  { id: 'num-7',  tamil: 'ஏழு',      romanization: 'ezhu',     meaning: '7 — Seven',  imageEmoji: '7️⃣', imageHint: 'Number 7' },
+  { id: 'num-8',  tamil: 'எட்டு',    romanization: 'ettu',     meaning: '8 — Eight',  imageEmoji: '8️⃣', imageHint: 'Number 8' },
+  { id: 'num-9',  tamil: 'ஒன்பது',   romanization: 'onbadhu',  meaning: '9 — Nine',   imageEmoji: '9️⃣', imageHint: 'Number 9' },
+  { id: 'num-10', tamil: 'பத்து',    romanization: 'pathu',    meaning: '10 — Ten',   imageEmoji: '🔟', imageHint: 'Number 10' },
+  { id: 'num-11', tamil: 'பதினொன்று', romanization: 'pathinondru', meaning: '11 — Eleven',  imageEmoji: '1️⃣1️⃣', imageHint: 'Number 11' },
+  { id: 'num-12', tamil: 'பன்னிரண்டு', romanization: 'pannirndu', meaning: '12 — Twelve', imageEmoji: '1️⃣2️⃣', imageHint: 'Number 12' },
+  { id: 'num-20', tamil: 'இருபது',   romanization: 'irupadhu', meaning: '20 — Twenty', imageEmoji: '2️⃣0️⃣', imageHint: 'Number 20' },
+  { id: 'num-50', tamil: 'ஐம்பது',   romanization: 'aimpadhu', meaning: '50 — Fifty',  imageEmoji: '5️⃣0️⃣', imageHint: 'Number 50' },
+  { id: 'num-100',tamil: 'நூறு',     romanization: 'nooru',    meaning: '100 — Hundred', imageEmoji: '💯', imageHint: 'Number 100' },
+];
+
+const tamilSymbolItems: LessonItem[] = [
+  { id: 'sym-1',  tamil: '௧', romanization: '1',   meaning: 'Tamil numeral 1' },
+  { id: 'sym-2',  tamil: '௨', romanization: '2',   meaning: 'Tamil numeral 2' },
+  { id: 'sym-3',  tamil: '௩', romanization: '3',   meaning: 'Tamil numeral 3' },
+  { id: 'sym-4',  tamil: '௪', romanization: '4',   meaning: 'Tamil numeral 4' },
+  { id: 'sym-5',  tamil: '௫', romanization: '5',   meaning: 'Tamil numeral 5' },
+  { id: 'sym-6',  tamil: '௬', romanization: '6',   meaning: 'Tamil numeral 6' },
+  { id: 'sym-7',  tamil: '௭', romanization: '7',   meaning: 'Tamil numeral 7' },
+  { id: 'sym-8',  tamil: '௮', romanization: '8',   meaning: 'Tamil numeral 8' },
+  { id: 'sym-9',  tamil: '௯', romanization: '9',   meaning: 'Tamil numeral 9' },
+  { id: 'sym-10', tamil: '௰', romanization: '10',  meaning: 'Tamil numeral 10' },
+  { id: 'sym-100',tamil: '௱', romanization: '100', meaning: 'Tamil numeral 100' },
+  { id: 'sym-1000',tamil: '௲', romanization: '1000', meaning: 'Tamil numeral 1000' },
+];
+
+const countingContextItems: LessonItem[] = [
+  { id: 'ctx-1', tamil: 'ஒரு மரம்',    romanization: 'oru maram',    meaning: 'One tree',    imageEmoji: '🌳', imageHint: 'One tree' },
+  { id: 'ctx-2', tamil: 'இரண்டு பூக்கள்', romanization: 'irandu pookkal', meaning: 'Two flowers', imageEmoji: '🌸', imageHint: 'Two flowers' },
+  { id: 'ctx-3', tamil: 'மூன்று பறவைகள்', romanization: 'moondru paravaikal', meaning: 'Three birds', imageEmoji: '🐦', imageHint: 'Three birds' },
+  { id: 'ctx-4', tamil: 'நான்கு புத்தகங்கள்', romanization: 'naangu puthagangal', meaning: 'Four books', imageEmoji: '📚', imageHint: 'Four books' },
+  { id: 'ctx-5', tamil: 'ஐந்து நட்சத்திரங்கள்', romanization: 'aindhu natchathirangal', meaning: 'Five stars', imageEmoji: '⭐', imageHint: 'Five stars' },
+  { id: 'ctx-6', tamil: 'பத்து நிமிடங்கள்', romanization: 'pathu nimitangal', meaning: 'Ten minutes', imageEmoji: '⏱️', imageHint: 'Ten minutes' },
+];
+
+const numberLessons: Lesson[] = [
+  {
+    id: 'num-1to5',
+    title: 'Numbers 1–5',
+    titleTamil: 'எண்கள் ௧-௫',
+    description: 'Learn to say and recognise ஒன்று through ஐந்து',
+    items: tamilNumberItems.filter((n) => ['num-1','num-2','num-3','num-4','num-5'].includes(n.id)),
+    quizType: 'identify',
+  },
+  {
+    id: 'num-6to10',
+    title: 'Numbers 6–10',
+    titleTamil: 'எண்கள் ௬-௰',
+    description: 'Learn to say and recognise ஆறு through பத்து',
+    items: tamilNumberItems.filter((n) => ['num-6','num-7','num-8','num-9','num-10'].includes(n.id)),
+    quizType: 'identify',
+  },
+  {
+    id: 'num-beyond',
+    title: 'Beyond 10',
+    titleTamil: 'பத்துக்கு மேல்',
+    description: 'Learn eleven, twelve, twenty, fifty and hundred',
+    items: tamilNumberItems.filter((n) => ['num-11','num-12','num-20','num-50','num-100'].includes(n.id)),
+    quizType: 'identify',
+  },
+  {
+    id: 'num-symbols',
+    title: 'Tamil Numeral Symbols',
+    titleTamil: 'தமிழ் இலக்க குறியீடுகள்',
+    description: 'Recognise the traditional Tamil numeral symbols ௧–௲',
+    items: tamilSymbolItems,
+    quizType: 'match',
+  },
+  {
+    id: 'num-picture',
+    title: 'Count the Pictures',
+    titleTamil: 'படம் பார்த்து எண்ணு',
+    description: 'Match picture clues to the correct counting phrase',
+    items: countingContextItems,
+    quizType: 'picture',
+  },
+];
+
+export interface ThirtyDayPlanItem {  day: number;
   week: number;
   focus: string;
   goal: string;
@@ -313,15 +417,15 @@ export const THIRTY_DAY_PLAN: ThirtyDayPlanItem[] = [
   { day: 2, week: 1, focus: 'Short vowels', goal: 'Memorize அ, இ, உ, எ, ஒ with pronunciation', stepId: 'uyir', minutes: 20 },
   { day: 3, week: 1, focus: 'Long vowels', goal: 'Practice ஆ, ஈ, ஊ, ஏ, ஓ and sound contrast', stepId: 'uyir', minutes: 20 },
   { day: 4, week: 1, focus: 'Diphthongs', goal: 'Learn ஐ and ஔ with examples', stepId: 'uyir', minutes: 20 },
-  { day: 5, week: 1, focus: 'Vowel revision', goal: 'Read all 12 vowels without prompts', stepId: 'uyir', minutes: 20 },
+  { day: 5, week: 1, focus: 'Vowel picture recognition', goal: 'Identify vowels from image clues (uyir-4)', stepId: 'uyir', minutes: 20 },
   { day: 6, week: 1, focus: 'Listening and speaking', goal: 'Repeat vowels aloud with audio support', stepId: 'uyir', minutes: 15 },
   { day: 7, week: 1, focus: 'Weekly checkpoint', goal: 'Complete all Uyir quizzes with at least 70%', stepId: 'uyir', minutes: 25 },
 
-  { day: 8, week: 2, focus: 'Vallinam consonants', goal: 'Learn க், ச், ட், த், ப், ற்', stepId: 'mei', minutes: 20 },
-  { day: 9, week: 2, focus: 'Mellinam consonants', goal: 'Learn ங், ஞ், ண், ந், ம், ன்', stepId: 'mei', minutes: 20 },
+  { day: 8,  week: 2, focus: 'Vallinam consonants', goal: 'Learn க், ச், ட், த், ப், ற்', stepId: 'mei', minutes: 20 },
+  { day: 9,  week: 2, focus: 'Mellinam consonants', goal: 'Learn ங், ஞ், ண், ந், ம், ன்', stepId: 'mei', minutes: 20 },
   { day: 10, week: 2, focus: 'Idaiyinam consonants', goal: 'Learn ய், ர், ல், வ், ழ், ள்', stepId: 'mei', minutes: 20 },
   { day: 11, week: 2, focus: 'Consonant recall', goal: 'Identify all 18 Mei letters quickly', stepId: 'mei', minutes: 20 },
-  { day: 12, week: 2, focus: 'Pronunciation drills', goal: 'Practice tricky sounds like ழ் and ற்', stepId: 'mei', minutes: 20 },
+  { day: 12, week: 2, focus: 'Consonant picture recognition', goal: 'Match picture clues to consonants (mei-4)', stepId: 'mei', minutes: 20 },
   { day: 13, week: 2, focus: 'Mixed letter reading', goal: 'Read random Uyir and Mei combinations', stepId: 'mei', minutes: 20 },
   { day: 14, week: 2, focus: 'Weekly checkpoint', goal: 'Complete all Mei quizzes with at least 70%', stepId: 'mei', minutes: 25 },
 
@@ -335,14 +439,14 @@ export const THIRTY_DAY_PLAN: ThirtyDayPlanItem[] = [
 
   { day: 22, week: 4, focus: 'Core word set', goal: 'Practice family and greeting words', stepId: 'words', minutes: 20 },
   { day: 23, week: 4, focus: 'Nature vocabulary', goal: 'Learn water, tree, flower, sea, and house words', stepId: 'words', minutes: 20 },
-  { day: 24, week: 4, focus: 'Daily words', goal: 'Use common words in short phrases', stepId: 'words', minutes: 20 },
-  { day: 25, week: 4, focus: 'People and time words', goal: 'Practice words like friend, morning, today', stepId: 'words', minutes: 20 },
-  { day: 26, week: 4, focus: 'Word writing practice', goal: 'Write 10 words from memory', stepId: 'words', minutes: 20 },
-  { day: 27, week: 4, focus: 'Sentence reading basics', goal: 'Read simple self and action sentences', stepId: 'sentences', minutes: 20 },
-  { day: 28, week: 4, focus: 'Weekly checkpoint', goal: 'Finish word lessons and start sentence quizzes', stepId: 'sentences', minutes: 25 },
+  { day: 24, week: 4, focus: 'Daily words & picture quiz', goal: 'Complete picture recognition word lesson', stepId: 'words', minutes: 20 },
+  { day: 25, week: 4, focus: 'Numbers 1–10', goal: 'Learn to say and write ஒன்று through பத்து', stepId: 'numbers', minutes: 20 },
+  { day: 26, week: 4, focus: 'Numbers beyond 10 & Tamil symbols', goal: 'Learn ௧–௲ Tamil numeral symbols', stepId: 'numbers', minutes: 20 },
+  { day: 27, week: 4, focus: 'Counting in context', goal: 'Use counting phrases like இரண்டு பூக்கள்', stepId: 'numbers', minutes: 20 },
+  { day: 28, week: 4, focus: 'Weekly checkpoint', goal: 'Finish word and number lessons', stepId: 'numbers', minutes: 25 },
 
-  { day: 29, week: 5, focus: 'Fluency day', goal: 'Read all learned words and sentences aloud', stepId: 'sentences', minutes: 25 },
-  { day: 30, week: 5, focus: 'Final review', goal: 'Complete all pending quizzes and celebrate progress', stepId: 'sentences', minutes: 30 },
+  { day: 29, week: 5, focus: 'Self & identity sentences', goal: 'Read sentences: நான் தமிழ் படிக்கிறேன்', stepId: 'sentences', minutes: 20 },
+  { day: 30, week: 5, focus: 'Final review', goal: 'Complete all pending quizzes and celebrate progress 🎉', stepId: 'sentences', minutes: 30 },
 ];
 
 // ── All Steps ──
@@ -401,5 +505,16 @@ export const LEARNING_STEPS: Step[] = [
     color: '#ff4b4b',
     badgeId: 'reader',
     lessons: sentenceLessons,
+  },
+  {
+    id: 'numbers',
+    stepNumber: 6,
+    title: 'Tamil Numbers & Counting',
+    titleTamil: 'தமிழ் எண்கள் & கணக்கிடல்',
+    description: 'Learn Tamil number words, traditional numeral symbols, and counting in context.',
+    icon: '🔢',
+    color: '#20c997',
+    badgeId: 'number-master',
+    lessons: numberLessons,
   },
 ];

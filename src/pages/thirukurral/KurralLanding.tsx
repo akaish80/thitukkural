@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import PageTitle from '../../components/PageTitle';
 import './kurralLanding.scss';
 import IntroSection from './components/IntroSection';
 
@@ -29,6 +30,11 @@ const KurralLanding = () => {
 
   return (
     <div className="kurral-landing">
+      <PageTitle
+        title="திருக்குறள் — Thirukkural"
+        description="Explore all 1330 Thirukkural couplets by Thiruvalluvar — with meanings, exercises and more."
+        path="/kurral"
+      />
       <div className="hero-section">
         <div className="hero-content">
           <h1 className="hero-title">

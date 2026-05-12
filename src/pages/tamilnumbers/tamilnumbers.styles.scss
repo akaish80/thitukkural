@@ -67,6 +67,8 @@
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: inherit;
+  min-height: 44px;
+  justify-content: center;
 
   &__label {
     font-size: 0.95rem;
@@ -128,6 +130,13 @@
 
     .number-card__speak {
       opacity: 1;
+    }
+  }
+
+  @media (hover: none) and (pointer: coarse) {
+    &:hover {
+      transform: none;
+      box-shadow: none;
     }
   }
 

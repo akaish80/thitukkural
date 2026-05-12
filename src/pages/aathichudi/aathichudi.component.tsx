@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PageTitle from '../../components/PageTitle';
 import './aathichudi.component.scss';
 
 type AathichudiVerse = {
@@ -50,6 +51,11 @@ const Aathichudi = () => {
 
   return (
     <div className="aathichudi-page">
+      <PageTitle
+        title="ஆத்திசூடி — Aathichudi"
+        description="Explore the Aathichudi — Tamil aphorisms and wisdom arranged alphabetically."
+        path="/aathichudi"
+      />
       <section className="aathichudi-hero">
         <h1>ஆத்திசூடி</h1>
         <p>Click each tile to flip and see the meaning.</p>

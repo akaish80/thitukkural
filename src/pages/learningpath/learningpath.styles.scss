@@ -189,7 +189,12 @@
   display: flex;
   gap: 0.5rem;
   justify-content: center;
+  flex-wrap: wrap;
   margin-bottom: 2rem;
+
+  @media (max-width: 480px) {
+    gap: 0.4rem;
+  }
 }
 
 .lp-tab {
@@ -203,6 +208,12 @@
   color: var(--text-secondary);
   font-family: inherit;
   transition: all 0.2s;
+  min-height: 44px;
+
+  @media (max-width: 480px) {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
 
   &:hover {
     border-color: var(--color-primary);

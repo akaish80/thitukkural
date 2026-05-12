@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import PageTitle from '../../components/PageTitle';
 import { Link } from 'react-router-dom';
 import {
   getLessonProgress,
@@ -52,6 +53,11 @@ const LearningPath = () => {
 
   return (
     <div className="learning-path-page">
+      <PageTitle
+        title="Learning Path"
+        description="Structured Tamil learning from vowels to sentences — with progress tracking, badges and streaks."
+        path="/learn"
+      />
       {/* Hero */}
       <section className="lp-hero">
         <div className="lp-hero__text">

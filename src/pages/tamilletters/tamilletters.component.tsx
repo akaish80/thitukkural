@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import PageTitle from '../../components/PageTitle';
 import { speakTamil } from '../../utils/pronunciationEngine';
 import { SpeakButton, SpeedToggle, Waveform } from '../../components/PronunciationPlayer/PronunciationPlayer';
 import { onSpeakingChange } from '../../utils/pronunciationEngine';
@@ -179,6 +180,11 @@ const TamilLetters = () => {
 
   return (
     <div className="tamil-letters-page">
+      <PageTitle
+        title="Tamil Letters — உயிர் & மெய்"
+        description="Learn all 12 Tamil vowels, 18 consonants and the Aytham with pronunciation, examples and audio."
+        path="/tamil-letters"
+      />
       <section className="tamil-letters-hero">
         <h1>தமிழ் எழுத்துகள்</h1>
         <p>Tamil script has 12 vowels, 18 consonants, and 216 compound letters</p>

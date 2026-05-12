@@ -1,9 +1,11 @@
 import { useState, useCallback, useMemo } from 'react';
+import PageTitle from '../../components/PageTitle';
 import { SpeakButton, SpeedToggle } from '../../components/PronunciationPlayer/PronunciationPlayer';
+import { VOWELS as ALPHA_VOWELS, CONSONANTS as ALPHA_CONSONANTS } from '../../data/tamilAlphabet';
 import './letterexercise.styles.scss';
 
 // ---------------------------------------------------------------------------
-// Data
+// Data — derived from canonical tamilAlphabet source of truth
 // ---------------------------------------------------------------------------
 interface LetterInfo {
   tamil: string;
@@ -12,41 +14,19 @@ interface LetterInfo {
   typeLabel: string;
 }
 
-const VOWELS: LetterInfo[] = [
-  { tamil: 'அ', roman: 'a', type: 'vowel', typeLabel: 'உயிர்' },
-  { tamil: 'ஆ', roman: 'aa', type: 'vowel', typeLabel: 'உயிர்' },
-  { tamil: 'இ', roman: 'i', type: 'vowel', typeLabel: 'உயிர்' },
-  { tamil: 'ஈ', roman: 'ii', type: 'vowel', typeLabel: 'உயிர்' },
-  { tamil: 'உ', roman: 'u', type: 'vowel', typeLabel: 'உயிர்' },
-  { tamil: 'ஊ', roman: 'uu', type: 'vowel', typeLabel: 'உயிர்' },
-  { tamil: 'எ', roman: 'e', type: 'vowel', typeLabel: 'உயிர்' },
-  { tamil: 'ஏ', roman: 'ee', type: 'vowel', typeLabel: 'உயிர்' },
-  { tamil: 'ஐ', roman: 'ai', type: 'vowel', typeLabel: 'உயிர்' },
-  { tamil: 'ஒ', roman: 'o', type: 'vowel', typeLabel: 'உயிர்' },
-  { tamil: 'ஓ', roman: 'oo', type: 'vowel', typeLabel: 'உயிர்' },
-  { tamil: 'ஔ', roman: 'au', type: 'vowel', typeLabel: 'உயிர்' },
-];
+const VOWELS: LetterInfo[] = ALPHA_VOWELS.map((l) => ({
+  tamil: l.base,
+  roman: l.romanization,
+  type: 'vowel' as const,
+  typeLabel: l.typeLabelTa,
+}));
 
-const CONSONANTS: LetterInfo[] = [
-  { tamil: 'க', roman: 'ka', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ங', roman: 'nga', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ச', roman: 'ca', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ஞ', roman: 'nja', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ட', roman: 'ta', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ண', roman: 'na', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'த', roman: 'ta', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ந', roman: 'na', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ப', roman: 'pa', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ம', roman: 'ma', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ய', roman: 'ya', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ர', roman: 'ra', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ல', roman: 'la', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'வ', roman: 'va', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ழ', roman: 'zha', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ள', roman: 'la', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ற', roman: 'ra', type: 'consonant', typeLabel: 'மெய்' },
-  { tamil: 'ன', roman: 'na', type: 'consonant', typeLabel: 'மெய்' },
-];
+const CONSONANTS: LetterInfo[] = ALPHA_CONSONANTS.map((l) => ({
+  tamil: l.base,
+  roman: l.romanization,
+  type: 'consonant' as const,
+  typeLabel: l.typeLabelTa,
+}));
 
 const ALL_LETTERS = [...VOWELS, ...CONSONANTS];
 
@@ -331,6 +311,11 @@ const LetterExercise = () => {
 
   return (
     <div className="letter-exercise">
+      <PageTitle
+        title="Letter Exercise"
+        description="Practice identifying Tamil vowels and consonants with interactive quizzes."
+        path="/letter-exercise"
+      />
       {/* Progress */}
       <div className="letter-exercise__progress">
         <div className="progress-bar" style={{ width: `${progressPercent}%` }} />

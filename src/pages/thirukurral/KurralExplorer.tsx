@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import PageTitle from '../../components/PageTitle';
 import { Container } from '../../Common/common.styles';
 import './thirukurral.styles.scss';
 import fetchWrapper from '../../utils/fetchWrapper';
@@ -198,6 +199,11 @@ const KurralExplorer = () => {
 
   return (
     <Container>
+      <PageTitle
+        title={expandedKurralId ? `திருக்குறள் #${expandedKurralId}` : 'திருக்குறள் Explore'}
+        description="Browse all 1330 Thirukkural couplets by Paal, Adikaram and Kurral. Read, bookmark and share."
+        path={expandedKurralId ? `/kurral/${expandedKurralId}` : '/kurral/explore'}
+      />
       <div
         className="thirukurral-page"
         style={{

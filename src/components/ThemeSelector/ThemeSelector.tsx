@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 // import { useTheme, THEMES, THEME_COLORS } from '../../contexts/ThemeContext';
 import './ThemeSelector.scss';
 import { THEME_COLORS, THEMES, useTheme } from '../../contexts/ThemeContext';
@@ -16,6 +17,7 @@ const ThemeSelector = ({ isCompact = false }) => {
   } = useTheme();
 
   const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   const themeModeOptions = [
     {
@@ -64,6 +66,7 @@ const ThemeSelector = ({ isCompact = false }) => {
   return (
     <div className="theme-selector">
       <button
+        ref={triggerRef}
         className="theme-selector-trigger"
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
@@ -75,10 +78,14 @@ const ThemeSelector = ({ isCompact = false }) => {
         <span className={`dropdown-arrow ${isOpen ? 'open' : ''}`}>▼</span>
       </button>
 
-      {isOpen && (
+      {isOpen && createPortal(
         <>
           <div className="theme-selector-overlay" onClick={() => setIsOpen(false)} />
           <div className="theme-selector-dropdown">
+            <div className="theme-sheet-header">
+              <span className="theme-sheet-title">Appearance</span>
+              <button className="theme-sheet-close" onClick={() => setIsOpen(false)} aria-label="Close">✕</button>
+            </div>
             <div className="theme-section">
               <h4>Theme Mode</h4>
               <div className="theme-mode-options">
@@ -133,7 +140,8 @@ const ThemeSelector = ({ isCompact = false }) => {
               </div>
             </div>
           </div>
-        </>
+        </>,
+        document.body,
       )}
     </div>
   );

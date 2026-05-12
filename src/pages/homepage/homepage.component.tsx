@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import PageTitle from '../../components/PageTitle';
 import { Link } from 'react-router-dom';
 import './homepage.component.scss';
 import { getDailyKurralIndex, getStreakData, getProgressStats } from '../../utils/learningStore';
@@ -126,6 +127,11 @@ const Homepage = () => {
 
   return (
     <div className="homepage">
+      <PageTitle
+        title="Home"
+        description="Interactive Tamil learning platform — Thirukkural, letters, exercises, pronunciation and more."
+        path="/"
+      />
       <div className="hero-section">
         <div className="hero-content">
           <h1 className="hero-title">

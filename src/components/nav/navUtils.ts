@@ -32,6 +32,8 @@ export const getIcon = (text: string) => {
     return '✉️';
   } else if (lower === 'tamil numbers') {
     return '🔢';
+  } else if (lower === 'count in tamil') {
+    return '🔢';
   } else if (lower === 'learning path') {
     return '🛤️';
   } else if (lower === 'planner') {

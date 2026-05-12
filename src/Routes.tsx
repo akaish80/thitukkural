@@ -1,7 +1,30 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, Component } from 'react';
+import type { ReactNode } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
+
+class RouteErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+  constructor(props: { children: ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '2rem', textAlign: 'center' }}>
+          <h2>Something went wrong loading this page.</h2>
+          <button onClick={() => this.setState({ hasError: false })}>Try again</button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 import NotFound from './pages/PageNotFound/pagenotfound.component';
-// import NotFound from './pages/PageNotFound';
 
 const HomePage = lazy(() => import('./pages/homepage/homepage.component'));
 const Thirukkural = lazy(() => import('./pages/thirukurral/thirukurral.component'));
@@ -26,6 +49,7 @@ const PlannerPage = lazy(() => import('./pages/learningpath/PlannerPage'));
 const LessonPage = lazy(() => import('./pages/learningpath/LessonPage'));
 const PictureWordChartPage = lazy(() => import('./pages/learningpath/PictureWordChartPage'));
 const LearnTamilImageRecognitionPage = lazy(() => import('./pages/learntamil/LearnTamilImageRecognitionPage'));
+const TamilCounting = lazy(() => import('./pages/tamilcounting/tamilcounting.component'));
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -44,7 +68,8 @@ const LoadingSkeleton = () => (
 );
 
 const AppRoutes = () => (
-  <Suspense fallback={<LoadingSkeleton />}>
+  <RouteErrorBoundary>
+    <Suspense fallback={<LoadingSkeleton />}>
     <ScrollToTop />
     <Routes> 
       <Route path="/" element={<HomePage />} />
@@ -73,9 +98,11 @@ const AppRoutes = () => (
       <Route path="/learn/picture-chart" element={<PictureWordChartPage />} />
       <Route path="/learn-tamil/image-letter-recognition" element={<LearnTamilImageRecognitionPage />} />
       <Route path="/learn-tamil/picture-chart" element={<PictureWordChartPage />} />
+      <Route path="/tamil-counting" element={<TamilCounting />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   </Suspense>
+</RouteErrorBoundary>
 );
 
 export default AppRoutes;

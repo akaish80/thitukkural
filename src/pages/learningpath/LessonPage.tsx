@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import PageTitle from '../../components/PageTitle';
 import {
   markItemCompleted,
   completeLesson,
@@ -209,7 +210,10 @@ const LessonPage = () => {
 
   return (
     <div className="lesson-page" style={{ '--step-color': step.color } as React.CSSProperties}>
-      {/* Top bar */}
+      <PageTitle
+        title={`${lesson.title} — ${step.title}`}
+        description={`Learn ${lesson.description} in the Tamil Learning Path.`}
+      />
       <div className="lesson-topbar">
         <Link to="/learn" className="lesson-topbar__back">← Path</Link>
         <div className="lesson-topbar__info">

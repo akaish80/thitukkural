@@ -1,6 +1,17 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Container } from '../../../Common/common.styles';
+import { ALL_LETTERS } from '../../../data/tamilAlphabet';
 import './draw.letter.scss';
+
+// Derived from canonical tamilAlphabet — base (no pulli) form for drawing
+const tamilLetters = ALL_LETTERS
+  .filter((l) => l.type !== 'aytham')
+  .map((l) => ({
+    letter: l.base,
+    name: l.romanization.charAt(0).toUpperCase() + l.romanization.slice(1),
+    type: l.type === 'vowel' ? 'Vowel' : 'Consonant',
+    sound: l.sound,
+  }));
 
 const DrawLetter = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -10,40 +21,6 @@ const DrawLetter = () => {
   const [feedback, setFeedback] = useState('');
   const [showGuide, setShowGuide] = useState(true);
   const [showLetterPicker, setShowLetterPicker] = useState(false);
-
-  // Tamil letters collection
-  const tamilLetters = [
-    { letter: 'அ', name: 'A', type: 'Vowel', sound: '/a/ as in "father"' },
-    { letter: 'ஆ', name: 'Aa', type: 'Vowel', sound: '/aː/ as in "father" (long)' },
-    { letter: 'இ', name: 'I', type: 'Vowel', sound: '/i/ as in "bit"' },
-    { letter: 'ஈ', name: 'Ee', type: 'Vowel', sound: '/iː/ as in "beet" (long)' },
-    { letter: 'உ', name: 'U', type: 'Vowel', sound: '/u/ as in "put"' },
-    { letter: 'ஊ', name: 'Oo', type: 'Vowel', sound: '/uː/ as in "boot" (long)' },
-    { letter: 'எ', name: 'E', type: 'Vowel', sound: '/e/ as in "bet"' },
-    { letter: 'ஏ', name: 'Ae', type: 'Vowel', sound: '/eː/ as in "bay" (long)' },
-    { letter: 'ஐ', name: 'Ai', type: 'Vowel', sound: '/aɪ/ as in "eye"' },
-    { letter: 'ஒ', name: 'O', type: 'Vowel', sound: '/o/ as in "pot"' },
-    { letter: 'ஓ', name: 'Oo', type: 'Vowel', sound: '/oː/ as in "boat" (long)' },
-    { letter: 'ஔ', name: 'Au', type: 'Vowel', sound: '/aʊ/ as in "how"' },
-    { letter: 'க', name: 'Ka', type: 'Consonant', sound: '/k/ as in "kite"' },
-    { letter: 'ங', name: 'Nga', type: 'Consonant', sound: '/ŋ/ as in "sing"' },
-    { letter: 'ச', name: 'Cha', type: 'Consonant', sound: '/tʃ/ as in "chair"' },
-    { letter: 'ஞ', name: 'Nya', type: 'Consonant', sound: '/ɲ/ as in "canyon"' },
-    { letter: 'ட', name: 'Ta', type: 'Consonant', sound: '/ʈ/ retroflex T' },
-    { letter: 'ண', name: 'Na', type: 'Consonant', sound: '/ɳ/ retroflex N' },
-    { letter: 'த', name: 'Tha', type: 'Consonant', sound: '/t̪/ dental T' },
-    { letter: 'ந', name: 'Na', type: 'Consonant', sound: '/n/ dental N' },
-    { letter: 'ப', name: 'Pa', type: 'Consonant', sound: '/p/ as in "pot"' },
-    { letter: 'ம', name: 'Ma', type: 'Consonant', sound: '/m/ as in "mat"' },
-    { letter: 'ய', name: 'Ya', type: 'Consonant', sound: '/j/ as in "yes"' },
-    { letter: 'ர', name: 'Ra', type: 'Consonant', sound: '/r/ rolled R' },
-    { letter: 'ல', name: 'La', type: 'Consonant', sound: '/l/ as in "love"' },
-    { letter: 'வ', name: 'Va', type: 'Consonant', sound: '/ʋ/ as in "water"' },
-    { letter: 'ழ', name: 'Zha', type: 'Consonant', sound: '/ɻ/ retroflex approximant' },
-    { letter: 'ள', name: 'La', type: 'Consonant', sound: '/ɭ/ retroflex L' },
-    { letter: 'ற', name: 'Ra', type: 'Consonant', sound: '/r/ hard R' },
-    { letter: 'ன', name: 'Na', type: 'Consonant', sound: '/n/ alveolar N' },
-  ];
 
   const getCurrentLetterInfo = () => {
     return tamilLetters.find((item) => item.letter === currentLetter) || tamilLetters[0];

@@ -52,6 +52,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
+    min-height: 44px;
 
     &.active {
       border-color: var(--color-primary, #1cb0f6);
@@ -178,6 +179,13 @@
     border-color: var(--group-color, var(--color-primary));
     transform: translateY(-3px);
     box-shadow: 0 6px 18px color-mix(in srgb, var(--group-color, var(--color-primary)) 20%, transparent);
+  }
+
+  @media (hover: none) and (pointer: coarse) {
+    &:hover {
+      transform: none;
+      box-shadow: none;
+    }
   }
 
   &--special {

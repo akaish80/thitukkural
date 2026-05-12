@@ -1,5 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
+import PageTitle from '../../components/PageTitle';
 import './TamilExperienceAssessment.scss';
+import { speakText } from '../../components/chatbot/speakText';
 import {
   recordActivity,
   saveQuizResult,
@@ -8,8 +10,9 @@ import {
   type TamilExperienceLevel,
 } from '../../utils/learningStore';
 
-type Skill = 'letters' | 'numbers' | 'vocabulary' | 'reading' | 'image-recognition';
+type Skill = 'letters' | 'audio-letters' | 'numbers' | 'vocabulary' | 'reading' | 'image-recognition' | 'word-to-image' | 'correct-word';
 type Difficulty = 1 | 2 | 3;
+type SpeechLang = 'ta-IN' | 'en-US';
 
 type AssessmentQuestion = {
   id: number;
@@ -19,7 +22,10 @@ type AssessmentQuestion = {
   explanation: string;
   skill: Skill;
   difficulty: Difficulty;
+  audioText?: string;
+  audioLang?: SpeechLang;
   image?: string;
+  optionImages?: string[];
 };
 
 type AnswerState = 'idle' | 'correct' | 'wrong';
@@ -34,8 +40,27 @@ type Attempt = {
   skill: Skill;
 };
 
-const TOTAL_QUESTIONS = 12;
 const STARTING_HEARTS = 3;
+
+// ── Lesson sections — questions are presented in this order ──────────────
+const LESSON_SECTIONS = [
+  { skill: 'letters'           as Skill, label: 'Letters',           labelTamil: 'எழுத்துக்கள்',  icon: '🔤', count: 3 },
+  { skill: 'audio-letters'     as Skill, label: 'Audio Letters',     labelTamil: 'ஒலி எழுத்து',   icon: '🔊', count: 2 },
+  { skill: 'numbers'           as Skill, label: 'Numbers',           labelTamil: 'எண்கள்',        icon: '🔢', count: 2 },
+  { skill: 'vocabulary'        as Skill, label: 'Vocabulary',        labelTamil: 'சொல்லகராதி',    icon: '📝', count: 3 },
+  { skill: 'reading'           as Skill, label: 'Reading',           labelTamil: 'வாசிப்பு',      icon: '📖', count: 2 },
+  { skill: 'image-recognition' as Skill, label: 'Image Recognition', labelTamil: 'படம் அடையாளம்', icon: '🖼️', count: 2 },
+  { skill: 'correct-word'      as Skill, label: 'Correct Spelling',   labelTamil: 'சரியான சொல்',    icon: '✍️', count: 3 },
+] as const;
+
+const TOTAL_QUESTIONS = LESSON_SECTIONS.reduce((s, l) => s + l.count, 0);
+
+type SessionQuestion = AssessmentQuestion & {
+  sectionIdx: number;
+  sectionLabel: string;
+  sectionIcon: string;
+  indexInSection: number;
+};
 
 const QUESTION_BANK: AssessmentQuestion[] = [
   { id: 1, prompt: 'Which Tamil letter is "ka"?', options: ['க', 'ங', 'ச', 'த'], correctIndex: 0, explanation: 'The consonant க is pronounced as ka.', skill: 'letters', difficulty: 1 },
@@ -53,7 +78,16 @@ const QUESTION_BANK: AssessmentQuestion[] = [
   { id: 13, prompt: 'Which letter is a pure vowel (uyir ezhuthu)?', options: ['உ', 'க்', 'ண்', 'த்'], correctIndex: 0, explanation: 'உ is a uyir (vowel) letter.', skill: 'letters', difficulty: 1 },
   { id: 14, prompt: 'Find the odd one out (not a day of week):', options: ['திங்கள்', 'செவ்வாய்', 'ஆறு', 'வெள்ளி'], correctIndex: 2, explanation: 'ஆறு means six, not a weekday.', skill: 'vocabulary', difficulty: 2 },
   { id: 15, prompt: 'Which is the correct form for respectful "you"?', options: ['நீங்கள்', 'நீ', 'நான்', 'அவன்'], correctIndex: 0, explanation: 'நீங்கள் is the respectful second-person form.', skill: 'vocabulary', difficulty: 2 },
-  { id: 16, prompt: 'Pick the correct compound: க + ா', options: ['கா', 'கி', 'கு', 'க்'], correctIndex: 0, explanation: 'க plus long-aa marker becomes கா.', skill: 'letters', difficulty: 1 },
+  { id: 16, prompt: 'க + ஆ', options: ['கா', 'கி', 'கு', 'க்'], correctIndex: 0, explanation: 'க plus long-aa marker becomes கா.', skill: 'letters', difficulty: 1 },
+  // Audio letter mapping (English -> Tamil, Tamil -> English)
+  { id: 126, prompt: 'Play audio and choose the matching Tamil letter.', options: ['க', 'ச', 'த', 'ப'], correctIndex: 0, explanation: 'The audio says "ka", which maps to க.', skill: 'audio-letters', difficulty: 1, audioText: 'ka', audioLang: 'en-US' },
+  { id: 127, prompt: 'Play audio and choose the matching Tamil letter.', options: ['ங', 'ஞ', 'ந', 'ம'], correctIndex: 0, explanation: 'The audio says "nga", which maps to ங.', skill: 'audio-letters', difficulty: 1, audioText: 'nga', audioLang: 'en-US' },
+  { id: 128, prompt: 'Play audio and choose the English transliteration.', options: ['zha', 'la', 'lla', 'ra'], correctIndex: 0, explanation: 'The Tamil letter ழ் is transliterated as zha.', skill: 'audio-letters', difficulty: 2, audioText: 'ழ்', audioLang: 'ta-IN' },
+  { id: 129, prompt: 'Play audio and choose the English transliteration.', options: ['ka', 'ga', 'kha', 'ha'], correctIndex: 0, explanation: 'The Tamil letter க் is commonly transliterated as ka.', skill: 'audio-letters', difficulty: 1, audioText: 'க்', audioLang: 'ta-IN' },
+  { id: 130, prompt: 'Play audio and choose the English transliteration.', options: ['nna', 'na', 'n', 'nga'], correctIndex: 0, explanation: 'The retroflex letter ண் is transliterated as nna.', skill: 'audio-letters', difficulty: 2, audioText: 'ண்', audioLang: 'ta-IN' },
+  { id: 131, prompt: 'Play audio and choose the matching Tamil vowel.', options: ['ஆ', 'அ', 'ஐ', 'ஈ'], correctIndex: 0, explanation: 'The audio says long "aa", which maps to ஆ.', skill: 'audio-letters', difficulty: 1, audioText: 'aa', audioLang: 'en-US' },
+  { id: 132, prompt: 'Play audio and choose the matching Tamil letter.', options: ['ற்', 'ர்', 'ல்', 'ழ்'], correctIndex: 0, explanation: 'The audio says "rra", which maps to ற்.', skill: 'audio-letters', difficulty: 3, audioText: 'rra', audioLang: 'en-US' },
+  { id: 133, prompt: 'Play audio and choose the matching Tamil letter.', options: ['ஊ', 'உ', 'ஒ', 'ஓ'], correctIndex: 0, explanation: 'The audio says long "oo", which maps to ஊ.', skill: 'audio-letters', difficulty: 2, audioText: 'oo', audioLang: 'en-US' },
   { id: 17, prompt: 'Which sentence is grammatically stronger?', options: ['அவர் நல்ல தமிழ் பேசுகிறார்', 'அவர் பேசுகிறார் தமிழ் நல்ல', 'தமிழ் பேச நல்ல அவர்', 'நல்ல அவர் பேச தமிழ்'], correctIndex: 0, explanation: 'The first sentence has proper word order and verb agreement.', skill: 'reading', difficulty: 3 },
   { id: 18, prompt: 'Tamil numeral for 1000 is:', options: ['௲', '௱', '௰', '௧௦௦'], correctIndex: 0, explanation: 'Tamil numeral 1000 is ௲.', skill: 'numbers', difficulty: 2 },
   { id: 19, prompt: 'What is the Tamil word for this animal?', options: ['பூனை', 'நாய்', 'பறவை', 'மீன்'], correctIndex: 0, explanation: 'பூனை means cat in Tamil.', skill: 'image-recognition', difficulty: 1, image: '/learning-images/png/cat.png' },
@@ -90,26 +124,121 @@ const QUESTION_BANK: AssessmentQuestion[] = [
   { id: 50, prompt: 'Which Tamil consonant (மெய்) does this image represent?', options: ['ள்', 'ழ்', 'ல்', 'ற்'], correctIndex: 0, explanation: 'வாள் (sword) ends with the consonant ள் (lla – retroflex la).', skill: 'image-recognition', difficulty: 3, image: '/learning-images/png/consonant-lla.png' },
   { id: 51, prompt: 'Which Tamil consonant (மெய்) does this image represent?', options: ['ற்', 'ர்', 'ள்', 'ழ்'], correctIndex: 0, explanation: 'பற்கள் (teeth) contains the consonant ற் (rra).', skill: 'image-recognition', difficulty: 3, image: '/learning-images/png/consonant-rra.png' },
   { id: 52, prompt: 'Which Tamil consonant (மெய்) does this image represent?', options: ['ன்', 'ண்', 'ந்', 'ஞ்'], correctIndex: 0, explanation: 'மீன் (fish) ends with the consonant ன் (nna2 – alveolar na).', skill: 'image-recognition', difficulty: 3, image: '/learning-images/png/consonant-nna2.png' },
+  { id: 53, prompt: 'What is the Tamil word for this animal?', options: ['பறவை', 'நாய்', 'பூனை', 'மீன்'], correctIndex: 0, explanation: 'பறவை means bird in Tamil.', skill: 'image-recognition', difficulty: 1, image: '/learning-images/png/bird.png' },
+  { id: 54, prompt: 'What is the Tamil word for this object?', options: ['பந்து', 'மேசை', 'நாற்காலி', 'புத்தகம்'], correctIndex: 0, explanation: 'பந்து means ball in Tamil.', skill: 'image-recognition', difficulty: 1, image: '/learning-images/png/ball.png' },
+  { id: 55, prompt: 'What is the Tamil word for this vehicle?', options: ['கார்', 'பேருந்து', 'சைக்கிள்', 'ரயில்'], correctIndex: 0, explanation: 'கார் means car in Tamil.', skill: 'image-recognition', difficulty: 1, image: '/learning-images/png/car.png' },
+  { id: 56, prompt: 'What is the Tamil word for this plant?', options: ['பூ', 'மரம்', 'இலை', 'வேர்'], correctIndex: 0, explanation: 'பூ means flower in Tamil.', skill: 'image-recognition', difficulty: 1, image: '/learning-images/png/flower.png' },
+  { id: 57, prompt: 'What is the Tamil word for this object?', options: ['பை', 'புத்தகம்', 'மேசை', 'கடிகாரம்'], correctIndex: 0, explanation: 'பை means bag in Tamil.', skill: 'image-recognition', difficulty: 1, image: '/learning-images/png/bag.png' },
+  { id: 58, prompt: 'What is the Tamil word for this furniture?', options: ['நாற்காலி', 'மேசை', 'படுக்கை', 'வீடு'], correctIndex: 0, explanation: 'நாற்காலி means chair in Tamil.', skill: 'image-recognition', difficulty: 2, image: '/learning-images/png/chair.png' },
+  { id: 59, prompt: 'What is the Tamil word for this furniture?', options: ['மேசை', 'நாற்காலி', 'கட்டில்', 'அலமாரி'], correctIndex: 0, explanation: 'மேசை means table in Tamil.', skill: 'image-recognition', difficulty: 2, image: '/learning-images/png/table.png' },
+  { id: 60, prompt: 'What is the Tamil word for this object?', options: ['கடிகாரம்', 'தொலைபேசி', 'கணினி', 'தொலைக்காட்சி'], correctIndex: 0, explanation: 'கடிகாரம் means clock in Tamil.', skill: 'image-recognition', difficulty: 2, image: '/learning-images/png/clock.png' },
+  { id: 61, prompt: 'What is the Tamil word for this vehicle?', options: ['பேருந்து', 'கார்', 'ரயில்', 'சைக்கிள்'], correctIndex: 0, explanation: 'பேருந்து means bus in Tamil.', skill: 'image-recognition', difficulty: 2, image: '/learning-images/png/bus.png' },
+  { id: 62, prompt: 'What is the Tamil word for this vehicle?', options: ['சைக்கிள்', 'கார்', 'பேருந்து', 'மோட்டார்'], correctIndex: 0, explanation: 'சைக்கிள் means cycle / bicycle in Tamil.', skill: 'image-recognition', difficulty: 2, image: '/learning-images/png/cycle.png' },
+  { id: 63, prompt: 'What is the Tamil word for this drink?', options: ['பால்', 'தண்ணீர்', 'சாறு', 'தேநீர்'], correctIndex: 0, explanation: 'பால் means milk in Tamil.', skill: 'image-recognition', difficulty: 1, image: '/learning-images/png/milk.png' },
+  { id: 64, prompt: 'What is the Tamil word for this liquid?', options: ['தண்ணீர்', 'பால்', 'சாறு', 'தேநீர்'], correctIndex: 0, explanation: 'தண்ணீர் means water in Tamil.', skill: 'image-recognition', difficulty: 1, image: '/learning-images/png/water.png' },
+  { id: 65, prompt: 'What is the Tamil word for this?', options: ['உணவு', 'பழம்', 'காய்கறி', 'பால்'], correctIndex: 0, explanation: 'உணவு means food in Tamil.', skill: 'image-recognition', difficulty: 2, image: '/learning-images/png/food.png' },
+  { id: 66, prompt: 'What is the Tamil word for this?', options: ['பழம்', 'காய்கறி', 'உணவு', 'மரம்'], correctIndex: 0, explanation: 'பழம் means fruit in Tamil.', skill: 'image-recognition', difficulty: 1, image: '/learning-images/png/fruit.png' },
+  { id: 67, prompt: 'What is the Tamil word for this celestial object?', options: ['நட்சத்திரம்', 'நிலா', 'சூரியன்', 'மழை'], correctIndex: 0, explanation: 'நட்சத்திரம் means star in Tamil.', skill: 'image-recognition', difficulty: 2, image: '/learning-images/png/star.png' },
+  { id: 68, prompt: 'What is the Tamil word for this building?', options: ['பள்ளி', 'மருத்துவமனை', 'வீடு', 'கடை'], correctIndex: 0, explanation: 'பள்ளி means school in Tamil.', skill: 'image-recognition', difficulty: 2, image: '/learning-images/png/school.png' },
+  { id: 69, prompt: 'What is the Tamil word for this building?', options: ['மருத்துவமனை', 'பள்ளி', 'வீடு', 'கடை'], correctIndex: 0, explanation: 'மருத்துவமனை means hospital in Tamil.', skill: 'image-recognition', difficulty: 3, image: '/learning-images/png/hospital.png' },
+  { id: 70, prompt: 'What is the Tamil word for this place?', options: ['கடை', 'வீடு', 'பள்ளி', 'மருத்துவமனை'], correctIndex: 0, explanation: 'கடை means shop in Tamil.', skill: 'image-recognition', difficulty: 2, image: '/learning-images/png/shop.png' },
+  { id: 71, prompt: 'What is the Tamil word for this device?', options: ['தொலைபேசி', 'கடிகாரம்', 'கணினி', 'தொலைக்காட்சி'], correctIndex: 0, explanation: 'தொலைபேசி means telephone / phone in Tamil.', skill: 'image-recognition', difficulty: 3, image: '/learning-images/png/phone.png' },
+  { id: 72, prompt: 'Identify the Tamil vowel shown in the image.', options: ['ஈ', 'இ', 'உ', 'அ'], correctIndex: 0, explanation: 'ஈ is the Tamil long vowel pronounced as "ii".', skill: 'image-recognition', difficulty: 2, image: '/learning-images/png/vowel-ii.png' },
+  { id: 73, prompt: 'Identify the Tamil vowel shown in the image.', options: ['எ', 'ஏ', 'அ', 'இ'], correctIndex: 0, explanation: 'எ is the Tamil vowel pronounced as a short "e" sound.', skill: 'image-recognition', difficulty: 2, image: '/learning-images/png/vowel-e.png' },
+  { id: 74, prompt: 'Identify the Tamil vowel shown in the image.', options: ['ஏ', 'எ', 'ஐ', 'ஒ'], correctIndex: 0, explanation: 'ஏ is the Tamil vowel pronounced as a long "ee" sound.', skill: 'image-recognition', difficulty: 2, image: '/learning-images/png/vowel-ee.png' },
+  { id: 75, prompt: 'Identify the Tamil vowel shown in the image.', options: ['ஒ', 'ஓ', 'ஔ', 'உ'], correctIndex: 0, explanation: 'ஒ is the Tamil vowel pronounced as a short "o" sound.', skill: 'image-recognition', difficulty: 3, image: '/learning-images/png/vowel-o.png' },
+  { id: 76, prompt: 'Identify the Tamil vowel shown in the image.', options: ['ஓ', 'ஒ', 'ஔ', 'உ'], correctIndex: 0, explanation: 'ஓ is the Tamil vowel pronounced as a long "oo" sound.', skill: 'image-recognition', difficulty: 3, image: '/learning-images/png/vowel-oo.png' },
+  { id: 77, prompt: 'Identify the Tamil vowel shown in the image.', options: ['ஊ', 'உ', 'ஓ', 'ஒ'], correctIndex: 0, explanation: 'ஊ is the Tamil vowel pronounced as a long "uu" sound.', skill: 'image-recognition', difficulty: 3, image: '/learning-images/png/vowel-uu.png' },
+  { id: 78, prompt: 'Identify the Tamil vowel shown in the image.', options: ['ஔ', 'ஒ', 'ஓ', 'அ'], correctIndex: 0, explanation: 'ஔ is the Tamil vowel pronounced as "au".', skill: 'image-recognition', difficulty: 3, image: '/learning-images/png/vowel-au.png' },
+  // Word → Image questions
+  { id: 79, prompt: 'Tap the image that shows "பூனை" (cat)', options: ['பூனை', 'நாய்', 'பறவை', 'மீன்'], correctIndex: 0, explanation: 'பூனை means cat — the fluffy four-legged pet.', skill: 'word-to-image', difficulty: 1, optionImages: ['/learning-images/png/cat.png', '/learning-images/png/dog.png', '/learning-images/png/bird.png', '/learning-images/png/fish.png'] },
+  { id: 80, prompt: 'Tap the image that shows "நாய்" (dog)', options: ['நாய்', 'பூனை', 'மீன்', 'பறவை'], correctIndex: 0, explanation: 'நாய் means dog — a loyal domestic animal.', skill: 'word-to-image', difficulty: 1, optionImages: ['/learning-images/png/dog.png', '/learning-images/png/cat.png', '/learning-images/png/fish.png', '/learning-images/png/bird.png'] },
+  { id: 81, prompt: 'Tap the image that shows "சூரியன்" (sun)', options: ['சூரியன்', 'நிலா', 'நட்சத்திரம்', 'மழை'], correctIndex: 0, explanation: 'சூரியன் means sun — the star at the centre of our solar system.', skill: 'word-to-image', difficulty: 1, optionImages: ['/learning-images/png/sun.png', '/learning-images/png/moon.png', '/learning-images/png/star.png', '/learning-images/png/rain.png'] },
+  { id: 82, prompt: 'Tap the image that shows "மரம்" (tree)', options: ['மரம்', 'மலை', 'கடல்', 'பூ'], correctIndex: 0, explanation: 'மரம் means tree — a tall woody plant.', skill: 'word-to-image', difficulty: 1, optionImages: ['/learning-images/png/tree.png', '/learning-images/png/mountain.png', '/learning-images/png/sea.png', '/learning-images/png/flower.png'] },
+  { id: 83, prompt: 'Tap the image that shows "புத்தகம்" (book)', options: ['புத்தகம்', 'பை', 'கடிகாரம்', 'தொலைபேசி'], correctIndex: 0, explanation: 'புத்தகம் means book — used for reading and learning.', skill: 'word-to-image', difficulty: 1, optionImages: ['/learning-images/png/book.png', '/learning-images/png/bag.png', '/learning-images/png/clock.png', '/learning-images/png/phone.png'] },
+  { id: 84, prompt: 'Tap the image that shows "பேருந்து" (bus)', options: ['பேருந்து', 'கார்', 'சைக்கிள்', 'பந்து'], correctIndex: 0, explanation: 'பேருந்து means bus — a large public transport vehicle.', skill: 'word-to-image', difficulty: 2, optionImages: ['/learning-images/png/bus.png', '/learning-images/png/car.png', '/learning-images/png/cycle.png', '/learning-images/png/ball.png'] },
+  { id: 85, prompt: 'Tap the image that shows "மருத்துவமனை" (hospital)', options: ['மருத்துவமனை', 'பள்ளி', 'வீடு', 'கடை'], correctIndex: 0, explanation: 'மருத்துவமனை means hospital — where patients receive medical care.', skill: 'word-to-image', difficulty: 2, optionImages: ['/learning-images/png/hospital.png', '/learning-images/png/school.png', '/learning-images/png/house.png', '/learning-images/png/shop.png'] },
+  { id: 86, prompt: 'Tap the image that shows "பால்" (milk)', options: ['பால்', 'தண்ணீர்', 'உணவு', 'பழம்'], correctIndex: 0, explanation: 'பால் means milk — a white nutritious drink.', skill: 'word-to-image', difficulty: 1, optionImages: ['/learning-images/png/milk.png', '/learning-images/png/water.png', '/learning-images/png/food.png', '/learning-images/png/fruit.png'] },
+  { id: 87, prompt: 'Tap the image that shows "நிலா" (moon)', options: ['நிலா', 'சூரியன்', 'நட்சத்திரம்', 'மழை'], correctIndex: 0, explanation: 'நிலா means moon — the natural satellite of Earth.', skill: 'word-to-image', difficulty: 2, optionImages: ['/learning-images/png/moon.png', '/learning-images/png/sun.png', '/learning-images/png/star.png', '/learning-images/png/rain.png'] },
+  { id: 88, prompt: 'Tap the image that shows "மேசை" (table)', options: ['மேசை', 'நாற்காலி', 'புத்தகம்', 'பை'], correctIndex: 0, explanation: 'மேசை means table — furniture with a flat surface.', skill: 'word-to-image', difficulty: 2, optionImages: ['/learning-images/png/table.png', '/learning-images/png/chair.png', '/learning-images/png/book.png', '/learning-images/png/bag.png'] },
+  { id: 89, prompt: 'Tap the image that shows "பறவை" (bird)', options: ['பறவை', 'பூனை', 'நாய்', 'மீன்'], correctIndex: 0, explanation: 'பறவை means bird — a feathered animal that can fly.', skill: 'word-to-image', difficulty: 1, optionImages: ['/learning-images/png/bird.png', '/learning-images/png/cat.png', '/learning-images/png/dog.png', '/learning-images/png/fish.png'] },
+  { id: 90, prompt: 'Tap the image that shows "கடல்" (sea)', options: ['கடல்', 'மலை', 'மரம்', 'மழை'], correctIndex: 0, explanation: 'கடல் means sea — a large body of salt water.', skill: 'word-to-image', difficulty: 2, optionImages: ['/learning-images/png/sea.png', '/learning-images/png/mountain.png', '/learning-images/png/tree.png', '/learning-images/png/rain.png'] },
+  { id: 91, prompt: 'Tap the image that shows "பள்ளி" (school)', options: ['பள்ளி', 'மருத்துவமனை', 'கடை', 'வீடு'], correctIndex: 0, explanation: 'பள்ளி means school — where children go to learn.', skill: 'word-to-image', difficulty: 2, optionImages: ['/learning-images/png/school.png', '/learning-images/png/hospital.png', '/learning-images/png/shop.png', '/learning-images/png/house.png'] },
+  { id: 92, prompt: 'Tap the image that shows "கடிகாரம்" (clock)', options: ['கடிகாரம்', 'தொலைபேசி', 'புத்தகம்', 'கார்'], correctIndex: 0, explanation: 'கடிகாரம் means clock — a device that shows the time.', skill: 'word-to-image', difficulty: 3, optionImages: ['/learning-images/png/clock.png', '/learning-images/png/phone.png', '/learning-images/png/book.png', '/learning-images/png/car.png'] },
+  // ── Correct Spelling — ன/ண/ந, ர/ற, ல/ள/ழ distinctions ──────────────────
+  { id: 101, prompt: 'சூரியன் இருக்கும் இடம் என்ன?', options: ['வானம்', 'வாணம்', 'கடல்', 'மலை'], correctIndex: 0, explanation: 'வானம் — ன (னகரம்) உள்ள சொல் சரியானது. வாணம் வேறு பொருள் தரும்.', skill: 'correct-word', difficulty: 1 },
+  { id: 102, prompt: 'பார்க்க உதவும் உறுப்பு எது?', options: ['கண்', 'கன்', 'காது', 'மூக்கு'], correctIndex: 0, explanation: 'கண் — ண் (ணகரம்) உள்ள சொல் சரியானது.', skill: 'correct-word', difficulty: 1 },
+  { id: 103, prompt: 'மருத்துவ குணம் கொண்ட இனிப்பான திரவம்', options: ['தேன்', 'தேண்', 'பால்', 'நீர்'], correctIndex: 0, explanation: 'தேன் — ன் (னகரம்) உள்ள சொல் சரியானது. Honey.', skill: 'correct-word', difficulty: 1 },
+  { id: 104, prompt: 'நுங்கு கிடைக்கும் மரம் எது?', options: ['பனை', 'பணை', 'மாமரம்', 'வேப்பமரம்'], correctIndex: 0, explanation: 'பனை — ன (னகரம்) உள்ள சொல் சரியானது. பனை மரத்தில் நுங்கு கிடைக்கும்.', skill: 'correct-word', difficulty: 1 },
+  { id: 105, prompt: 'எதுவும் வாங்குவதற்கு அவசியமானது', options: ['பணம்', 'பனம்', 'தங்கம்', 'வெள்ளி'], correctIndex: 0, explanation: 'பணம் — ண (ணகரம்) உள்ள சொல் சரியானது. Money.', skill: 'correct-word', difficulty: 1 },
+  { id: 106, prompt: 'உயரமான இடத்தில் ஏற உதவுவது', options: ['ஏணி', 'ஏனி', 'கயிறு', 'கம்பி'], correctIndex: 0, explanation: 'ஏணி — ண (ணகரம்) உள்ள சொல் சரியானது. Ladder.', skill: 'correct-word', difficulty: 1 },
+  { id: 107, prompt: 'சுவரில் அடிக்கப்படும் உலோகத் துண்டு', options: ['ஆணி', 'ஆனி', 'திருகு', 'கம்பி'], correctIndex: 0, explanation: 'ஆணி — ண (ணகரம்) உள்ள சொல் சரியானது. Nail.', skill: 'correct-word', difficulty: 1 },
+  { id: 108, prompt: 'மார்கழி மாதத்தில் பெய்வது', options: ['பனி', 'பணி', 'மழை', 'வெயில்'], correctIndex: 0, explanation: 'பனி — ன (னகரம்) உள்ள சொல் சரியானது. பணி என்பது வேலை என்று பொருள்படும்.', skill: 'correct-word', difficulty: 1 },
+  { id: 109, prompt: 'கடலில் வாழும் ஓடு உடைய உயிரினம்', options: ['நண்டு', 'நன்டு', 'மீன்', 'ஆமை'], correctIndex: 0, explanation: 'நண்டு — ண் (ணகரம்) உள்ள சொல் சரியானது. Crab.', skill: 'correct-word', difficulty: 2 },
+  { id: 110, prompt: 'களைப்பாக இருக்கும் போது குடிப்பது', options: ['தேனீர்', 'தேணீர்', 'பழச்சாறு', 'பால்'], correctIndex: 0, explanation: 'தேனீர் — ன (னகரம்) உள்ள சொல் சரியானது. Tea.', skill: 'correct-word', difficulty: 2 },
+  { id: 111, prompt: 'மிகப்பெரிய காட்டு விலங்கு', options: ['யானை', 'யாணை', 'சிங்கம்', 'புலி'], correctIndex: 0, explanation: 'யானை — ன (னகரம்) உள்ள சொல் சரியானது. Elephant.', skill: 'correct-word', difficulty: 1 },
+  { id: 112, prompt: 'வேகமாக ஓடும் நாற்கால் விலங்கு', options: ['குதிரை', 'குதிறை', 'யானை', 'ஒட்டகம்'], correctIndex: 0, explanation: 'குதிரை — ர (ரகரம்) உள்ள சொல் சரியானது. Horse.', skill: 'correct-word', difficulty: 2 },
+  { id: 113, prompt: 'வாழைப்பழம் விரும்பி சாப்பிடும் விலங்கு', options: ['குரங்கு', 'குறங்கு', 'கரடி', 'ஓநாய்'], correctIndex: 0, explanation: 'குரங்கு — ர (ரகரம்) உள்ள சொல் சரியானது. Monkey.', skill: 'correct-word', difficulty: 2 },
+  { id: 114, prompt: 'நிழல் தரும் தாவரம்', options: ['மரம்', 'மறம்', 'புல்', 'செடி'], correctIndex: 0, explanation: 'மரம் — ர (ரகரம்) உள்ள சொல் சரியானது. மறம் என்பது வீரம் என்று பொருள்படும்.', skill: 'correct-word', difficulty: 2 },
+  { id: 115, prompt: 'நீரைத் தேக்கி வைக்க கட்டப்பட்டது', options: ['அணை', 'அனை', 'கால்வாய்', 'ஏரி'], correctIndex: 0, explanation: 'அணை — ண (ணகரம்) உள்ள சொல் சரியானது. Dam.', skill: 'correct-word', difficulty: 2 },
+  { id: 116, prompt: 'பூமியை வேறொரு சொல்லில் கூறலாம்', options: ['உலகம்', 'உளகம்', 'நிலம்', 'ஆகாயம்'], correctIndex: 0, explanation: 'உலகம் — ல (லகரம்) உள்ள சொல் சரியானது. World.', skill: 'correct-word', difficulty: 2 },
+  { id: 117, prompt: 'கருப்பாக இருக்கும், பால் தரும் விலங்கு', options: ['எருமை', 'எறுமை', 'பசு', 'ஆடு'], correctIndex: 0, explanation: 'எருமை — ர (ரகரம்) உள்ள சொல் சரியானது. Buffalo.', skill: 'correct-word', difficulty: 2 },
+  { id: 118, prompt: 'குளத்தில் பூக்கும் அழகான பூ', options: ['தாமரை', 'தாமறை', 'மல்லிகை', 'ரோஜா'], correctIndex: 0, explanation: 'தாமரை — ர (ரகரம்) உள்ள சொல் சரியானது. Lotus.', skill: 'correct-word', difficulty: 2 },
+  { id: 119, prompt: 'மீன் பிடிப்பவர்', options: ['மீனவர்', 'மீணவர்', 'உழவர்', 'வேட்டையாடுபவர்'], correctIndex: 0, explanation: 'மீனவர் — ன (னகரம்) உள்ள சொல் சரியானது. Fisherman.', skill: 'correct-word', difficulty: 2 },
+  { id: 120, prompt: 'நதியில் வேகமாக பாயும் நீர்', options: ['ஆறு', 'ஆரு', 'கடல்', 'ஏரி'], correctIndex: 0, explanation: 'ஆறு — ற (றகரம்) உள்ள சொல் சரியானது. River.', skill: 'correct-word', difficulty: 1 },
+  { id: 121, prompt: 'நாட்டை ஆட்சி செய்து காக்கும் தலைவர்', options: ['அரசன்', 'அறசன்', 'மந்திரி', 'படைத்தலைவர்'], correctIndex: 0, explanation: 'அரசன் — ர (ரகரம்) உள்ள சொல் சரியானது. King.', skill: 'correct-word', difficulty: 2 },
+  { id: 122, prompt: 'துணி தயாரிக்க பயன்படும் வெண்மையான தாவரம்', options: ['பருத்தி', 'பறுத்தி', 'நெல்', 'கரும்பு'], correctIndex: 0, explanation: 'பருத்தி — ர (ரகரம்) உள்ள சொல் சரியானது. Cotton.', skill: 'correct-word', difficulty: 3 },
+  { id: 123, prompt: 'சமையலில் பயன்படும் காய் வகைகள்', options: ['காய்கறி', 'காய்கரி', 'பழம்', 'தானியம்'], correctIndex: 0, explanation: 'காய்கறி — ற (றகரம்) உள்ள சொல் சரியானது. Vegetables.', skill: 'correct-word', difficulty: 2 },
+  { id: 124, prompt: 'கூட்டமாக வாழும், கழிவுகளை உண்ணும் விலங்கு', options: ['பன்றி', 'பண்றி', 'எருமை', 'ஆடு'], correctIndex: 0, explanation: 'பன்றி — ன் (னகரம்) உள்ள சொல் சரியானது. Pig.', skill: 'correct-word', difficulty: 2 },
+  { id: 125, prompt: 'எறும்பு வாழும் மண்மேடு', options: ['புற்று', 'புரு', 'குகை', 'கூடு'], correctIndex: 0, explanation: 'புற்று — ற் (றகரம்) உள்ள சொல் சரியானது. Anthill.', skill: 'correct-word', difficulty: 3 },
 ];
 
-function clampDifficulty(value: number): Difficulty {
-  if (value <= 1) return 1;
-  if (value >= 3) return 3;
-  return value as Difficulty;
+function fisherYates(length: number): number[] {
+  const indices = Array.from({ length }, (_, i) => i);
+  for (let i = length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  return indices;
 }
 
-function pickQuestion(usedIds: number[], targetDifficulty: Difficulty): AssessmentQuestion | null {
-  const exactPool = QUESTION_BANK.filter(
-    (q) => q.difficulty === targetDifficulty && !usedIds.includes(q.id),
-  );
+function shuffleOptions(question: AssessmentQuestion): AssessmentQuestion {
+  const correctAnswer = question.options[question.correctIndex];
+  const indices = fisherYates(question.options.length);
+  const shuffledOptions = indices.map((i) => question.options[i]);
+  const shuffledImages = question.optionImages
+    ? indices.map((i) => question.optionImages![i])
+    : undefined;
+  const newCorrectIndex = shuffledOptions.indexOf(correctAnswer);
+  return {
+    ...question,
+    options: shuffledOptions,
+    correctIndex: newCorrectIndex,
+    ...(shuffledImages ? { optionImages: shuffledImages } : {}),
+  };
+}
 
-  if (exactPool.length > 0) {
-    return exactPool[Math.floor(Math.random() * exactPool.length)];
-  }
+function buildSessionQuestions(): SessionQuestion[] {
+  const result: SessionQuestion[] = [];
+  const usedIds = new Set<number>();
 
-  const fallbackPool = QUESTION_BANK.filter((q) => !usedIds.includes(q.id));
-  if (fallbackPool.length === 0) return null;
-  return fallbackPool[Math.floor(Math.random() * fallbackPool.length)];
+  LESSON_SECTIONS.forEach((section, sectionIdx) => {
+    const pool = QUESTION_BANK.filter((q) => q.skill === section.skill && !usedIds.has(q.id));
+    const shuffled = fisherYates(pool.length).map((i) => pool[i]);
+    const selected = shuffled.slice(0, section.count);
+    selected.forEach((q, indexInSection) => {
+      usedIds.add(q.id);
+      result.push({
+        ...shuffleOptions(q),
+        sectionIdx,
+        sectionLabel: section.label,
+        sectionIcon: section.icon,
+        indexInSection,
+      });
+    });
+  });
+
+  return result;
 }
 
 function computeLevel(accuracy: number): TamilExperienceLevel {
@@ -119,12 +248,22 @@ function computeLevel(accuracy: number): TamilExperienceLevel {
   return 'Starter';
 }
 
+function speakByLang(text: string, lang: SpeechLang) {
+  if (!('speechSynthesis' in window)) return;
+  const utterance = new window.SpeechSynthesisUtterance(text);
+  utterance.lang = lang;
+  window.speechSynthesis.speak(utterance);
+}
+
 const SKILL_LABEL: Record<Skill, string> = {
   letters: 'Letters',
+  'audio-letters': 'Audio Letters',
   numbers: 'Numbers',
   vocabulary: 'Vocabulary',
   reading: 'Reading',
   'image-recognition': 'Image Recognition',
+  'word-to-image': 'Word to Image',
+  'correct-word': 'Correct Spelling',
 };
 
 const LEVEL_HINTS: Record<TamilExperienceLevel, string> = {
@@ -134,61 +273,70 @@ const LEVEL_HINTS: Record<TamilExperienceLevel, string> = {
   Advanced: 'Excellent Tamil control. Move to literature and long-form reading.',
 };
 
+type SectionTransition = {
+  completedLabel: string;
+  completedIcon: string;
+  nextLabel: string;
+  nextIcon: string;
+};
+
 const TamilExperienceAssessment = () => {
-  const [usedIds, setUsedIds] = useState<number[]>([]);
-  const [difficulty, setDifficulty] = useState<Difficulty>(1);
-  const [currentQuestion, setCurrentQuestion] = useState<AssessmentQuestion | null>(() =>
-    pickQuestion([], 1),
-  );
+  const [questions, setQuestions] = useState<SessionQuestion[]>(() => buildSessionQuestions());
+  const [questionIndex, setQuestionIndex] = useState(0);
   const [answerState, setAnswerState] = useState<AnswerState>('idle');
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [answeredCount, setAnsweredCount] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [xp, setXp] = useState(0);
   const [hearts, setHearts] = useState(STARTING_HEARTS);
   const [history, setHistory] = useState<Attempt[]>([]);
   const [isComplete, setIsComplete] = useState(false);
+  const [sectionTransition, setSectionTransition] = useState<SectionTransition | null>(null);
 
   const latestResult = useMemo(() => getLatestTamilEvaluation(), []);
+  const currentQuestion = questions[questionIndex] ?? null;
+
+  const playQuestionAudio = useCallback((question: AssessmentQuestion) => {
+    if (question.audioText) {
+      speakByLang(question.audioText, question.audioLang ?? 'ta-IN');
+      return;
+    }
+    if (question.options[question.correctIndex]) {
+      speakText(question.options[question.correctIndex]);
+    }
+  }, []);
 
   const beginSession = useCallback(() => {
-    const next = pickQuestion([], 1);
-    setUsedIds([]);
-    setDifficulty(1);
-    setCurrentQuestion(next);
+    setQuestions(buildSessionQuestions());
+    setQuestionIndex(0);
     setAnswerState('idle');
     setSelectedIndex(null);
-    setAnsweredCount(0);
     setCorrectCount(0);
     setXp(0);
     setHearts(STARTING_HEARTS);
     setHistory([]);
     setIsComplete(false);
+    setSectionTransition(null);
   }, []);
 
   const handleSelect = useCallback(
     (index: number) => {
       if (!currentQuestion || answerState !== 'idle') return;
       setSelectedIndex(index);
-      if (index === currentQuestion.correctIndex) {
-        setAnswerState('correct');
-      } else {
-        setAnswerState('wrong');
-      }
+      setAnswerState(index === currentQuestion.correctIndex ? 'correct' : 'wrong');
     },
     [currentQuestion, answerState],
   );
+
+  const dismissTransition = useCallback(() => setSectionTransition(null), []);
 
   const handleContinue = useCallback(() => {
     if (!currentQuestion || answerState === 'idle' || selectedIndex === null) return;
 
     const isCorrect = answerState === 'correct';
-    const nextAnswered = answeredCount + 1;
     const nextCorrect = correctCount + (isCorrect ? 1 : 0);
     const nextXp = xp + (isCorrect ? 10 * currentQuestion.difficulty : 0);
     const nextHearts = hearts - (isCorrect ? 0 : 1);
-    const nextDifficulty = clampDifficulty(difficulty + (isCorrect ? 1 : -1));
-    const nextUsedIds = [...usedIds, currentQuestion.id];
+    const nextIndex = questionIndex + 1;
 
     setHistory((prev) => [
       ...prev,
@@ -202,55 +350,59 @@ const TamilExperienceAssessment = () => {
         skill: currentQuestion.skill,
       },
     ]);
-
-    const shouldFinish = nextAnswered >= TOTAL_QUESTIONS || nextHearts <= 0;
-
-    setAnsweredCount(nextAnswered);
     setCorrectCount(nextCorrect);
     setXp(nextXp);
     setHearts(nextHearts);
-    setDifficulty(nextDifficulty);
-    setUsedIds(nextUsedIds);
+    setAnswerState('idle');
+    setSelectedIndex(null);
+
+    const shouldFinish = nextHearts <= 0 || nextIndex >= questions.length;
 
     if (shouldFinish) {
-      const accuracy = nextAnswered > 0 ? Math.round((nextCorrect / nextAnswered) * 100) : 0;
+      const answered = questionIndex + 1;
+      const accuracy = Math.round((nextCorrect / answered) * 100);
       const level = computeLevel(accuracy);
-
       saveQuizResult({
         date: new Date().toISOString(),
         score: nextCorrect,
-        total: nextAnswered,
+        total: answered,
         accuracy,
         type: 'tamil-evaluation',
       });
-
       saveTamilEvaluationResult({
         date: new Date().toISOString(),
         score: nextCorrect,
-        total: nextAnswered,
+        total: answered,
         accuracy,
         xp: nextXp,
         level,
       });
       recordActivity();
       setIsComplete(true);
-      setAnswerState('idle');
       return;
     }
 
-    const nextQuestion = pickQuestion(nextUsedIds, nextDifficulty);
-    setCurrentQuestion(nextQuestion);
-    setSelectedIndex(null);
-    setAnswerState('idle');
+    const nextQ = questions[nextIndex];
+    if (nextQ.sectionIdx !== currentQuestion.sectionIdx) {
+      const completedSection = LESSON_SECTIONS[currentQuestion.sectionIdx];
+      const nextSection = LESSON_SECTIONS[nextQ.sectionIdx];
+      setSectionTransition({
+        completedLabel: completedSection.label,
+        completedIcon: completedSection.icon,
+        nextLabel: nextSection.label,
+        nextIcon: nextSection.icon,
+      });
+    }
+
+    setQuestionIndex(nextIndex);
   }, [
     answerState,
-    answeredCount,
     correctCount,
     currentQuestion,
-    difficulty,
     hearts,
+    questionIndex,
+    questions,
     selectedIndex,
-    usedIds,
     xp,
   ]);
 
@@ -263,32 +415,33 @@ const TamilExperienceAssessment = () => {
   }
 
   if (isComplete) {
-    const accuracy = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0;
+    const answered = history.length;
+    const accuracy = answered > 0 ? Math.round((correctCount / answered) * 100) : 0;
     const level = computeLevel(accuracy);
     const weakSkills = Object.entries(
       history.reduce<Record<Skill, { total: number; correct: number }>>(
         (acc, item) => {
-          if (!acc[item.skill]) {
-            acc[item.skill] = { total: 0, correct: 0 };
-          }
+          if (!acc[item.skill]) acc[item.skill] = { total: 0, correct: 0 };
           acc[item.skill].total += 1;
-          if (item.isCorrect) {
-            acc[item.skill].correct += 1;
-          }
+          if (item.isCorrect) acc[item.skill].correct += 1;
           return acc;
         },
         {
           letters: { total: 0, correct: 0 },
+          'audio-letters': { total: 0, correct: 0 },
           numbers: { total: 0, correct: 0 },
           vocabulary: { total: 0, correct: 0 },
           reading: { total: 0, correct: 0 },
           'image-recognition': { total: 0, correct: 0 },
+          'word-to-image': { total: 0, correct: 0 },
+          'correct-word': { total: 0, correct: 0 },
         },
       ),
     )
+      .filter(([, stats]) => stats.total > 0)
       .map(([skill, stats]) => ({
         skill: skill as Skill,
-        accuracy: stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0,
+        accuracy: Math.round((stats.correct / stats.total) * 100),
       }))
       .sort((a, b) => a.accuracy - b.accuracy)
       .slice(0, 2);
@@ -299,7 +452,7 @@ const TamilExperienceAssessment = () => {
           <p className="duo-eval__result-tag">Tamil Experience Evaluation</p>
           <h2 className="duo-eval__result-level">{level}</h2>
           <p className="duo-eval__result-score">
-            Score: {correctCount}/{answeredCount} ({accuracy}%)
+            Score: {correctCount}/{answered} ({accuracy}%)
           </p>
           <p className="duo-eval__result-xp">XP Earned: {xp}</p>
           <p className="duo-eval__result-hint">{LEVEL_HINTS[level]}</p>
@@ -331,23 +484,85 @@ const TamilExperienceAssessment = () => {
     );
   }
 
-  const progress = Math.round((answeredCount / TOTAL_QUESTIONS) * 100);
+  // ── Section transition screen ──────────────────────────────────────────────
+  if (sectionTransition) {
+    return (
+      <div className="duo-eval">
+        <div className="duo-eval__transition">
+          <div className="duo-eval__transition-completed">
+            <span className="duo-eval__transition-big-icon">{sectionTransition.completedIcon}</span>
+            <span className="duo-eval__transition-check">✓</span>
+            <h3>{sectionTransition.completedLabel} complete!</h3>
+          </div>
+          <div className="duo-eval__transition-next">
+            <p className="duo-eval__transition-next-label">Next up</p>
+            <div className="duo-eval__transition-next-pill">
+              <span>{sectionTransition.nextIcon}</span>
+              <span>{sectionTransition.nextLabel}</span>
+            </div>
+          </div>
+          <button type="button" className="duo-eval__btn duo-eval__btn--primary" onClick={dismissTransition}>
+            Continue →
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const currentSection = LESSON_SECTIONS[currentQuestion!.sectionIdx];
+  const sectionTotal = currentSection.count;
+  const sectionDone = currentQuestion!.indexInSection;
+  const progress = Math.round((questionIndex / TOTAL_QUESTIONS) * 100);
+  // Section segment markers (cumulative question counts at section boundaries)
+  const sectionBoundaries = LESSON_SECTIONS.reduce<number[]>((acc, s) => {
+    acc.push((acc[acc.length - 1] ?? 0) + s.count);
+    return acc;
+  }, []).slice(0, -1); // drop the last (100%)
 
   return (
     <div className="duo-eval">
+      <PageTitle
+        title="Tamil Skill Assessment"
+        description="Find your Tamil level with a 12-question adaptive assessment covering letters, numbers and vocabulary."
+        path="/tamil-evaluation"
+      />
       <div className="duo-eval__header">
         <div className="duo-eval__progress-track">
           <div className="duo-eval__progress-fill" style={{ width: `${progress}%` }} />
+          {sectionBoundaries.map((boundary) => (
+            <div
+              key={boundary}
+              className="duo-eval__progress-marker"
+              style={{ left: `${Math.round((boundary / TOTAL_QUESTIONS) * 100)}%` }}
+            />
+          ))}
         </div>
         <div className="duo-eval__meta">
-          <span>Q {answeredCount + 1}/{TOTAL_QUESTIONS}</span>
+          <span>Q {questionIndex + 1}/{TOTAL_QUESTIONS}</span>
           <span>XP {xp}</span>
           <span className="duo-eval__hearts">{'❤'.repeat(hearts)}{'♡'.repeat(STARTING_HEARTS - hearts)}</span>
         </div>
       </div>
 
       <div className="duo-eval__card">
-        <p className="duo-eval__difficulty">Difficulty {currentQuestion?.difficulty}</p>
+        <div className="duo-eval__section-badge">
+          <span className="duo-eval__section-icon">{currentQuestion!.sectionIcon}</span>
+          <span className="duo-eval__section-label">{currentQuestion!.sectionLabel}</span>
+          <span className="duo-eval__section-progress">{sectionDone + 1}/{sectionTotal}</span>
+        </div>
+        {currentQuestion?.audioText && (
+          <div className="duo-eval__audio-wrap">
+            <p className="duo-eval__audio-hint">Listen and choose the correct option</p>
+            <button
+              type="button"
+              className="duo-eval__audio-btn"
+              onClick={() => playQuestionAudio(currentQuestion)}
+              title="Play audio prompt"
+            >
+              🔊 Play Audio
+            </button>
+          </div>
+        )}
         {currentQuestion?.image && (
           <div className="duo-eval__image-wrap">
             <img
@@ -355,10 +570,18 @@ const TamilExperienceAssessment = () => {
               alt="Identify this"
               className="duo-eval__image"
             />
+            <button
+              type="button"
+              className="duo-eval__speak-btn"
+              title="Hear the Tamil word"
+              onClick={() => playQuestionAudio(currentQuestion)}
+            >
+              🔊
+            </button>
           </div>
         )}
         <h3 className="duo-eval__question">{currentQuestion?.prompt}</h3>
-        <ul className="duo-eval__options">
+        <ul className={currentQuestion?.optionImages ? 'duo-eval__image-options' : 'duo-eval__options'}>
           {currentQuestion?.options.map((option, idx) => {
             const isCorrect = idx === currentQuestion.correctIndex;
             const isSelected = idx === selectedIndex;
@@ -370,6 +593,26 @@ const TamilExperienceAssessment = () => {
                   : isSelected
                     ? 'wrong'
                     : 'dimmed';
+
+            if (currentQuestion.optionImages) {
+              return (
+                <li key={`${currentQuestion.id}-${idx}`}>
+                  <button
+                    type="button"
+                    className={`duo-eval__image-option ${stateClass}`.trim()}
+                    onClick={() => handleSelect(idx)}
+                    disabled={answerState !== 'idle'}
+                  >
+                    <img
+                      src={currentQuestion.optionImages![idx]}
+                      alt={option}
+                      className="duo-eval__image-option-img"
+                    />
+                    <span className="duo-eval__image-option-label">{option}</span>
+                  </button>
+                </li>
+              );
+            }
 
             return (
               <li key={`${currentQuestion.id}-${idx}`}>

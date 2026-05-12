@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PageTitle from '../../components/PageTitle';
 import { speakTamil, speakTamil as speakTamilText } from '../../utils/pronunciationEngine';
 import './tamilnumbers.styles.scss';
 
@@ -76,6 +77,11 @@ const TamilNumbers = () => {
 
   return (
     <div className="tamil-numbers-page">
+      <PageTitle
+        title="Tamil Numbers"
+        description="Learn the Tamil numeral system — symbols, values and pronunciation."
+        path="/tamil-numbers"
+      />
       <section className="numbers-hero">
         <h1 className="numbers-hero__title">
           <span className="numbers-hero__tamil">தமிழ் எண்கள்</span>

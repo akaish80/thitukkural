@@ -12,6 +12,7 @@ const nav = [
     children: [
       { text: 'Tamil Letters', link: '/tamil-letters', isClicked: false },
       { text: 'Tamil Numbers', link: '/tamil-numbers', isClicked: false },
+      { text: 'Count in Tamil', link: '/tamil-counting', isClicked: false },
       { text: 'Letter Exercise', link: '/letter-exercise', isClicked: false },
       { text: 'Image Recognition', link: '/learn-tamil/image-letter-recognition', isClicked: false },
       // { text: 'Printable Picture Chart', link: '/learn-tamil/picture-chart', isClicked: false },
@@ -25,7 +26,7 @@ const nav = [
     link: '',
     isClicked: false,
     children: [
-      { text: 'Learning Path', link: '/learn', isClicked: false },
+      { text: 'My Progress', link: '/learn', isClicked: false },
       { text: 'Planner', link: '/planner', isClicked: false },
       { text: 'Tamil Evaluation', link: '/tamil-evaluation', isClicked: false },
     ],
