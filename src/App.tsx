@@ -7,6 +7,7 @@ import ThemeProvider from './contexts/ThemeContext';
 import Header from './components/header/header.component';
 import Footer from './components/footer/footer.component';
 import Nav from './components/nav/nav.component';
+import SeoDefaults from './components/SeoDefaults';
 import AppRoutes from './Routes';
 import { loadContent } from './redux/content/content.slice';
 
@@ -62,6 +63,7 @@ function App() {
   return (
     <ThemeProvider>
       <div className="App">
+        <SeoDefaults />
         <a className="skip-nav" href="#content">Skip to content</a>
         <header className="App-header">
           <Header />

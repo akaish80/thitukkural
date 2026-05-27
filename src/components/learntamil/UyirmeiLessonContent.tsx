@@ -1,79 +1,9 @@
 import UyirmeiAlphabetTable from './UyirmeiAlphabetTable';
-import { speakTamil } from '../../utils/pronunciationEngine';
-
-type UyirmeiRuleRow = {
-  consonantPlusVowel: string;
-  uyirmei: string;
-  changed: string;
-};
-
-const ruleRows: UyirmeiRuleRow[] = [
-  {
-    consonantPlusVowel: 'க் + அ',
-    uyirmei: 'க',
-    changed: 'The dot on top of the consonant is removed.',
-  },
-  {
-    consonantPlusVowel: 'க் + ஆ',
-    uyirmei: 'கா',
-    changed: 'The ◌ா sign is added after the consonant.',
-  },
-  {
-    consonantPlusVowel: 'க் + இ',
-    uyirmei: 'கி',
-    changed: 'The ◌ி sign is added on top of the consonant.',
-  },
-  {
-    consonantPlusVowel: 'க் + ஈ',
-    uyirmei: 'கீ',
-    changed: 'The ◌ீ sign is added on top of the consonant.',
-  },
-  {
-    consonantPlusVowel: 'க் + உ',
-    uyirmei: 'கு',
-    changed:
-      'When உ is added with the consonant one of the following will happen: it will curve, have an aerial root, or a seat.',
-  },
-  {
-    consonantPlusVowel: 'க் + ஊ',
-    uyirmei: 'கூ',
-    changed:
-      'When ஊ is added one of the following will happen: accession, curled curve, legged seat, or crest.',
-  },
-  {
-    consonantPlusVowel: 'க் + எ',
-    uyirmei: 'கெ',
-    changed: 'The ெ◌ sign is added in front of the consonant.',
-  },
-  {
-    consonantPlusVowel: 'க் + ஏ',
-    uyirmei: 'கே',
-    changed: 'The ே◌ sign is added in front of the consonant.',
-  },
-  {
-    consonantPlusVowel: 'க் + ஐ',
-    uyirmei: 'கை',
-    changed: 'The ை◌ sign is added in front of the consonant.',
-  },
-  {
-    consonantPlusVowel: 'க் + ஒ',
-    uyirmei: 'கொ',
-    changed: 'The ெ◌ா signs are added in front of and behind the consonant.',
-  },
-  {
-    consonantPlusVowel: 'க் + ஓ',
-    uyirmei: 'கோ',
-    changed: 'The ே◌ா signs are added in front of and behind the consonant.',
-  },
-  {
-    consonantPlusVowel: 'க் + ஔ',
-    uyirmei: 'கௌ',
-    changed: 'The ெ◌ௗ signs are added in front of and behind the consonant.',
-  },
-];
-
-const shortUExamples = 'கு, ஙு, சு, ஞு, டு, ணு, து, நு, பு, மு, யு, ரு, லு, வு, ழு, ளு, று, னு';
-const longUExamples = 'கூ, ஙூ, சூ, ஞூ, டூ, ணூ, தூ, நூ, பூ, மூ, யூ, ரூ, லூ, வூ, ழூ, ளூ, றூ, னூ';
+import {
+  UYIRMEI_LONG_U_EXAMPLES,
+  UYIRMEI_RULE_ROWS,
+  UYIRMEI_SHORT_U_EXAMPLES,
+} from '../../data/learnTamilConstants';
 
 const UyirmeiLessonContent = () => {
   return (
@@ -104,7 +34,7 @@ const UyirmeiLessonContent = () => {
             </tr>
           </thead>
           <tbody>
-            {ruleRows.map((row) => (
+            {UYIRMEI_RULE_ROWS.map((row) => (
               <tr key={row.consonantPlusVowel}>
                 <td>{row.consonantPlusVowel}</td>
                 <td className="lt-uyirmei-letter-cell">{row.uyirmei}</td>
@@ -135,8 +65,8 @@ const UyirmeiLessonContent = () => {
         </li>
       </ol>
 
-      <p className="lt-uyirmei-examples lt-text-left">{shortUExamples}.</p>
-      <p className="lt-uyirmei-examples lt-text-left">{longUExamples}.</p>
+      <p className="lt-uyirmei-examples lt-text-left">{UYIRMEI_SHORT_U_EXAMPLES}.</p>
+      <p className="lt-uyirmei-examples lt-text-left">{UYIRMEI_LONG_U_EXAMPLES}.</p>
 
       <h3 className="lt-uyirmei-subtitle">Uyirmei Alphabet Table</h3>
       <p className="lt-uyirmei-intro lt-text-left">
@@ -147,7 +77,6 @@ const UyirmeiLessonContent = () => {
         wrapperClassName="lt-uyirmei-grid-wrap"
         tableClassName="lt-uyirmei-grid-table"
         rowHeaderClassName="lt-uyirmei-grid-rowhead"
-        onCellHover={(_, __, voice) => speakTamil(voice)}
       />
     </div>
   );

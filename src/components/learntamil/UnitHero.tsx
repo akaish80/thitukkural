@@ -12,7 +12,6 @@ const UnitHero = ({ chapter, unit }: UnitHeroProps) => {
       <p>
         From <strong>{chapter.chapterTitle}</strong> ({chapter.part})
       </p>
-      <p>Page {unit.page}</p>
     </section>
   );
 };

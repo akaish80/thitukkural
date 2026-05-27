@@ -26,6 +26,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Regenerate sitemap for production
+        run: npm run seo:sitemap
 
       - name: Build server code
         run: npm run build:server

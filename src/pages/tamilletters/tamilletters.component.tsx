@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import PageTitle from '../../components/PageTitle';
-import { speakTamil } from '../../utils/pronunciationEngine';
 import { SpeakButton, SpeedToggle, Waveform } from '../../components/PronunciationPlayer/PronunciationPlayer';
 import { onSpeakingChange } from '../../utils/pronunciationEngine';
 import { VOWEL_DETAILS } from '../../data/vowels';
@@ -267,7 +266,7 @@ const TamilLetters = () => {
         <div className="tamil-letters-uyirmey">
           <p className="uyirmey-info">
             ஒவ்வொரு மெய் எழுத்தும் 12 உயிர் எழுத்துகளுடன் சேர்ந்து 12 உயிர்மெய் எழுத்துகளை உருவாக்கும்.
-            Click a row to highlight it, or click any letter to hear it spoken.
+            Click a row to highlight it.
           </p>
           <UyirmeiAlphabetTable
             wrapperClassName="uyirmey-table-wrapper"
@@ -276,8 +275,6 @@ const TamilLetters = () => {
             cellClassName="uyirmey-cell"
             highlightedVoice={highlightedVoice}
             onRowClick={(voice) => setHighlightedVoice(voice === highlightedVoice ? null : voice)}
-            onCellHover={(_, __, voice) => speakTamil(voice)}
-            onCellClick={(_, voice) => speakTamil(voice)}
           />
         </div>
       )}

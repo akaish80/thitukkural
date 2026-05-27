@@ -39,6 +39,18 @@ npm run dev:all
 npm run build
 ```
 
+To regenerate sitemap before build:
+
+```bash
+npm run seo:sitemap
+```
+
+To run sitemap generation + build together:
+
+```bash
+npm run seo:build
+```
+
 Frontend output is generated in dist/.
 
 ### Preview frontend build

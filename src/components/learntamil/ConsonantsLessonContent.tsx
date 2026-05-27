@@ -1,33 +1,7 @@
-import { CONSONANTS } from '../../data/constants';
-
-type ConsonantPronunciationRow = {
-  consonant: string;
-  group: string;
-  pronunciationHelp: string;
-};
-
-const consonants = CONSONANTS.map((letter) => letter.tamil);
-
-const pronunciationRows: ConsonantPronunciationRow[] = [
-  { consonant: 'க்', group: 'vallinam', pronunciationHelp: 'k as in king' },
-  { consonant: 'ங்', group: 'mellinam', pronunciationHelp: 'ng as in king' },
-  { consonant: 'ச்', group: 'vallinam', pronunciationHelp: 'ch as in match' },
-  { consonant: 'ஞ்', group: 'mellinam', pronunciationHelp: 'ng as in plunge' },
-  { consonant: 'ட்', group: 'vallinam', pronunciationHelp: 't as in top' },
-  { consonant: 'ண்', group: 'mellinam', pronunciationHelp: 'n as in cinder' },
-  { consonant: 'த்', group: 'vallinam', pronunciationHelp: 'th as in bath' },
-  { consonant: 'ந்', group: 'mellinam', pronunciationHelp: 'n as in pan' },
-  { consonant: 'ப்', group: 'vallinam', pronunciationHelp: 'p as in puck' },
-  { consonant: 'ம்', group: 'mellinam', pronunciationHelp: 'm as in from' },
-  { consonant: 'ய்', group: 'idaiyinam', pronunciationHelp: 'y as in yak' },
-  { consonant: 'ர்', group: 'idaiyinam', pronunciationHelp: 'r as in fur' },
-  { consonant: 'ல்', group: 'idaiyinam', pronunciationHelp: 'l as in lump' },
-  { consonant: 'வ்', group: 'idaiyinam', pronunciationHelp: 'v as in vice' },
-  { consonant: 'ழ்', group: 'idaiyinam', pronunciationHelp: 'tongue retracted to produce "zh"' },
-  { consonant: 'ள்', group: 'idaiyinam', pronunciationHelp: 'l as in marble' },
-  { consonant: 'ற்', group: 'vallinam', pronunciationHelp: 'tr as in trick' },
-  { consonant: 'ன்', group: 'mellinam', pronunciationHelp: 'n as in fin' },
-];
+import {
+  CONSONANT_PRONUNCIATION_ROWS,
+  LEARNTAMIL_CONSONANT_LETTERS,
+} from '../../data/learnTamilConstants';
 
 const ConsonantsLessonContent = () => {
   return (
@@ -41,7 +15,7 @@ const ConsonantsLessonContent = () => {
       </p>
 
       <div className="lt-consonant-list" aria-label="Tamil consonants list">
-        {consonants.map((letter) => (
+        {LEARNTAMIL_CONSONANT_LETTERS.map((letter) => (
           <span key={letter} className="lt-consonant-chip">
             {letter}
           </span>
@@ -64,7 +38,7 @@ const ConsonantsLessonContent = () => {
             </tr>
           </thead>
           <tbody>
-            {pronunciationRows.map((row) => (
+            {CONSONANT_PRONUNCIATION_ROWS.map((row) => (
               <tr key={row.consonant}>
                 <td>{row.consonant}</td>
                 <td>{row.group}</td>

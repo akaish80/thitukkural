@@ -1,7 +1,6 @@
 export type ChapterUnit = {
   id: string;
   title: string;
-  page: number;
 };
 
 export type ChapterGroup = {
