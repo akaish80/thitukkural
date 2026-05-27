@@ -1,6 +1,6 @@
 ﻿/* eslint-disable array-callback-return */
 import React, { createRef, useEffect, useRef, useState, useCallback } from 'react';
-import { getRandomList, returnMatchedLine } from '../../../components/utils';
+import { getRandomList, returnMatchedLine } from '../../../utils/componentUtils';
 import TextInputComp from '../../../components/TextInputComp';
 import './fill.in.kurral.styles.scss';
 import fetchWrapper from '../../../utils/fetchWrapper';

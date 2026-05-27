@@ -37,6 +37,9 @@ export interface TamilLetter {
   exampleSentence: string;
   /** English translation of the example sentence */
   exampleTranslation: string;
+  /** Visual emoji representation */
+  visual?: string;
+  voice?: string; // Optional text for text-to-speech pronunciation
 }
 
 // ---------------------------------------------------------------------------
@@ -49,6 +52,7 @@ export const VOWELS: TamilLetter[] = [
     word: 'அம்மா', meaning: 'Mother',
     pronunciation: 'Like "u" in "but"', sound: '/a/ as in "about"',
     exampleSentence: 'அம்மா வீட்டில் இருக்கிறாள்', exampleTranslation: 'Mother is at home',
+    visual: '👩',
   },
   {
     tamil: 'ஆ', base: 'ஆ', romanization: 'aa', type: 'vowel', subType: null,
@@ -56,6 +60,7 @@ export const VOWELS: TamilLetter[] = [
     word: 'ஆடு', meaning: 'Goat',
     pronunciation: 'Like "a" in "father"', sound: '/aː/ as in "father" (long)',
     exampleSentence: 'ஆடு புல் தின்கிறது', exampleTranslation: 'The goat eats grass',
+    visual: '🐢',
   },
   {
     tamil: 'இ', base: 'இ', romanization: 'i', type: 'vowel', subType: null,
@@ -63,6 +68,7 @@ export const VOWELS: TamilLetter[] = [
     word: 'இலை', meaning: 'Leaf',
     pronunciation: 'Like "i" in "sit"', sound: '/i/ as in "bit"',
     exampleSentence: 'இலை மரத்தில் உள்ளது', exampleTranslation: 'The leaf is on the tree',
+    visual: '🍃',
   },
   {
     tamil: 'ஈ', base: 'ஈ', romanization: 'ii', type: 'vowel', subType: null,
@@ -70,6 +76,7 @@ export const VOWELS: TamilLetter[] = [
     word: 'ஈ', meaning: 'Fly',
     pronunciation: 'Like "ee" in "see"', sound: '/iː/ as in "beet" (long)',
     exampleSentence: 'ஈ பறக்கிறது', exampleTranslation: 'The fly is flying',
+    visual: '🪰',
   },
   {
     tamil: 'உ', base: 'உ', romanization: 'u', type: 'vowel', subType: null,
@@ -77,6 +84,7 @@ export const VOWELS: TamilLetter[] = [
     word: 'உணவு', meaning: 'Food',
     pronunciation: 'Like "u" in "put"', sound: '/u/ as in "put"',
     exampleSentence: 'உணவு சாப்பிட வேண்டும்', exampleTranslation: 'You should eat food',
+    visual: '🌍',
   },
   {
     tamil: 'ஊ', base: 'ஊ', romanization: 'uu', type: 'vowel', subType: null,
@@ -84,6 +92,7 @@ export const VOWELS: TamilLetter[] = [
     word: 'ஊஞ்சல்', meaning: 'Swing',
     pronunciation: 'Like "oo" in "moon"', sound: '/uː/ as in "boot" (long)',
     exampleSentence: 'ஊஞ்சல் ஆடு', exampleTranslation: 'Play on the swing',
+    visual: '🪈',
   },
   {
     tamil: 'எ', base: 'எ', romanization: 'e', type: 'vowel', subType: null,
@@ -91,6 +100,7 @@ export const VOWELS: TamilLetter[] = [
     word: 'எலி', meaning: 'Rat',
     pronunciation: 'Like "e" in "pet"', sound: '/e/ as in "bet"',
     exampleSentence: 'எலி ஓடுகிறது', exampleTranslation: 'The rat is running',
+    visual: '🐀',
   },
   {
     tamil: 'ஏ', base: 'ஏ', romanization: 'ee', type: 'vowel', subType: null,
@@ -98,6 +108,7 @@ export const VOWELS: TamilLetter[] = [
     word: 'ஏணி', meaning: 'Ladder',
     pronunciation: 'Like "a" in "gate"', sound: '/eː/ as in "bay" (long)',
     exampleSentence: 'ஏணி மேல் ஏறு', exampleTranslation: 'Climb up the ladder',
+    visual: '🪜',
   },
   {
     tamil: 'ஐ', base: 'ஐ', romanization: 'ai', type: 'vowel', subType: null,
@@ -105,6 +116,7 @@ export const VOWELS: TamilLetter[] = [
     word: 'ஐந்து', meaning: 'Five',
     pronunciation: 'Like "ai" in "aisle"', sound: '/aɪ/ as in "eye"',
     exampleSentence: 'ஐந்து விரல்கள் உள்ளன', exampleTranslation: 'There are five fingers',
+    visual: '5️⃣',
   },
   {
     tamil: 'ஒ', base: 'ஒ', romanization: 'o', type: 'vowel', subType: null,
@@ -112,6 +124,7 @@ export const VOWELS: TamilLetter[] = [
     word: 'ஒட்டகச்சிவிங்கி', meaning: 'Giraffe',
     pronunciation: 'Like "o" in "go" (short)', sound: '/o/ as in "pot"',
     exampleSentence: 'ஒட்டகச்சிவிங்கி உயரமான விலங்கு', exampleTranslation: 'The giraffe is a tall animal',
+    visual: '🐫',
   },
   {
     tamil: 'ஓ', base: 'ஓ', romanization: 'oo', type: 'vowel', subType: null,
@@ -119,6 +132,7 @@ export const VOWELS: TamilLetter[] = [
     word: 'ஓடம்', meaning: 'Boat',
     pronunciation: 'Like "o" in "go" (long)', sound: '/oː/ as in "boat" (long)',
     exampleSentence: 'ஓடம் ஆற்றில் செல்கிறது', exampleTranslation: 'The boat goes in the river',
+    visual: '⛵',
   },
   {
     tamil: 'ஔ', base: 'ஔ', romanization: 'au', type: 'vowel', subType: null,
@@ -126,6 +140,7 @@ export const VOWELS: TamilLetter[] = [
     word: 'ஔடதம்', meaning: 'Medicine',
     pronunciation: 'Like "ow" in "cow"', sound: '/aʊ/ as in "how"',
     exampleSentence: 'ஔடதம் நேரத்தில் எடுத்துக்கொள்', exampleTranslation: 'Take medicine on time',
+    visual: '👵',
   },
 ];
 
@@ -150,6 +165,7 @@ export const CONSONANTS: TamilLetter[] = [
     word: 'கல்', meaning: 'Stone',
     pronunciation: 'Like "k" in "kite"', sound: '/k/ as in "kite"',
     exampleSentence: 'கல்வி கரை இல', exampleTranslation: 'Education has no shore',
+    voice: `க் சேர்க்கை COLUMN சத்தம் CURRENTLETTER போல ஒலிக்கிறது`,
   },
   {
     tamil: 'ங்', base: 'ங', romanization: 'ng', type: 'consonant', subType: 'soft',
@@ -157,6 +173,7 @@ export const CONSONANTS: TamilLetter[] = [
     word: 'மாங்காய்', meaning: 'Raw Mango',
     pronunciation: 'Like "ng" in "sing"', sound: '/ŋ/ as in "sing"',
     exampleSentence: 'மாங்காய் புளிக்கும்', exampleTranslation: 'Raw mango is sour',
+    voice: 'ங் சேர்க்கை COLUMN சத்தம் CURRENTLETTER போல ஒலிக்கிறது',
   },
   {
     tamil: 'ச்', base: 'ச', romanization: 'ch', type: 'consonant', subType: 'hard',
@@ -164,6 +181,7 @@ export const CONSONANTS: TamilLetter[] = [
     word: 'சட்டி', meaning: 'Pot',
     pronunciation: 'Like "ch" in "chat"', sound: '/tʃ/ as in "chair"',
     exampleSentence: 'சட்டியில் சோறு இருக்கிறது', exampleTranslation: 'There is rice in the pot',
+    voice: 'ச் சேர்க்கை COLUMN சத்தம் CURRENTLETTER போல ஒலிக்கிறது',
   },
   {
     tamil: 'ஞ்', base: 'ஞ', romanization: 'nj', type: 'consonant', subType: 'soft',
@@ -171,6 +189,7 @@ export const CONSONANTS: TamilLetter[] = [
     word: 'ஞாயிறு', meaning: 'Sun / Sunday',
     pronunciation: 'Like "ny" in "canyon"', sound: '/ɲ/ as in "canyon"',
     exampleSentence: 'ஞாயிறு விடுமுறை நாள்', exampleTranslation: 'Sunday is a holiday',
+    voice: 'ஞ் சேர்க்கை COLUMN சத்தம் CURRENTLETTER போல ஒலிக்கிறது ',
   },
   {
     tamil: 'ட்', base: 'ட', romanization: 't', type: 'consonant', subType: 'hard',
@@ -178,6 +197,7 @@ export const CONSONANTS: TamilLetter[] = [
     word: 'வட்டம்', meaning: 'Circle',
     pronunciation: 'Like "t" in "top" (retroflex)', sound: '/ʈ/ retroflex T',
     exampleSentence: 'வட்டம் வரையவும்', exampleTranslation: 'Draw a circle',
+    voice: 'ட் சேர்க்கை COLUMN சத்தம் CURRENTLETTER போல ஒலிக்கிறது',
   },
   {
     tamil: 'ண்', base: 'ண', romanization: 'n', type: 'consonant', subType: 'soft',
@@ -185,6 +205,7 @@ export const CONSONANTS: TamilLetter[] = [
     word: 'மண்', meaning: 'Soil',
     pronunciation: 'Like "n" with tongue curled back (retroflex)', sound: '/ɳ/ retroflex N',
     exampleSentence: 'மண் வளமானது', exampleTranslation: 'The soil is fertile',
+    voice: 'ண் சேர்க்கை COLUMN சத்தம் CURRENTLETTER போல ஒலிக்கிறது',
   },
   {
     tamil: 'த்', base: 'த', romanization: 'th', type: 'consonant', subType: 'hard',
@@ -192,6 +213,7 @@ export const CONSONANTS: TamilLetter[] = [
     word: 'தமிழ்', meaning: 'Tamil',
     pronunciation: 'Like "th" in "the" (dental)', sound: '/t̪/ dental T',
     exampleSentence: 'தமிழ் இனிய மொழி', exampleTranslation: 'Tamil is a sweet language',
+    voice: 'த் சேர்க்கை COLUMN சத்தம் CURRENTLETTER போல ஒலிக்கிறது',
   },
   {
     tamil: 'ந்', base: 'ந', romanization: 'n', type: 'consonant', subType: 'soft',
@@ -199,6 +221,7 @@ export const CONSONANTS: TamilLetter[] = [
     word: 'நண்டு', meaning: 'Crab',
     pronunciation: 'Like "n" in "name" (dental)', sound: '/n/ dental N',
     exampleSentence: 'நண்டு கடலில் வாழும்', exampleTranslation: 'Crabs live in the sea',
+    voice: 'ந் சேர்க்கை COLUMN சத்தம் CURRENTLETTER போல ஒலிக்கிறது',
   },
   {
     tamil: 'ப்', base: 'ப', romanization: 'p', type: 'consonant', subType: 'hard',
@@ -206,6 +229,7 @@ export const CONSONANTS: TamilLetter[] = [
     word: 'பழம்', meaning: 'Fruit',
     pronunciation: 'Like "p" in "put"', sound: '/p/ as in "pot"',
     exampleSentence: 'பழம் சாப்பிடு', exampleTranslation: 'Eat the fruit',
+    voice: 'ப் சேர்க்கை COLUMN சத்தம் CURRENTLETTER போல ஒலிக்கிறது',
   },
   {
     tamil: 'ம்', base: 'ம', romanization: 'm', type: 'consonant', subType: 'soft',
@@ -213,6 +237,7 @@ export const CONSONANTS: TamilLetter[] = [
     word: 'மரம்', meaning: 'Tree',
     pronunciation: 'Like "m" in "moon"', sound: '/m/ as in "mat"',
     exampleSentence: 'மரம் நிழல் தருகிறது', exampleTranslation: 'The tree gives shade',
+    voice: 'ம் சேர்க்கை COLUMN சத்தம் CURRENTLETTER போல ஒலிக்கிறது',
   },
   {
     tamil: 'ய்', base: 'ய', romanization: 'y', type: 'consonant', subType: 'medium',
@@ -220,6 +245,7 @@ export const CONSONANTS: TamilLetter[] = [
     word: 'யானை', meaning: 'Elephant',
     pronunciation: 'Like "y" in "yes"', sound: '/j/ as in "yes"',
     exampleSentence: 'யானை பெரிய விலங்கு', exampleTranslation: 'Elephant is a big animal',
+    voice: 'ய் சேர்க்கை COLUMN சத்தம் CURRENTLETTER போல ஒலிக்கிறது',
   },
   {
     tamil: 'ர்', base: 'ர', romanization: 'r', type: 'consonant', subType: 'medium',
@@ -227,6 +253,7 @@ export const CONSONANTS: TamilLetter[] = [
     word: 'ரோஜா', meaning: 'Rose',
     pronunciation: 'Like "r" in "run" (alveolar tap)', sound: '/r/ rolled R',
     exampleSentence: 'ரோஜா மலர் அழகானது', exampleTranslation: 'The rose flower is beautiful',
+    voice: 'ர் சேர்க்கை COLUMN சத்தம் CURRENTLETTER போல ஒலிக்கிறது',
   },
   {
     tamil: 'ல்', base: 'ல', romanization: 'l', type: 'consonant', subType: 'medium',
@@ -234,6 +261,7 @@ export const CONSONANTS: TamilLetter[] = [
     word: 'லட்டு', meaning: 'Laddu (sweet)',
     pronunciation: 'Like "l" in "love"', sound: '/l/ as in "love"',
     exampleSentence: 'லட்டு இனிப்பானது', exampleTranslation: 'Laddu is sweet',
+    voice: 'ல் சேர்க்கை COLUMN சத்தம் CURRENTLETTER போல ஒலிக்கிறது',
   },
   {
     tamil: 'வ்', base: 'வ', romanization: 'v', type: 'consonant', subType: 'medium',
@@ -241,6 +269,7 @@ export const CONSONANTS: TamilLetter[] = [
     word: 'வாழை', meaning: 'Banana',
     pronunciation: 'Like "v" in "vine"', sound: '/ʋ/ as in "water"',
     exampleSentence: 'வாழைப்பழம் நல்லது', exampleTranslation: 'Banana is good',
+    voice: 'வ் சேர்க்கை COLUMN சத்தம் CURRENTLETTER போல ஒலிக்கிறது',
   },
   {
     tamil: 'ழ்', base: 'ழ', romanization: 'zh', type: 'consonant', subType: 'medium',
@@ -248,6 +277,7 @@ export const CONSONANTS: TamilLetter[] = [
     word: 'தாழ்', meaning: 'Lock',
     pronunciation: 'Unique Tamil retroflex "zh" sound', sound: '/ɻ/ retroflex approximant',
     exampleSentence: 'தாழ் போடு', exampleTranslation: 'Lock it',
+    voice: 'ழ் சேர்க்கை COLUMN சத்தம் CURRENTLETTER போல ஒலிக்கிறது',
   },
   {
     tamil: 'ள்', base: 'ள', romanization: 'l', type: 'consonant', subType: 'medium',
@@ -255,6 +285,7 @@ export const CONSONANTS: TamilLetter[] = [
     word: 'வெள்ளம்', meaning: 'Flood',
     pronunciation: 'Like "l" with tongue curled back (retroflex)', sound: '/ɭ/ retroflex L',
     exampleSentence: 'வெள்ளம் வந்தது', exampleTranslation: 'The flood came',
+    voice: 'ள் சேர்க்கை COLUMN சத்தம் CURRENTLETTER போல ஒலிக்கிறது',
   },
   {
     tamil: 'ற்', base: 'ற', romanization: 'r', type: 'consonant', subType: 'hard',
@@ -262,6 +293,7 @@ export const CONSONANTS: TamilLetter[] = [
     word: 'கற்றை', meaning: 'Bundle',
     pronunciation: 'Like rolled "rr" in "parrot"', sound: '/r/ hard R',
     exampleSentence: 'கற்றது கைமண் அளவு', exampleTranslation: 'What is learnt is a handful',
+    voice: 'ற் சேர்க்கை COLUMN சத்தம் CURRENTLETTER போல ஒலிக்கிறது',
   },
   {
     tamil: 'ன்', base: 'ன', romanization: 'n', type: 'consonant', subType: 'soft',
@@ -269,6 +301,7 @@ export const CONSONANTS: TamilLetter[] = [
     word: 'மின்', meaning: 'Electricity',
     pronunciation: 'Like "n" in "fun" (alveolar)', sound: '/n/ alveolar N',
     exampleSentence: 'மின்சாரம் தேவை', exampleTranslation: 'Electricity is needed',
+    voice: 'ன் சேர்க்கை COLUMN சத்தம் CURRENTLETTER போல ஒலிக்கிறது',
   },
 ];
 

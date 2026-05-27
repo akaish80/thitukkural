@@ -1,3 +1,7 @@
+// Re-export feature-specific types
+export type { Skill, Difficulty, SpeechLang, ActivityType, AssessmentQuestion, AnswerState, Attempt, LessonSection, SessionQuestion, SectionTransition } from './evaluation';
+export type { ChapterUnit, ChapterGroup } from './learning';
+
 // Core data types for Thirukkural application
 
 export interface KurralData {

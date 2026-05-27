@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Container } from '../../../Common/common.styles';
-import { ALL_LETTERS } from '../../../data/tamilAlphabet';
+import { ALL_LETTERS } from '../../../data/constants';
 import './draw.letter.scss';
 
 // Derived from canonical tamilAlphabet — base (no pulli) form for drawing

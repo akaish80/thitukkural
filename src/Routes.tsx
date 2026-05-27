@@ -31,7 +31,7 @@ const Thirukkural = lazy(() => import('./pages/thirukurral/thirukurral.component
 const KurralLanding = lazy(() => import('./pages/thirukurral/KurralLanding'));
 const KurralExplorer = lazy(() => import('./pages/thirukurral/KurralExplorer'));
 const Exercise = lazy(() => import('./pages/practice/practice.component'));
-const TamilExperienceAssessment = lazy(() => import('./pages/practice/TamilExperienceAssessment.tsx'));
+const TamilExperienceAssessment = lazy(() => import('./components/tamilEvaluation/TamilExperienceAssessment.tsx'));
 const Aathichudi = lazy(() => import('./pages/aathichudi/aathichudi.component.tsx'));
 
 // const PracticeLetter = lazy(() => import('./pages/practiceletter/practice.letter'));
@@ -48,8 +48,10 @@ const LearningPath = lazy(() => import('./pages/learningpath/LearningPath'));
 const PlannerPage = lazy(() => import('./pages/learningpath/PlannerPage'));
 const LessonPage = lazy(() => import('./pages/learningpath/LessonPage'));
 const PictureWordChartPage = lazy(() => import('./pages/learningpath/PictureWordChartPage'));
-const LearnTamilImageRecognitionPage = lazy(() => import('./pages/learntamil/LearnTamilImageRecognitionPage'));
+const LearnTamilImageRecognitionPage = lazy(() => import('./pages/tamilImageRecogniztion/LearnTamilImageRecognitionPage.tsx'));
+const LearnTamilChaptersPage = lazy(() => import('./pages/learnTamil/LearnTamilChaptersPage.tsx'));
 const TamilCounting = lazy(() => import('./pages/tamilcounting/tamilcounting.component'));
+const LearnTamilUnitPage = lazy(() => import('./pages/tamilUnitPage/LearnTamilUnitPage.tsx'));
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -96,6 +98,9 @@ const AppRoutes = () => (
       <Route path="/planner" element={<PlannerPage />} />
       <Route path="/learn/:stepId/:lessonId" element={<LessonPage />} />
       <Route path="/learn/picture-chart" element={<PictureWordChartPage />} />
+      <Route path="/learn-tamil" element={<LearnTamilChaptersPage />} />
+      <Route path="/learn-tamil/:chapterId" element={<LearnTamilChaptersPage />} />
+      <Route path="/learn-tamil/:chapterId/:unitId" element={<LearnTamilUnitPage />} />
       <Route path="/learn-tamil/image-letter-recognition" element={<LearnTamilImageRecognitionPage />} />
       <Route path="/learn-tamil/picture-chart" element={<PictureWordChartPage />} />
       <Route path="/tamil-counting" element={<TamilCounting />} />

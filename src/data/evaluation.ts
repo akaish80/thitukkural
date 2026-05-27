@@ -1,68 +1,6 @@
-import { useCallback, useMemo, useState } from 'react';
-import PageTitle from '../../components/PageTitle';
-import './TamilExperienceAssessment.scss';
-import { speakText } from '../../components/chatbot/speakText';
-import {
-  recordActivity,
-  saveQuizResult,
-  saveTamilEvaluationResult,
-  getLatestTamilEvaluation,
-  type TamilExperienceLevel,
-} from '../../utils/learningStore';
+import type { AssessmentQuestion } from '../types';
 
-type Skill = 'letters' | 'audio-letters' | 'numbers' | 'vocabulary' | 'reading' | 'image-recognition' | 'word-to-image' | 'correct-word';
-type Difficulty = 1 | 2 | 3;
-type SpeechLang = 'ta-IN' | 'en-US';
-
-type AssessmentQuestion = {
-  id: number;
-  prompt: string;
-  options: string[];
-  correctIndex: number;
-  explanation: string;
-  skill: Skill;
-  difficulty: Difficulty;
-  audioText?: string;
-  audioLang?: SpeechLang;
-  image?: string;
-  optionImages?: string[];
-};
-
-type AnswerState = 'idle' | 'correct' | 'wrong';
-
-type Attempt = {
-  questionId: number;
-  prompt: string;
-  selected: string;
-  correct: string;
-  isCorrect: boolean;
-  difficulty: Difficulty;
-  skill: Skill;
-};
-
-const STARTING_HEARTS = 3;
-
-// ── Lesson sections — questions are presented in this order ──────────────
-const LESSON_SECTIONS = [
-  { skill: 'letters'           as Skill, label: 'Letters',           labelTamil: 'எழுத்துக்கள்',  icon: '🔤', count: 3 },
-  { skill: 'audio-letters'     as Skill, label: 'Audio Letters',     labelTamil: 'ஒலி எழுத்து',   icon: '🔊', count: 2 },
-  { skill: 'numbers'           as Skill, label: 'Numbers',           labelTamil: 'எண்கள்',        icon: '🔢', count: 2 },
-  { skill: 'vocabulary'        as Skill, label: 'Vocabulary',        labelTamil: 'சொல்லகராதி',    icon: '📝', count: 3 },
-  { skill: 'reading'           as Skill, label: 'Reading',           labelTamil: 'வாசிப்பு',      icon: '📖', count: 2 },
-  { skill: 'image-recognition' as Skill, label: 'Image Recognition', labelTamil: 'படம் அடையாளம்', icon: '🖼️', count: 2 },
-  { skill: 'correct-word'      as Skill, label: 'Correct Spelling',   labelTamil: 'சரியான சொல்',    icon: '✍️', count: 3 },
-] as const;
-
-const TOTAL_QUESTIONS = LESSON_SECTIONS.reduce((s, l) => s + l.count, 0);
-
-type SessionQuestion = AssessmentQuestion & {
-  sectionIdx: number;
-  sectionLabel: string;
-  sectionIcon: string;
-  indexInSection: number;
-};
-
-const QUESTION_BANK: AssessmentQuestion[] = [
+export const QUESTION_BANK: AssessmentQuestion[] = [
   { id: 1, prompt: 'Which Tamil letter is "ka"?', options: ['க', 'ங', 'ச', 'த'], correctIndex: 0, explanation: 'The consonant க is pronounced as ka.', skill: 'letters', difficulty: 1 },
   { id: 2, prompt: 'Which option is the Tamil number for 5?', options: ['௫', '௩', '௮', '௨'], correctIndex: 0, explanation: 'Tamil numeral 5 is written as ௫.', skill: 'numbers', difficulty: 1 },
   { id: 3, prompt: 'Select the meaning of "நன்றி".', options: ['Thank you', 'Water', 'Book', 'Food'], correctIndex: 0, explanation: 'நன்றி means thank you.', skill: 'vocabulary', difficulty: 1 },
@@ -79,6 +17,64 @@ const QUESTION_BANK: AssessmentQuestion[] = [
   { id: 14, prompt: 'Find the odd one out (not a day of week):', options: ['திங்கள்', 'செவ்வாய்', 'ஆறு', 'வெள்ளி'], correctIndex: 2, explanation: 'ஆறு means six, not a weekday.', skill: 'vocabulary', difficulty: 2 },
   { id: 15, prompt: 'Which is the correct form for respectful "you"?', options: ['நீங்கள்', 'நீ', 'நான்', 'அவன்'], correctIndex: 0, explanation: 'நீங்கள் is the respectful second-person form.', skill: 'vocabulary', difficulty: 2 },
   { id: 16, prompt: 'க + ஆ', options: ['கா', 'கி', 'கு', 'க்'], correctIndex: 0, explanation: 'க plus long-aa marker becomes கா.', skill: 'letters', difficulty: 1 },
+  {
+    id: 201,
+    prompt: 'Put these Tamil vowels in proper order (touch, drag, or tap to swap):',
+    options: ['உ', 'அ', 'ஒ', 'இ', 'எ'],
+    correctIndex: 0,
+    explanation: 'Correct order is அ, இ, உ, எ, ஒ. This builds recall of vowel sequencing.',
+    skill: 'vowel-activities',
+    difficulty: 1,
+    activityType: 'vowel-order',
+    correctOrder: ['அ', 'இ', 'உ', 'எ', 'ஒ'],
+  },
+  {
+    id: 202,
+    prompt: 'Short and Long Vowel Identification: tap all LONG vowels (நெடில்).',
+    options: ['அ', 'ஆ', 'இ', 'ஈ', 'உ', 'ஊ'],
+    correctIndex: 0,
+    explanation: 'Long vowels here are ஆ, ஈ, ஊ. Short vowels are அ, இ, உ.',
+    skill: 'vowel-activities',
+    difficulty: 2,
+    activityType: 'vowel-length',
+    correctOptions: ['ஆ', 'ஈ', 'ஊ'],
+  },
+  {
+    id: 203,
+    prompt: 'Vowel Identification: Listen and choose the Tamil vowel for the sound.',
+    options: ['ஐ', 'ஏ', 'இ', 'ஒ'],
+    correctIndex: 0,
+    explanation: 'The audio says "ai", which maps to the Tamil vowel ஐ.',
+    skill: 'vowel-activities',
+    difficulty: 1,
+    activityType: 'mcq',
+    audioText: 'ai',
+    audioLang: 'en-US',
+  },
+  {
+    id: 204,
+    prompt: 'Vowel Identification: Listen and choose the Tamil vowel for the sound.',
+    options: ['இ', 'ஈ', 'ஏ', 'உ'],
+    correctIndex: 0,
+    explanation: 'The audio says short "i", which maps to இ.',
+    skill: 'vowel-activities',
+    difficulty: 1,
+    activityType: 'mcq',
+    audioText: 'i',
+    audioLang: 'en-US',
+  },
+  {
+    id: 205,
+    prompt: 'Vowel Identification: Listen and choose the Tamil vowel for the sound.',
+    options: ['ஔ', 'ஓ', 'ஒ', 'ஆ'],
+    correctIndex: 0,
+    explanation: 'The audio says "au", which maps to the Tamil vowel ஔ.',
+    skill: 'vowel-activities',
+    difficulty: 2,
+    activityType: 'mcq',
+    audioText: 'au',
+    audioLang: 'en-US',
+  },
   // Audio letter mapping (English -> Tamil, Tamil -> English)
   { id: 126, prompt: 'Play audio and choose the matching Tamil letter.', options: ['க', 'ச', 'த', 'ப'], correctIndex: 0, explanation: 'The audio says "ka", which maps to க.', skill: 'audio-letters', difficulty: 1, audioText: 'ka', audioLang: 'en-US' },
   { id: 127, prompt: 'Play audio and choose the matching Tamil letter.', options: ['ங', 'ஞ', 'ந', 'ம'], correctIndex: 0, explanation: 'The audio says "nga", which maps to ங.', skill: 'audio-letters', difficulty: 1, audioText: 'nga', audioLang: 'en-US' },
@@ -193,458 +189,3 @@ const QUESTION_BANK: AssessmentQuestion[] = [
   { id: 125, prompt: 'எறும்பு வாழும் மண்மேடு', options: ['புற்று', 'புரு', 'குகை', 'கூடு'], correctIndex: 0, explanation: 'புற்று — ற் (றகரம்) உள்ள சொல் சரியானது. Anthill.', skill: 'correct-word', difficulty: 3 },
 ];
 
-function fisherYates(length: number): number[] {
-  const indices = Array.from({ length }, (_, i) => i);
-  for (let i = length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [indices[i], indices[j]] = [indices[j], indices[i]];
-  }
-  return indices;
-}
-
-function shuffleOptions(question: AssessmentQuestion): AssessmentQuestion {
-  const correctAnswer = question.options[question.correctIndex];
-  const indices = fisherYates(question.options.length);
-  const shuffledOptions = indices.map((i) => question.options[i]);
-  const shuffledImages = question.optionImages
-    ? indices.map((i) => question.optionImages![i])
-    : undefined;
-  const newCorrectIndex = shuffledOptions.indexOf(correctAnswer);
-  return {
-    ...question,
-    options: shuffledOptions,
-    correctIndex: newCorrectIndex,
-    ...(shuffledImages ? { optionImages: shuffledImages } : {}),
-  };
-}
-
-function buildSessionQuestions(): SessionQuestion[] {
-  const result: SessionQuestion[] = [];
-  const usedIds = new Set<number>();
-
-  LESSON_SECTIONS.forEach((section, sectionIdx) => {
-    const pool = QUESTION_BANK.filter((q) => q.skill === section.skill && !usedIds.has(q.id));
-    const shuffled = fisherYates(pool.length).map((i) => pool[i]);
-    const selected = shuffled.slice(0, section.count);
-    selected.forEach((q, indexInSection) => {
-      usedIds.add(q.id);
-      result.push({
-        ...shuffleOptions(q),
-        sectionIdx,
-        sectionLabel: section.label,
-        sectionIcon: section.icon,
-        indexInSection,
-      });
-    });
-  });
-
-  return result;
-}
-
-function computeLevel(accuracy: number): TamilExperienceLevel {
-  if (accuracy >= 85) return 'Advanced';
-  if (accuracy >= 65) return 'Intermediate';
-  if (accuracy >= 40) return 'Beginner';
-  return 'Starter';
-}
-
-function speakByLang(text: string, lang: SpeechLang) {
-  if (!('speechSynthesis' in window)) return;
-  const utterance = new window.SpeechSynthesisUtterance(text);
-  utterance.lang = lang;
-  window.speechSynthesis.speak(utterance);
-}
-
-const SKILL_LABEL: Record<Skill, string> = {
-  letters: 'Letters',
-  'audio-letters': 'Audio Letters',
-  numbers: 'Numbers',
-  vocabulary: 'Vocabulary',
-  reading: 'Reading',
-  'image-recognition': 'Image Recognition',
-  'word-to-image': 'Word to Image',
-  'correct-word': 'Correct Spelling',
-};
-
-const LEVEL_HINTS: Record<TamilExperienceLevel, string> = {
-  Starter: 'Start with Tamil letters and daily 10-minute listening practice.',
-  Beginner: 'You have good basics. Build consistency with short reading drills.',
-  Intermediate: 'Strong progress. Focus on sentence building and comprehension speed.',
-  Advanced: 'Excellent Tamil control. Move to literature and long-form reading.',
-};
-
-type SectionTransition = {
-  completedLabel: string;
-  completedIcon: string;
-  nextLabel: string;
-  nextIcon: string;
-};
-
-const TamilExperienceAssessment = () => {
-  const [questions, setQuestions] = useState<SessionQuestion[]>(() => buildSessionQuestions());
-  const [questionIndex, setQuestionIndex] = useState(0);
-  const [answerState, setAnswerState] = useState<AnswerState>('idle');
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [correctCount, setCorrectCount] = useState(0);
-  const [xp, setXp] = useState(0);
-  const [hearts, setHearts] = useState(STARTING_HEARTS);
-  const [history, setHistory] = useState<Attempt[]>([]);
-  const [isComplete, setIsComplete] = useState(false);
-  const [sectionTransition, setSectionTransition] = useState<SectionTransition | null>(null);
-
-  const latestResult = useMemo(() => getLatestTamilEvaluation(), []);
-  const currentQuestion = questions[questionIndex] ?? null;
-
-  const playQuestionAudio = useCallback((question: AssessmentQuestion) => {
-    if (question.audioText) {
-      speakByLang(question.audioText, question.audioLang ?? 'ta-IN');
-      return;
-    }
-    if (question.options[question.correctIndex]) {
-      speakText(question.options[question.correctIndex]);
-    }
-  }, []);
-
-  const beginSession = useCallback(() => {
-    setQuestions(buildSessionQuestions());
-    setQuestionIndex(0);
-    setAnswerState('idle');
-    setSelectedIndex(null);
-    setCorrectCount(0);
-    setXp(0);
-    setHearts(STARTING_HEARTS);
-    setHistory([]);
-    setIsComplete(false);
-    setSectionTransition(null);
-  }, []);
-
-  const handleSelect = useCallback(
-    (index: number) => {
-      if (!currentQuestion || answerState !== 'idle') return;
-      setSelectedIndex(index);
-      setAnswerState(index === currentQuestion.correctIndex ? 'correct' : 'wrong');
-    },
-    [currentQuestion, answerState],
-  );
-
-  const dismissTransition = useCallback(() => setSectionTransition(null), []);
-
-  const handleContinue = useCallback(() => {
-    if (!currentQuestion || answerState === 'idle' || selectedIndex === null) return;
-
-    const isCorrect = answerState === 'correct';
-    const nextCorrect = correctCount + (isCorrect ? 1 : 0);
-    const nextXp = xp + (isCorrect ? 10 * currentQuestion.difficulty : 0);
-    const nextHearts = hearts - (isCorrect ? 0 : 1);
-    const nextIndex = questionIndex + 1;
-
-    setHistory((prev) => [
-      ...prev,
-      {
-        questionId: currentQuestion.id,
-        prompt: currentQuestion.prompt,
-        selected: currentQuestion.options[selectedIndex],
-        correct: currentQuestion.options[currentQuestion.correctIndex],
-        isCorrect,
-        difficulty: currentQuestion.difficulty,
-        skill: currentQuestion.skill,
-      },
-    ]);
-    setCorrectCount(nextCorrect);
-    setXp(nextXp);
-    setHearts(nextHearts);
-    setAnswerState('idle');
-    setSelectedIndex(null);
-
-    const shouldFinish = nextHearts <= 0 || nextIndex >= questions.length;
-
-    if (shouldFinish) {
-      const answered = questionIndex + 1;
-      const accuracy = Math.round((nextCorrect / answered) * 100);
-      const level = computeLevel(accuracy);
-      saveQuizResult({
-        date: new Date().toISOString(),
-        score: nextCorrect,
-        total: answered,
-        accuracy,
-        type: 'tamil-evaluation',
-      });
-      saveTamilEvaluationResult({
-        date: new Date().toISOString(),
-        score: nextCorrect,
-        total: answered,
-        accuracy,
-        xp: nextXp,
-        level,
-      });
-      recordActivity();
-      setIsComplete(true);
-      return;
-    }
-
-    const nextQ = questions[nextIndex];
-    if (nextQ.sectionIdx !== currentQuestion.sectionIdx) {
-      const completedSection = LESSON_SECTIONS[currentQuestion.sectionIdx];
-      const nextSection = LESSON_SECTIONS[nextQ.sectionIdx];
-      setSectionTransition({
-        completedLabel: completedSection.label,
-        completedIcon: completedSection.icon,
-        nextLabel: nextSection.label,
-        nextIcon: nextSection.icon,
-      });
-    }
-
-    setQuestionIndex(nextIndex);
-  }, [
-    answerState,
-    correctCount,
-    currentQuestion,
-    hearts,
-    questionIndex,
-    questions,
-    selectedIndex,
-    xp,
-  ]);
-
-  if (!currentQuestion && !isComplete) {
-    return (
-      <div className="duo-eval">
-        <div className="duo-eval__loading">Assessment questions are unavailable right now.</div>
-      </div>
-    );
-  }
-
-  if (isComplete) {
-    const answered = history.length;
-    const accuracy = answered > 0 ? Math.round((correctCount / answered) * 100) : 0;
-    const level = computeLevel(accuracy);
-    const weakSkills = Object.entries(
-      history.reduce<Record<Skill, { total: number; correct: number }>>(
-        (acc, item) => {
-          if (!acc[item.skill]) acc[item.skill] = { total: 0, correct: 0 };
-          acc[item.skill].total += 1;
-          if (item.isCorrect) acc[item.skill].correct += 1;
-          return acc;
-        },
-        {
-          letters: { total: 0, correct: 0 },
-          'audio-letters': { total: 0, correct: 0 },
-          numbers: { total: 0, correct: 0 },
-          vocabulary: { total: 0, correct: 0 },
-          reading: { total: 0, correct: 0 },
-          'image-recognition': { total: 0, correct: 0 },
-          'word-to-image': { total: 0, correct: 0 },
-          'correct-word': { total: 0, correct: 0 },
-        },
-      ),
-    )
-      .filter(([, stats]) => stats.total > 0)
-      .map(([skill, stats]) => ({
-        skill: skill as Skill,
-        accuracy: Math.round((stats.correct / stats.total) * 100),
-      }))
-      .sort((a, b) => a.accuracy - b.accuracy)
-      .slice(0, 2);
-
-    return (
-      <div className="duo-eval">
-        <div className="duo-eval__result">
-          <p className="duo-eval__result-tag">Tamil Experience Evaluation</p>
-          <h2 className="duo-eval__result-level">{level}</h2>
-          <p className="duo-eval__result-score">
-            Score: {correctCount}/{answered} ({accuracy}%)
-          </p>
-          <p className="duo-eval__result-xp">XP Earned: {xp}</p>
-          <p className="duo-eval__result-hint">{LEVEL_HINTS[level]}</p>
-
-          {weakSkills.length > 0 && (
-            <div className="duo-eval__weak">
-              <h3>Focus Areas</h3>
-              <ul>
-                {weakSkills.map((item) => (
-                  <li key={item.skill}>
-                    {SKILL_LABEL[item.skill]}: {item.accuracy}%
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          <button className="duo-eval__btn duo-eval__btn--primary" onClick={beginSession}>
-            Retake Assessment
-          </button>
-
-          {latestResult && (
-            <p className="duo-eval__last-result">
-              Previous best level: {latestResult.level} ({latestResult.accuracy}%)
-            </p>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  // ── Section transition screen ──────────────────────────────────────────────
-  if (sectionTransition) {
-    return (
-      <div className="duo-eval">
-        <div className="duo-eval__transition">
-          <div className="duo-eval__transition-completed">
-            <span className="duo-eval__transition-big-icon">{sectionTransition.completedIcon}</span>
-            <span className="duo-eval__transition-check">✓</span>
-            <h3>{sectionTransition.completedLabel} complete!</h3>
-          </div>
-          <div className="duo-eval__transition-next">
-            <p className="duo-eval__transition-next-label">Next up</p>
-            <div className="duo-eval__transition-next-pill">
-              <span>{sectionTransition.nextIcon}</span>
-              <span>{sectionTransition.nextLabel}</span>
-            </div>
-          </div>
-          <button type="button" className="duo-eval__btn duo-eval__btn--primary" onClick={dismissTransition}>
-            Continue →
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  const currentSection = LESSON_SECTIONS[currentQuestion!.sectionIdx];
-  const sectionTotal = currentSection.count;
-  const sectionDone = currentQuestion!.indexInSection;
-  const progress = Math.round((questionIndex / TOTAL_QUESTIONS) * 100);
-  // Section segment markers (cumulative question counts at section boundaries)
-  const sectionBoundaries = LESSON_SECTIONS.reduce<number[]>((acc, s) => {
-    acc.push((acc[acc.length - 1] ?? 0) + s.count);
-    return acc;
-  }, []).slice(0, -1); // drop the last (100%)
-
-  return (
-    <div className="duo-eval">
-      <PageTitle
-        title="Tamil Skill Assessment"
-        description="Find your Tamil level with a 12-question adaptive assessment covering letters, numbers and vocabulary."
-        path="/tamil-evaluation"
-      />
-      <div className="duo-eval__header">
-        <div className="duo-eval__progress-track">
-          <div className="duo-eval__progress-fill" style={{ width: `${progress}%` }} />
-          {sectionBoundaries.map((boundary) => (
-            <div
-              key={boundary}
-              className="duo-eval__progress-marker"
-              style={{ left: `${Math.round((boundary / TOTAL_QUESTIONS) * 100)}%` }}
-            />
-          ))}
-        </div>
-        <div className="duo-eval__meta">
-          <span>Q {questionIndex + 1}/{TOTAL_QUESTIONS}</span>
-          <span>XP {xp}</span>
-          <span className="duo-eval__hearts">{'❤'.repeat(hearts)}{'♡'.repeat(STARTING_HEARTS - hearts)}</span>
-        </div>
-      </div>
-
-      <div className="duo-eval__card">
-        <div className="duo-eval__section-badge">
-          <span className="duo-eval__section-icon">{currentQuestion!.sectionIcon}</span>
-          <span className="duo-eval__section-label">{currentQuestion!.sectionLabel}</span>
-          <span className="duo-eval__section-progress">{sectionDone + 1}/{sectionTotal}</span>
-        </div>
-        {currentQuestion?.audioText && (
-          <div className="duo-eval__audio-wrap">
-            <p className="duo-eval__audio-hint">Listen and choose the correct option</p>
-            <button
-              type="button"
-              className="duo-eval__audio-btn"
-              onClick={() => playQuestionAudio(currentQuestion)}
-              title="Play audio prompt"
-            >
-              🔊 Play Audio
-            </button>
-          </div>
-        )}
-        {currentQuestion?.image && (
-          <div className="duo-eval__image-wrap">
-            <img
-              src={currentQuestion.image}
-              alt="Identify this"
-              className="duo-eval__image"
-            />
-            <button
-              type="button"
-              className="duo-eval__speak-btn"
-              title="Hear the Tamil word"
-              onClick={() => playQuestionAudio(currentQuestion)}
-            >
-              🔊
-            </button>
-          </div>
-        )}
-        <h3 className="duo-eval__question">{currentQuestion?.prompt}</h3>
-        <ul className={currentQuestion?.optionImages ? 'duo-eval__image-options' : 'duo-eval__options'}>
-          {currentQuestion?.options.map((option, idx) => {
-            const isCorrect = idx === currentQuestion.correctIndex;
-            const isSelected = idx === selectedIndex;
-            const stateClass =
-              answerState === 'idle'
-                ? ''
-                : isCorrect
-                  ? 'correct'
-                  : isSelected
-                    ? 'wrong'
-                    : 'dimmed';
-
-            if (currentQuestion.optionImages) {
-              return (
-                <li key={`${currentQuestion.id}-${idx}`}>
-                  <button
-                    type="button"
-                    className={`duo-eval__image-option ${stateClass}`.trim()}
-                    onClick={() => handleSelect(idx)}
-                    disabled={answerState !== 'idle'}
-                  >
-                    <img
-                      src={currentQuestion.optionImages![idx]}
-                      alt={option}
-                      className="duo-eval__image-option-img"
-                    />
-                    <span className="duo-eval__image-option-label">{option}</span>
-                  </button>
-                </li>
-              );
-            }
-
-            return (
-              <li key={`${currentQuestion.id}-${idx}`}>
-                <button
-                  type="button"
-                  className={`duo-eval__option ${stateClass}`.trim()}
-                  onClick={() => handleSelect(idx)}
-                  disabled={answerState !== 'idle'}
-                >
-                  {option}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-
-      {answerState !== 'idle' && (
-        <div className={`duo-eval__feedback duo-eval__feedback--${answerState}`}>
-          <p>
-            {answerState === 'correct'
-              ? 'Correct answer. Great work!'
-              : `Not quite. Correct answer: ${currentQuestion?.options[currentQuestion.correctIndex]}`}
-          </p>
-          <p className="duo-eval__feedback-explainer">{currentQuestion?.explanation}</p>
-          <button type="button" className="duo-eval__btn duo-eval__btn--continue" onClick={handleContinue}>
-            Continue
-          </button>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default TamilExperienceAssessment;

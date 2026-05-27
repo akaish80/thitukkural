@@ -1,4 +1,3 @@
-
 // Add icons to menu items
 export const getIcon = (text: string) => {
   const lower = text.toLowerCase();

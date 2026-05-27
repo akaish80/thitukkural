@@ -12,7 +12,7 @@ import {
 } from '../../utils/learningStore';
 import { speakTamil, onSpeakingChange } from '../../utils/pronunciationEngine';
 import { SpeedToggle, Waveform } from '../../components/PronunciationPlayer/PronunciationPlayer';
-import { LEARNING_STEPS, type LessonItem } from './learningPathData';
+import { LEARNING_STEPS, type LessonItem } from '../../data/constants';
 import './learningpath.styles.scss';
 
 /* ── Shuffle ── */

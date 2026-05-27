@@ -15,7 +15,7 @@ import {
   transliterateDecompose,
   tamil99Compose,
   fromCharCodeSafe,
-} from './keyboardUtils';
+} from '../../utils/keyboardUtils';
 import './VirtualKeyboard.scss';
 
 const STORAGE_KEY = 'tamil';

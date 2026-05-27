@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { PICTURE_WORD_ITEMS } from './learningPathData';
+import { PICTURE_WORD_ITEMS } from '../../data/constants';
 import './picture-chart.styles.scss';
 
 const PictureWordChartPage = () => {

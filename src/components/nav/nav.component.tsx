@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { nav } from '../constants';
+import { nav } from '../../data/constants';
 import './nav.styles.scss';
-import { getIcon } from './navUtils';
+import { getIcon } from '../../utils/navUtils';
 
 interface NavProps {
   location: any;

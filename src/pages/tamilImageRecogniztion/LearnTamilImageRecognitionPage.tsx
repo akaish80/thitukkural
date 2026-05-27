@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { speakText } from '../../components/chatbot/speakText';
-import { PICTURE_WORD_ITEMS, type LessonItem } from '../learningpath/learningPathData';
+import { PICTURE_WORD_ITEMS, type LessonItem } from '../../data/constants';
 import './learntamil-image-recognition.styles.scss';
 
 type Phase = 'study' | 'quiz' | 'result';

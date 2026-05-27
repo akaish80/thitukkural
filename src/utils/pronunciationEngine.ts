@@ -273,3 +273,12 @@ export function stopSpeaking(): void {
   }
   setSpeaking(false);
 }
+
+export function stopTamilSpeech(): void {
+  if (!('speechSynthesis' in window)) return;
+
+  const synth = window.speechSynthesis;
+  if (synth.speaking) {
+    synth.cancel();
+  }
+}

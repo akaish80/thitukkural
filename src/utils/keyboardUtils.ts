@@ -1,4 +1,4 @@
-import type { KeyDef, DeadKeyDef } from './keyboardLayouts';
+import type { KeyDef, DeadKeyDef } from '../components/VirtualKeyboard/keyboardLayouts';
 
 /**
  * Get the key state string based on modifier key states.
@@ -91,11 +91,11 @@ export const physicalKeyToIndex: Record<string, number> = {
 /** Transliteration mapping for Tamil */
 export const transliterationMapping: Record<string, string> = {
   A: 'அ', a: 'ா', 'அA': 'ஆ',
-  I: 'இ', i: 'ை', '்i': 'ி', 'ிi': 'ீ', 'இI': 'ஈ',
+  I: 'இ', i: 'ை', '्i': 'ி', 'ிi': 'ீ', 'இI': 'ஈ',
   U: 'உ', u: 'ௌ', '்u': 'ு', 'ுu': 'ூ', 'உU': 'ஊ',
-  'ெe': 'ே', E: 'எ', e: 'ெ', 'எE': 'ஏ', '்e': 'ெ',
+  'ெe': 'ே', E: 'எ', e: 'ெ', 'எE': 'ஏ', '्e': 'ெ',
   'அI': 'ஐ',
-  O: 'ஒ', o: 'ொ', '்o': 'ொ', 'ഒO': 'ஓ', 'ொo': 'ோ',
+  O: 'ஒ', o: 'ொ', '्o': 'ொ', 'ഒO': 'ஓ', 'ொo': 'ோ',
   'அU': 'ஔ',
   'ம்m': 'ஂ',
   K: 'ஃ',

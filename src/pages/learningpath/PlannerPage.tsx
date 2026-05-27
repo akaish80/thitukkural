@@ -10,7 +10,7 @@ import {
   setThirtyDayStartDate,
   getThirtyDayTodayDay,
 } from '../../utils/learningStore';
-import { LEARNING_STEPS, THIRTY_DAY_PLAN } from './learningPathData';
+import { LEARNING_STEPS, THIRTY_DAY_PLAN } from '../../data/constants';
 import './learningpath.styles.scss';
 
 function parseIsoDate(isoDate: string): Date | null {

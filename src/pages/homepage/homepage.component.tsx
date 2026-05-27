@@ -125,6 +125,27 @@ const Homepage = () => {
     },
   ];
 
+  const learningRoadmap = [
+    {
+      title: 'Chapter-Based Tamil Learning Menu',
+      description: 'Browse all Chapter 2 to Chapter 7 groups from one landing page inside Learn Tamil.',
+      cta: 'Open Learn Tamil Chapters',
+      link: '/learn-tamil',
+    },
+    {
+      title: 'Learning Path Practice',
+      description: 'Continue structured lessons, complete units, and track your progress with streaks and badges.',
+      cta: 'Open Learning Path',
+      link: '/learn',
+    },
+    {
+      title: 'Chapter-Wise Evaluation',
+      description: 'Take evaluations after each chapter to assess conversation, verbs, and usage skills.',
+      cta: 'Start Evaluation',
+      link: '/tamil-evaluation',
+    },
+  ];
+
   return (
     <div className="homepage">
       <PageTitle
@@ -139,8 +160,9 @@ const Homepage = () => {
             <span className="subtitle">Learn Tamil</span>
           </h1>
           <p className="hero-description">
-            Your interactive platform for learning Tamil — from writing letters to mastering
-            classical literature. Explore Thirukkural, Aathichudi, and more with modern tools.
+            Learn Tamil step by step with guided lessons, writing practice, quizzes, pronunciation,
+            and daily classical reading. Start from letters, progress to words and usage, and build
+            confidence with interactive tools designed for consistent learning.
           </p>
           <div className="hero-actions">
             <Link to="/learn" className="btn btn-primary btn-large">
@@ -164,6 +186,24 @@ const Homepage = () => {
       </div>
 
       <StreakBanner />
+
+      <div className="learning-roadmap-section">
+        <div className="container">
+          <h2 className="section-title">Learning Tamil Overview</h2>
+          <p className="section-subtitle">
+            Learn Tamil through the Learn Tamil menu, structured practice, and evaluation.
+          </p>
+          <div className="roadmap-grid">
+            {learningRoadmap.map((item) => (
+              <article key={item.title} className="roadmap-card">
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+                <Link to={item.link} className="roadmap-link">{item.cta} →</Link>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
 
       <div className="features-section">
         <div className="container">

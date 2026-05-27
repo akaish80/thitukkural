@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { getRandomList } from '../../../components/utils';
+import { getRandomList } from '../../../utils/componentUtils';
 import './match.adhikaram.to.paal.scss';
 import fetchWrapper from '../../../utils/fetchWrapper';
 

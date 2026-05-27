@@ -6,7 +6,7 @@ import {
   getBadges,
   getStreakData,
 } from '../../utils/learningStore';
-import { LEARNING_STEPS } from './learningPathData';
+import { LEARNING_STEPS } from '../../data/constants';
 import './learningpath.styles.scss';
 
 /* ── Progress helpers ── */

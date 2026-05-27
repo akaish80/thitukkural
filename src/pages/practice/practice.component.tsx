@@ -6,7 +6,7 @@ import './practice.styles.scss';
 const MatchAdhikaramToPaal = lazy(() => import('./matchadhikaramtopaal/match.adhikaram.to.paal'));
 const FillInKurral = lazy(() => import('./fillinkurral/fill.in.kurral'));
 const QuizPractice = lazy(() => import('./QuizPractice'));
-const TamilExperienceAssessment = lazy(() => import('./TamilExperienceAssessment.tsx'));
+const TamilExperienceAssessment = lazy(() => import('../../components/tamilEvaluation/TamilExperienceAssessment.tsx'));
 
 const practiceTypes = [
   {

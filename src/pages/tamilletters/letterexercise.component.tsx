@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import PageTitle from '../../components/PageTitle';
 import { SpeakButton, SpeedToggle } from '../../components/PronunciationPlayer/PronunciationPlayer';
-import { VOWELS as ALPHA_VOWELS, CONSONANTS as ALPHA_CONSONANTS } from '../../data/tamilAlphabet';
+import { VOWELS as ALPHA_VOWELS, CONSONANTS as ALPHA_CONSONANTS } from '../../data/constants';
 import './letterexercise.styles.scss';
 
 // ---------------------------------------------------------------------------
