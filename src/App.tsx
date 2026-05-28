@@ -8,6 +8,7 @@ import Header from './components/header/header.component';
 import Footer from './components/footer/footer.component';
 import Nav from './components/nav/nav.component';
 import SeoDefaults from './components/SeoDefaults';
+import TtsSettingsPanel from './components/tts/TtsSettingsPanel';
 import AppRoutes from './Routes';
 import { loadContent } from './redux/content/content.slice';
 
@@ -84,6 +85,7 @@ function App() {
             </button>
           </section>
         )}
+        <TtsSettingsPanel />
         <Nav location={location} />
         <div id="content">
           <AppRoutes />

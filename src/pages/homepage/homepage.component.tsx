@@ -98,28 +98,28 @@ const Homepage = () => {
     {
       icon: '📖',
       title: 'Thirukkural',
-      description: 'Explore the timeless wisdom of Thiruvalluvar — 1330 couplets on virtue, wealth, and love.',
+      description: 'Read all 1330 Thirukkural couplets with clear explanations and easy navigation.',
       link: '/kurral',
       color: 'blue',
     },
     {
       icon: '✍️',
       title: 'Practice Writing',
-      description: 'Learn to write Tamil letters with interactive drawing and tracing exercises.',
+      description: 'Practice writing Tamil letters with guided tracing and simple drawing exercises.',
       link: '/free-type',
       color: 'green',
     },
     {
       icon: '🎯',
       title: 'Interactive Exercises',
-      description: 'Test your Tamil knowledge with quizzes, matching games, and fill-in-the-blank challenges.',
+      description: 'Check your learning with quizzes, matching games, and fill-in-the-blank tasks.',
       link: '/kurral/exercise',
       color: 'purple',
     },
     {
       icon: '🪔',
       title: 'Aathichudi',
-      description: 'Learn Avvaiyar\'s Aathichudi — moral verses that teach Tamil values and alphabet.',
+      description: 'Learn Avvaiyar\'s Aathichudi with short verses, meaning, and pronunciation support.',
       link: '/aathichudi',
       color: 'orange',
     },
@@ -128,19 +128,19 @@ const Homepage = () => {
   const learningRoadmap = [
     {
       title: 'Chapter-Based Tamil Learning Menu',
-      description: 'Browse all Chapter 2 to Chapter 7 groups from one landing page inside Learn Tamil.',
+      description: 'Open the Learn Tamil section and move through chapters from one place.',
       cta: 'Open Learn Tamil Chapters',
       link: '/learn-tamil',
     },
     {
       title: 'Learning Path Practice',
-      description: 'Continue structured lessons, complete units, and track your progress with streaks and badges.',
+      description: 'Continue unit-by-unit lessons and keep track of your progress as you practice.',
       cta: 'Open Learning Path',
       link: '/learn',
     },
     {
       title: 'Chapter-Wise Evaluation',
-      description: 'Take evaluations after each chapter to assess conversation, verbs, and usage skills.',
+      description: 'Take short chapter tests to review speaking, grammar, and practical usage.',
       cta: 'Start Evaluation',
       link: '/tamil-evaluation',
     },
@@ -150,7 +150,7 @@ const Homepage = () => {
     <div className="homepage">
       <PageTitle
         title="Home"
-        description="Interactive Tamil learning platform — Thirukkural, letters, exercises, pronunciation and more."
+        description="Learn Tamil with lessons, writing practice, quizzes, pronunciation, and Thirukkural."
         path="/"
       />
       <div className="hero-section">
@@ -160,9 +160,9 @@ const Homepage = () => {
             <span className="subtitle">Learn Tamil</span>
           </h1>
           <p className="hero-description">
-            Learn Tamil step by step with guided lessons, writing practice, quizzes, pronunciation,
-            and daily classical reading. Start from letters, progress to words and usage, and build
-            confidence with interactive tools designed for consistent learning.
+            Learn Tamil step by step with clear lessons, writing practice, pronunciation support,
+            and daily reading. Start with letters, move to words and sentences, and build confidence
+            through regular practice.
           </p>
           <div className="hero-actions">
             <Link to="/learn" className="btn btn-primary btn-large">
@@ -191,7 +191,7 @@ const Homepage = () => {
         <div className="container">
           <h2 className="section-title">Learning Tamil Overview</h2>
           <p className="section-subtitle">
-            Learn Tamil through the Learn Tamil menu, structured practice, and evaluation.
+            Follow a simple path: learn, practice, and review.
           </p>
           <div className="roadmap-grid">
             {learningRoadmap.map((item) => (

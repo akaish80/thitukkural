@@ -419,6 +419,13 @@
   &:active {
     transform: scale(0.92);
   }
+
+  &.uyirmey-cell--selected {
+    background: var(--color-primary-alpha, rgba(28, 176, 246, 0.18)) !important;
+    color: var(--color-primary);
+    font-weight: 700;
+    box-shadow: inset 0 0 0 2px var(--color-primary);
+  }
 }
 
 // ── Letter detail modal ──

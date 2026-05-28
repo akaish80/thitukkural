@@ -10,7 +10,7 @@ const About = () => {
           <span className="about-hero__en">About Us</span>
         </h1>
         <p className="about-hero__subtitle">
-          Preserving and sharing the beauty of the Tamil language through modern technology
+          Helping people read, speak, and enjoy Tamil through practical digital tools
         </p>
       </section>
 
@@ -19,27 +19,24 @@ const About = () => {
           <div className="about-card__icon">🎯</div>
           <h2>Our Mission</h2>
           <p>
-            To make learning Tamil accessible, interactive, and enjoyable for everyone — whether
-            you're a native speaker reconnecting with your roots, or a curious learner exploring
-            one of the world's oldest living languages.
+            We want Tamil learning to feel approachable and useful for everyone, whether you are
+            reconnecting with your mother tongue or learning it for the first time.
           </p>
         </div>
         <div className="about-card">
           <div className="about-card__icon">🌏</div>
           <h2>Why Tamil?</h2>
           <p>
-            Tamil is a classical language with over 2,000 years of literary tradition. It is spoken
-            by over 80 million people worldwide and is recognized as one of the longest-surviving
-            classical languages in the world.
+            Tamil carries a long literary history and is spoken by millions across the world.
+            Learning it opens the door to rich culture, literature, and everyday connection.
           </p>
         </div>
         <div className="about-card">
           <div className="about-card__icon">💡</div>
           <h2>Our Approach</h2>
           <p>
-            We combine ancient wisdom with modern technology — interactive exercises, voice
-            synthesis, visual learning, and gamified challenges to make Tamil learning effective
-            and fun.
+            We focus on steady progress: clear lessons, pronunciation support, visual examples,
+            and short exercises you can practice regularly.
           </p>
         </div>
       </section>
@@ -95,7 +92,7 @@ const About = () => {
 
       <section className="about-cta">
         <h2>Ready to start learning?</h2>
-        <p>Jump right in and explore the beauty of Tamil language and literature.</p>
+        <p>Pick a section and begin with the part that fits your level today.</p>
         <div className="about-cta__buttons">
           <Link to="/kurral" className="btn btn-primary">📖 Explore Thirukkural</Link>
           <Link to="/tamil-letters" className="btn btn-secondary">✍️ Learn Tamil Letters</Link>

@@ -1,5 +1,6 @@
 import type { TamilExperienceLevel } from './learningStore';
 import { QUESTION_BANK } from '../data/constants';
+import { speakText } from '../components/chatbot/speakText';
 import type { AssessmentQuestion, LessonSection, SessionQuestion, SpeechLang } from '../types';
 
 function fisherYates(length: number): number[] {
@@ -28,25 +29,75 @@ function shuffleOptions(question: AssessmentQuestion): AssessmentQuestion {
   };
 }
 
-export function buildSessionQuestions(sectionPlan: LessonSection[]): SessionQuestion[] {
+export function buildSessionQuestions(sectionPlan: LessonSection[], chapterId?: string): SessionQuestion[] {
   const result: SessionQuestion[] = [];
   const usedIds = new Set<number>();
+  const sectionSkills = new Set(sectionPlan.map((section) => section.skill));
+  const uncoveredUnitIds = new Set<string>(
+    chapterId
+      ? QUESTION_BANK
+        .filter((question) => question.chapterId === chapterId && question.unitId && sectionSkills.has(question.skill))
+        .map((question) => question.unitId as string)
+      : [],
+  );
 
   sectionPlan.forEach((section, sectionIdx) => {
     const pool = QUESTION_BANK.filter((q) => q.skill === section.skill && !usedIds.has(q.id));
+    const chapterSpecificPool = chapterId
+      ? pool.filter((question) => question.chapterId === chapterId)
+      : [];
+    const genericPool = chapterId
+      ? pool.filter((question) => !question.chapterId)
+      : pool;
+    const prioritizedPool = chapterId
+      ? [...chapterSpecificPool, ...genericPool]
+      : pool;
+
     const requiredQuestions = (section.requiredQuestionIds ?? [])
-      .map((id) => pool.find((question) => question.id === id))
+      .map((id) => prioritizedPool.find((question) => question.id === id))
       .filter((question): question is AssessmentQuestion => Boolean(question));
 
-    const remainingPool = pool.filter(
+    const remainingPool = prioritizedPool.filter(
       (question) => !requiredQuestions.some((required) => required.id === question.id),
     );
     const remainingCount = Math.max(section.count - requiredQuestions.length, 0);
-    const shuffledRemaining = fisherYates(remainingPool.length).map((i) => remainingPool[i]);
-    const selected = [...requiredQuestions, ...shuffledRemaining.slice(0, remainingCount)];
+
+    let selectedRemaining: AssessmentQuestion[];
+    if (chapterId) {
+      const chapterRemaining = remainingPool.filter((question) => question.chapterId === chapterId);
+      const genericRemaining = remainingPool.filter((question) => !question.chapterId);
+      const shuffledChapter = fisherYates(chapterRemaining.length).map((i) => chapterRemaining[i]);
+
+      const pickedChapterForCoverage: AssessmentQuestion[] = [];
+      const pickedChapterIds = new Set<number>();
+
+      shuffledChapter.forEach((question) => {
+        if (pickedChapterForCoverage.length >= remainingCount) return;
+        if (!question.unitId || !uncoveredUnitIds.has(question.unitId)) return;
+        pickedChapterForCoverage.push(question);
+        pickedChapterIds.add(question.id);
+      });
+
+      const pickedChapterRest = shuffledChapter
+        .filter((question) => !pickedChapterIds.has(question.id))
+        .slice(0, Math.max(remainingCount - pickedChapterForCoverage.length, 0));
+
+      const pickedChapter = [...pickedChapterForCoverage, ...pickedChapterRest];
+      const remainingSlots = Math.max(remainingCount - pickedChapter.length, 0);
+      const shuffledGeneric = fisherYates(genericRemaining.length).map((i) => genericRemaining[i]);
+      selectedRemaining = [...pickedChapter, ...shuffledGeneric.slice(0, remainingSlots)];
+    } else {
+      const shuffledRemaining = fisherYates(remainingPool.length).map((i) => remainingPool[i]);
+      selectedRemaining = shuffledRemaining.slice(0, remainingCount);
+    }
+
+    const selected = [...requiredQuestions, ...selectedRemaining];
 
     selected.forEach((question, indexInSection) => {
       usedIds.add(question.id);
+      if (chapterId && question.unitId) {
+        uncoveredUnitIds.delete(question.unitId);
+      }
       result.push({
         ...shuffleOptions(question),
         sectionIdx,
@@ -68,8 +119,5 @@ export function computeLevel(accuracy: number): TamilExperienceLevel {
 }
 
 export function speakByLang(text: string, lang: SpeechLang) {
-  if (!('speechSynthesis' in window)) return;
-  const utterance = new window.SpeechSynthesisUtterance(text);
-  utterance.lang = lang;
-  window.speechSynthesis.speak(utterance);
+  speakText(text, { lang });
 }

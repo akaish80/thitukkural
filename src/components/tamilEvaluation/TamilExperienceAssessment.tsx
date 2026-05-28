@@ -26,6 +26,7 @@ import AssessmentResultView from './AssessmentResultView';
 import AssessmentTopBar from './AssessmentTopBar';
 import FeedbackPanel from './FeedbackPanel';
 import SectionTransitionView from './SectionTransitionView';
+import './TamilExperienceAssessment.scss';
 const TamilExperienceAssessment = () => {
   const [searchParams] = useSearchParams();
   const chapterId = searchParams.get('chapter') || '';
@@ -41,7 +42,7 @@ const TamilExperienceAssessment = () => {
     [sectionPlan],
   );
 
-  const [questions, setQuestions] = useState<SessionQuestion[]>(() => buildSessionQuestions(sectionPlan));
+  const [questions, setQuestions] = useState<SessionQuestion[]>(() => buildSessionQuestions(sectionPlan, chapterId || undefined));
   const [questionIndex, setQuestionIndex] = useState(0);
   const [answerState, setAnswerState] = useState<AnswerState>('idle');
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -59,6 +60,11 @@ const TamilExperienceAssessment = () => {
 
   const latestResult = useMemo(() => getLatestTamilEvaluation(), []);
   const currentQuestion = questions[questionIndex] ?? null;
+  const coveredUnitIds = useMemo(
+    () => Array.from(new Set(questions.map((question) => question.unitId).filter((unitId): unitId is string => Boolean(unitId)))).sort(),
+    [questions],
+  );
+  const showCoverageDebug = import.meta.env.DEV && Boolean(chapterId);
 
   useEffect(() => {
     if (!currentQuestion) return;
@@ -137,7 +143,7 @@ const TamilExperienceAssessment = () => {
   }, []);
 
   const beginSession = useCallback(() => {
-    setQuestions(buildSessionQuestions(sectionPlan));
+    setQuestions(buildSessionQuestions(sectionPlan, chapterId || undefined));
     setQuestionIndex(0);
     setAnswerState('idle');
     setSelectedIndex(null);
@@ -152,7 +158,7 @@ const TamilExperienceAssessment = () => {
     setActiveReorderItem(null);
     setDraggedVowel(null);
     setResolvedAnswer(null);
-  }, [sectionPlan]);
+  }, [chapterId, sectionPlan]);
 
   const handleSelect = useCallback(
     (index: number) => {
@@ -337,6 +343,12 @@ const TamilExperienceAssessment = () => {
         progress={progress}
         sectionBoundaries={sectionBoundaries}
       />
+
+      {showCoverageDebug && (
+        <div className="duo-eval__coverage-debug" role="status" aria-live="polite">
+          Unit coverage: {coveredUnitIds.length > 0 ? coveredUnitIds.join(', ') : 'No chapter-tagged units in this session'}
+        </div>
+      )}
 
       <AssessmentQuestionCard
         currentQuestion={currentQuestion}

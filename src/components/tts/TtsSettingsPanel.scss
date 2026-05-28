@@ -1,0 +1,99 @@
+.tts-settings {
+  position: sticky;
+  top: calc(12vh + 70px);
+  z-index: 90;
+  width: min(680px, calc(100% - 2rem));
+  margin: 0.25rem auto 0.75rem;
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  background: linear-gradient(180deg, var(--bg-secondary), var(--bg-primary));
+  box-shadow: 0 4px 14px var(--shadow-light);
+  text-align: left;
+}
+
+.tts-settings__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0.8rem;
+  color: var(--text-primary);
+}
+
+.tts-settings__toggle {
+  border: 1px solid var(--border-primary);
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tts-settings__toggle:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.tts-settings__panel {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0 0.8rem 0.8rem;
+}
+
+.tts-settings__field {
+  display: grid;
+  gap: 0.2rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.tts-settings__field input,
+.tts-settings__field select,
+.tts-settings__field textarea {
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  padding: 0.45rem 0.55rem;
+}
+
+.tts-settings__field textarea {
+  resize: vertical;
+}
+
+.tts-settings__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tts-settings__actions button {
+  border: 1px solid var(--border-primary);
+  border-radius: 999px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  padding: 0.3rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tts-settings__actions button:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.tts-settings__hint {
+  font-size: 0.74rem;
+  color: var(--text-tertiary);
+}
+
+@media (max-width: 768px) {
+  .tts-settings {
+    top: calc(10vh + 56px);
+    width: calc(100% - 1.2rem);
+    margin-bottom: 0.6rem;
+  }
+}

@@ -15,28 +15,27 @@ const Privacy = () => {
         <section className="privacy-section">
           <h2>📋 Overview</h2>
           <p>
-            Thirukkural - Learn Tamil ("we", "our", "the app") is a free, open-source educational
-            platform for learning Tamil language and literature. We are committed to protecting
-            your privacy. This policy explains what data we collect and how we use it.
+            Thirukkural - Learn Tamil is built to help you learn without tracking you.
+            This page explains what information is stored in your browser and how it is used.
           </p>
         </section>
 
         <section className="privacy-section">
           <h2>💾 Data We Store</h2>
-          <p>All data is stored <strong>locally on your device</strong> using browser localStorage. We do not collect, transmit, or store any personal data on external servers.</p>
+          <p>We store learning data <strong>only on your device</strong> using localStorage. We do not collect or send your personal data to our servers.</p>
           <ul>
-            <li><strong>Theme preferences</strong> — your selected color scheme and dark/light mode</li>
-            <li><strong>Learning progress</strong> — quiz scores, streak counts, and exercise completion</li>
-            <li><strong>Bookmarked kurrals</strong> — your favorite Thirukkural couplets</li>
-            <li><strong>Spaced repetition data</strong> — which items need more review</li>
+            <li><strong>Theme preferences</strong> — your selected theme and display mode</li>
+            <li><strong>Learning progress</strong> — quiz scores, streaks, and completed exercises</li>
+            <li><strong>Bookmarked kurrals</strong> — couplets you saved for later</li>
+            <li><strong>Review data</strong> — items marked for revision</li>
           </ul>
         </section>
 
         <section className="privacy-section">
           <h2>🌐 External Services</h2>
           <ul>
-            <li><strong>Google Fonts</strong> — we load Inter and Noto Sans Tamil fonts from Google Fonts. Google may collect anonymized usage data per their <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">privacy policy</a>.</li>
-            <li><strong>Web Speech API</strong> — voice reading uses your browser's built-in text-to-speech engine. No audio data is sent to our servers.</li>
+            <li><strong>Google Fonts</strong> — fonts may be loaded from Google. Their service may process technical request data based on their <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">privacy policy</a>.</li>
+            <li><strong>Web Speech API</strong> — text-to-speech uses your browser or device voice engine. We do not store your audio.</li>
           </ul>
         </section>
 
@@ -59,16 +58,15 @@ const Privacy = () => {
         <section className="privacy-section">
           <h2>👶 Children's Privacy</h2>
           <p>
-            This app is designed to be educational and safe for users of all ages. We do not
-            knowingly collect any personal information from anyone, including children.
+            This app is intended for learners of all ages. Since we do not collect personal data,
+            there is no child-specific user data stored by us.
           </p>
         </section>
 
         <section className="privacy-section">
           <h2>🔄 Changes to This Policy</h2>
           <p>
-            We may update this privacy policy from time to time. Any changes will be reflected
-            on this page with an updated date.
+            If we update this policy, the latest version and date will appear on this page.
           </p>
         </section>
 

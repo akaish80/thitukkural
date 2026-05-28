@@ -1,5 +1,6 @@
 import type { TamilExperienceLevel } from './learningStore';
 import { QUESTION_BANK } from '../data/constants';
+import { speakText } from '../components/chatbot/speakText';
 // import type { AssessmentQuestion } from 'types';
 import type { AssessmentQuestion, LessonSection, SessionQuestion, SpeechLang } from 'types';
 
@@ -69,8 +70,5 @@ export function computeLevel(accuracy: number): TamilExperienceLevel {
 }
 
 export function speakByLang(text: string, lang: SpeechLang) {
-  if (!('speechSynthesis' in window)) return;
-  const utterance = new window.SpeechSynthesisUtterance(text);
-  utterance.lang = lang;
-  window.speechSynthesis.speak(utterance);
+  speakText(text, { lang });
 }

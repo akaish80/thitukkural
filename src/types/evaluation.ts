@@ -21,6 +21,8 @@ export type AssessmentQuestion = {
   explanation: string;
   skill: Skill;
   difficulty: Difficulty;
+  chapterId?: string;
+  unitId?: string;
   audioText?: string;
   audioLang?: SpeechLang;
   image?: string;

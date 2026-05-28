@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import './chatbot.scss';
 import fetchWrapper from '../../utils/fetchWrapper';
+import { speakText as speakSharedText } from './speakText';
 
 interface Message {
   from: string;
@@ -302,14 +303,6 @@ export default function Chatbot() {
     if (listRef.current) listRef.current.scrollTop = listRef.current.scrollHeight;
   }, [messages, open]);
 
-  function speakText(text: string) {
-    if ('speechSynthesis' in window) {
-      const utter = new window.SpeechSynthesisUtterance(text);
-      utter.lang = 'ta-IN'; // Tamil
-      window.speechSynthesis.speak(utter);
-    }
-  }
-
   function pushMessage(from: string, text: any) {
     setMessages((m) => [...m, { from, text, ts: Date.now() }]);
   }
@@ -328,13 +321,13 @@ export default function Chatbot() {
         setMessages((m) => m.map((it) => (it.ts === ts ? { ...it, text: current } : it)));
         await new Promise((resolve) => setTimeout(resolve, i < 20 ? 20 : 14));
       }
-      speakText(text);
+      speakSharedText(text, { lang: 'ta-IN' });
       return;
     }
 
     pushMessage('bot', text);
     const speak = messageToPlainText(text);
-    if (speak) speakText(speak);
+    if (speak) speakSharedText(speak, { lang: 'ta-IN' });
   }
 
   function copyMessage(m: Message) {

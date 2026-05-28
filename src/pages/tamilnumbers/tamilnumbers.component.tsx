@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import PageTitle from '../../components/PageTitle';
-import { speakTamil, speakTamil as speakTamilText } from '../../utils/pronunciationEngine';
+import { speakTamil } from '../../utils/pronunciationEngine';
 import './tamilnumbers.styles.scss';
 
 interface TamilNumber {
@@ -58,10 +58,10 @@ const TamilNumbers = () => {
           key={num.arabic}
           className="number-card"
           style={{ '--card-accent': color } as React.CSSProperties}
-          onClick={() => speakTamilText(num.word)}
+          onClick={() => speakTamil(num.word)}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => e.key === 'Enter' && speakTamilText(num.word)}
+          onKeyDown={(e) => e.key === 'Enter' && speakTamil(num.word)}
         >
           <span className="number-card__tamil">{num.tamil}</span>
           <span className="number-card__arabic">{num.arabic}</span>

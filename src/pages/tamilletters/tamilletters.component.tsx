@@ -120,7 +120,6 @@ type ActiveTab = 'overview' | 'uyirmey';
 
 const TamilLetters = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('overview');
-  const [highlightedVoice, setHighlightedVoice] = useState<string | null>(null);
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
 
   const handleLetterClick = useCallback((letter: string) => {
@@ -273,8 +272,6 @@ const TamilLetters = () => {
             tableClassName="uyirmey-table"
             rowHeaderClassName="row-header"
             cellClassName="uyirmey-cell"
-            highlightedVoice={highlightedVoice}
-            onRowClick={(voice) => setHighlightedVoice(voice === highlightedVoice ? null : voice)}
           />
         </div>
       )}
