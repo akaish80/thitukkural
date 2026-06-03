@@ -13,6 +13,10 @@ function fisherYates(length: number): number[] {
 }
 
 function shuffleOptions(question: AssessmentQuestion): AssessmentQuestion {
+  if (question.activityType === 'word-match') {
+    return { ...question };
+  }
+
   const correctAnswer = question.options[question.correctIndex];
   const indices = fisherYates(question.options.length);
   const shuffledOptions = indices.map((i) => question.options[i]);
@@ -29,20 +33,24 @@ function shuffleOptions(question: AssessmentQuestion): AssessmentQuestion {
   };
 }
 
-export function buildSessionQuestions(sectionPlan: LessonSection[], chapterId?: string): SessionQuestion[] {
+export function buildSessionQuestions(
+  sectionPlan: LessonSection[],
+  chapterId?: string,
+  questionBank: AssessmentQuestion[] = QUESTION_BANK,
+): SessionQuestion[] {
   const result: SessionQuestion[] = [];
   const usedIds = new Set<number>();
   const sectionSkills = new Set(sectionPlan.map((section) => section.skill));
   const uncoveredUnitIds = new Set<string>(
     chapterId
-      ? QUESTION_BANK
+      ? questionBank
         .filter((question) => question.chapterId === chapterId && question.unitId && sectionSkills.has(question.skill))
         .map((question) => question.unitId as string)
       : [],
   );
 
   sectionPlan.forEach((section, sectionIdx) => {
-    const pool = QUESTION_BANK.filter((q) => q.skill === section.skill && !usedIds.has(q.id));
+    const pool = questionBank.filter((q) => q.skill === section.skill && !usedIds.has(q.id));
     const chapterSpecificPool = chapterId
       ? pool.filter((question) => question.chapterId === chapterId)
       : [];
@@ -92,8 +100,9 @@ export function buildSessionQuestions(sectionPlan: LessonSection[], chapterId?: 
     }
 
     const selected = [...requiredQuestions, ...selectedRemaining];
+    const randomizedSelected = fisherYates(selected.length).map((i) => selected[i]);
 
-    selected.forEach((question, indexInSection) => {
+    randomizedSelected.forEach((question, indexInSection) => {
       usedIds.add(question.id);
       if (chapterId && question.unitId) {
         uncoveredUnitIds.delete(question.unitId);

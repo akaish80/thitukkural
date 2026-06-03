@@ -793,6 +793,93 @@
     background: var(--bg-secondary);
   }
 }
+
+.lt-number-eval-card {
+  margin: 0.9rem 0;
+  padding: 0.9rem;
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+
+  h4 {
+    margin: 0 0 0.4rem;
+    color: var(--text-primary);
+    font-size: 1rem;
+  }
+
+  .lt-btn {
+    margin-top: 0.75rem;
+  }
+}
+
+.lt-number-eval-grid {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.lt-number-eval-row {
+  display: grid;
+  grid-template-columns: minmax(80px, 1fr) minmax(180px, 2fr);
+  align-items: center;
+  gap: 0.6rem;
+
+  span {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  select,
+  input {
+    border: 1px solid var(--border-primary);
+    border-radius: 8px;
+    padding: 0.45rem 0.55rem;
+    font-size: 0.92rem;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+  }
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lt-number-eval-score {
+  margin: 0.55rem 0 0;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.lt-number-eval-questions {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.lt-number-eval-question {
+  border: 1px solid var(--border-primary);
+  border-radius: 10px;
+  padding: 0.65rem 0.7rem;
+  background: var(--bg-primary);
+
+  p {
+    margin: 0 0 0.45rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+}
+
+.lt-number-eval-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+
+  label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--text-primary);
+    font-size: 0.92rem;
+  }
+}
 /* END CONSONANT SECTION STYLES */
 
 /* --- UYIRMEI SECTION STYLES --- */

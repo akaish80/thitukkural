@@ -1,11 +1,11 @@
 import type { AssessmentQuestion } from '../types';
 
 export const QUESTION_BANK: AssessmentQuestion[] = [
-  { id: 1, prompt: 'Which Tamil letter is "ka"?', options: ['க', 'ங', 'ச', 'த'], correctIndex: 0, explanation: 'The consonant க is pronounced as ka.', skill: 'letters', difficulty: 1 },
+  { id: 1, prompt: 'Which Tamil letter is "ka"?', options: ['க', 'ங', 'ச', 'த'], correctIndex: 0, explanation: 'The consonant க is pronounced as ka.', skill: 'letters', difficulty: 1, audioText: 'க', audioLang: 'ta-IN' },
   { id: 2, prompt: 'Which option is the Tamil number for 5?', options: ['௫', '௩', '௮', '௨'], correctIndex: 0, explanation: 'Tamil numeral 5 is written as ௫.', skill: 'numbers', difficulty: 1 },
   { id: 3, prompt: 'Select the meaning of "நன்றி".', options: ['Thank you', 'Water', 'Book', 'Food'], correctIndex: 0, explanation: 'நன்றி means thank you.', skill: 'vocabulary', difficulty: 1 },
   { id: 4, prompt: 'Which word means "mother" in Tamil?', options: ['அம்மா', 'அண்ணன்', 'தம்பி', 'அப்பா'], correctIndex: 0, explanation: 'அம்மா means mother.', skill: 'vocabulary', difficulty: 1 },
-  { id: 5, prompt: 'Which Tamil letter represents "zha"?', options: ['ழ', 'ல', 'ள', 'ற'], correctIndex: 0, explanation: 'ழ is the unique Tamil zha sound.', skill: 'letters', difficulty: 2 },
+  { id: 5, prompt: 'Which Tamil letter represents "zha"?', options: ['ழ', 'ல', 'ள', 'ற'], correctIndex: 0, explanation: 'ழ is the unique Tamil zha sound.', skill: 'letters', difficulty: 2, audioText: 'ழ' },
   { id: 6, prompt: 'Tamil number 10 is:', options: ['௰', '௲', '௧௦', '௯'], correctIndex: 0, explanation: 'Traditional Tamil numeral 10 is ௰.', skill: 'numbers', difficulty: 2 },
   { id: 7, prompt: 'Choose the correct reading: "தமிழ்"', options: ['tamil', 'thamizh', 'thamila', 'thamilu'], correctIndex: 1, explanation: 'தமிழ் is typically transliterated as thamizh.', skill: 'reading', difficulty: 2 },
   { id: 8, prompt: 'What does "வாழ்க" mean in common usage?', options: ['Live long', 'Sit down', 'Good night', 'Write now'], correctIndex: 0, explanation: 'வாழ்க is used like "may you live long".', skill: 'vocabulary', difficulty: 2 },
@@ -16,7 +16,7 @@ export const QUESTION_BANK: AssessmentQuestion[] = [
   { id: 13, prompt: 'Which letter is a pure vowel (uyir ezhuthu)?', options: ['உ', 'க்', 'ண்', 'த்'], correctIndex: 0, explanation: 'உ is a uyir (vowel) letter.', skill: 'letters', difficulty: 1 },
   { id: 14, prompt: 'Find the odd one out (not a day of week):', options: ['திங்கள்', 'செவ்வாய்', 'ஆறு', 'வெள்ளி'], correctIndex: 2, explanation: 'ஆறு means six, not a weekday.', skill: 'vocabulary', difficulty: 2 },
   { id: 15, prompt: 'Which is the correct form for respectful "you"?', options: ['நீங்கள்', 'நீ', 'நான்', 'அவன்'], correctIndex: 0, explanation: 'நீங்கள் is the respectful second-person form.', skill: 'vocabulary', difficulty: 2 },
-  { id: 16, prompt: 'க + ஆ', options: ['கா', 'கி', 'கு', 'க்'], correctIndex: 0, explanation: 'க plus long-aa marker becomes கா.', skill: 'letters', difficulty: 1 },
+  { id: 16, prompt: 'க + ஆ', options: ['கா', 'கி', 'கு', 'க்'], correctIndex: 0, explanation: 'க plus long-aa marker becomes கா.', skill: 'letters', difficulty: 1, audioText: 'க + ஆ' },
   {
     id: 201,
     prompt: 'Put these Tamil vowels in proper order (touch, drag, or tap to swap):',
@@ -48,8 +48,7 @@ export const QUESTION_BANK: AssessmentQuestion[] = [
     skill: 'vowel-activities',
     difficulty: 1,
     activityType: 'mcq',
-    audioText: 'ai',
-    audioLang: 'en-US',
+    audioText: 'ஐ'
   },
   {
     id: 204,
@@ -60,8 +59,7 @@ export const QUESTION_BANK: AssessmentQuestion[] = [
     skill: 'vowel-activities',
     difficulty: 1,
     activityType: 'mcq',
-    audioText: 'i',
-    audioLang: 'en-US',
+    audioText: 'இ',
   },
   {
     id: 205,
@@ -72,18 +70,17 @@ export const QUESTION_BANK: AssessmentQuestion[] = [
     skill: 'vowel-activities',
     difficulty: 2,
     activityType: 'mcq',
-    audioText: 'au',
-    audioLang: 'en-US',
+    audioText: 'ஔ',
   },
   // Audio letter mapping (English -> Tamil, Tamil -> English)
-  { id: 126, prompt: 'Play audio and choose the matching Tamil letter.', options: ['க', 'ச', 'த', 'ப'], correctIndex: 0, explanation: 'You hear "ka", so the correct letter is க.', skill: 'audio-letters', difficulty: 1, audioText: 'ka', audioLang: 'en-US' },
-  { id: 127, prompt: 'Play audio and choose the matching Tamil letter.', options: ['ங', 'ஞ', 'ந', 'ம'], correctIndex: 0, explanation: 'You hear "nga", so the correct letter is ங.', skill: 'audio-letters', difficulty: 1, audioText: 'nga', audioLang: 'en-US' },
+  { id: 126, prompt: 'Play audio and choose the matching Tamil letter.', options: ['க', 'ச', 'த', 'ப'], correctIndex: 0, explanation: 'You hear "ka", so the correct letter is க.', skill: 'audio-letters', difficulty: 1, audioText: 'க', audioLang: 'ta-IN' },
+  { id: 127, prompt: 'Play audio and choose the matching Tamil letter.', options: ['ங', 'ஞ', 'ந', 'ம'], correctIndex: 0, explanation: 'You hear "nga", so the correct letter is ங.', skill: 'audio-letters', difficulty: 1, audioText: 'ங', audioLang: 'ta-IN' },
   { id: 128, prompt: 'Play audio and choose the English transliteration.', options: ['zha', 'la', 'lla', 'ra'], correctIndex: 0, explanation: 'The sound is ழ், transliterated as "zha".', skill: 'audio-letters', difficulty: 2, audioText: 'ழ்', audioLang: 'ta-IN' },
   { id: 129, prompt: 'Play audio and choose the English transliteration.', options: ['ka', 'ga', 'kha', 'ha'], correctIndex: 0, explanation: 'க் is commonly written as "ka" in transliteration.', skill: 'audio-letters', difficulty: 1, audioText: 'க்', audioLang: 'ta-IN' },
   { id: 130, prompt: 'Play audio and choose the English transliteration.', options: ['nna', 'na', 'n', 'nga'], correctIndex: 0, explanation: 'ண் is the retroflex "n" sound, transliterated as "nna".', skill: 'audio-letters', difficulty: 2, audioText: 'ண்', audioLang: 'ta-IN' },
-  { id: 131, prompt: 'Play audio and choose the matching Tamil vowel.', options: ['ஆ', 'அ', 'ஐ', 'ஈ'], correctIndex: 0, explanation: 'You hear long "aa", so the correct vowel is ஆ.', skill: 'audio-letters', difficulty: 1, audioText: 'aa', audioLang: 'en-US' },
-  { id: 132, prompt: 'Play audio and choose the matching Tamil letter.', options: ['ற்', 'ர்', 'ல்', 'ழ்'], correctIndex: 0, explanation: 'You hear "rra", so the correct letter is ற்.', skill: 'audio-letters', difficulty: 3, audioText: 'rra', audioLang: 'en-US' },
-  { id: 133, prompt: 'Play audio and choose the matching Tamil letter.', options: ['ஊ', 'உ', 'ஒ', 'ஓ'], correctIndex: 0, explanation: 'You hear long "oo", so the correct vowel is ஊ.', skill: 'audio-letters', difficulty: 2, audioText: 'oo', audioLang: 'en-US' },
+  { id: 131, prompt: 'Play audio and choose the matching Tamil vowel.', options: ['ஆ', 'அ', 'ஐ', 'ஈ'], correctIndex: 0, explanation: 'You hear long "aa", so the correct vowel is ஆ.', skill: 'audio-letters', difficulty: 1, audioText: 'ஆ', audioLang: 'ta-IN' },
+  { id: 132, prompt: 'Play audio and choose the matching Tamil letter.', options: ['ற்', 'ர்', 'ல்', 'ழ்'], correctIndex: 0, explanation: 'You hear "rra", so the correct letter is ற்.', skill: 'audio-letters', difficulty: 3, audioText: 'ற்', audioLang: 'ta-IN' },
+  { id: 133, prompt: 'Play audio and choose the matching Tamil letter.', options: ['ஊ', 'உ', 'ஒ', 'ஓ'], correctIndex: 0, explanation: 'You hear long "oo", so the correct vowel is ஊ.', skill: 'audio-letters', difficulty: 2, audioText: 'ஊ', audioLang: 'ta-IN' },
   { id: 17, prompt: 'Which sentence is grammatically stronger?', options: ['அவர் நல்ல தமிழ் பேசுகிறார்', 'அவர் பேசுகிறார் தமிழ் நல்ல', 'தமிழ் பேச நல்ல அவர்', 'நல்ல அவர் பேச தமிழ்'], correctIndex: 0, explanation: 'The first sentence has proper word order and verb agreement.', skill: 'reading', difficulty: 3 },
   { id: 18, prompt: 'Tamil numeral for 1000 is:', options: ['௲', '௱', '௰', '௧௦௦'], correctIndex: 0, explanation: 'Tamil numeral 1000 is ௲.', skill: 'numbers', difficulty: 2 },
   { id: 19, prompt: 'What is the Tamil word for this animal?', options: ['பூனை', 'நாய்', 'பறவை', 'மீன்'], correctIndex: 0, explanation: 'பூனை means cat in Tamil.', skill: 'image-recognition', difficulty: 1, image: '/learning-images/png/cat.png' },
@@ -173,6 +170,50 @@ export const QUESTION_BANK: AssessmentQuestion[] = [
   { id: 310, prompt: 'Choose the sentence about routine activity:', options: ['நான் தினமும் காலை ஆறு மணிக்கு எழுவேன்', 'நான் நேற்று காலை ஆறு மணிக்கு எழுவேன்', 'நான் எழுவேன் மட்டும் நேற்று', 'காலை ஆறு நான் மட்டும் எழு'], correctIndex: 0, explanation: 'This sentence correctly describes a daily schedule.', skill: 'reading', difficulty: 2, chapterId: 'chapter-6', unitId: '6.3' },
   { id: 311, prompt: 'Describing things: "This house is big" in Tamil is:', options: ['இந்த வீடு பெரியது', 'இந்த வீடு பெரிய', 'வீடு இது பெரியது இல்லை', 'பெரியது இந்த வீடு மட்டும்'], correctIndex: 0, explanation: 'இந்த வீடு பெரியது is the correct descriptive sentence.', skill: 'reading', difficulty: 2, chapterId: 'chapter-7', unitId: '7.4' },
   { id: 312, prompt: 'Describing location: "The book is on the table" is:', options: ['புத்தகம் மேசையின் மீது உள்ளது', 'புத்தகம் மேசை உள்ளது', 'மேசை மீது புத்தகம் இல்லை உள்ளது', 'புத்தகம் மட்டும் மீது மேசை'], correctIndex: 0, explanation: 'மேசையின் மீது உள்ளது is the natural location phrase for "is on the table."', skill: 'vocabulary', difficulty: 2, chapterId: 'chapter-7', unitId: '7.5' },
+  {
+    id: 401,
+    prompt: 'Word Matching 1: Match each Tamil word with the correct English meaning.',
+    options: ['அது', 'இது', 'எது', 'ஊது', 'காது', 'பல்'],
+    correctIndex: 0,
+    explanation: 'Match all pairs correctly: அது-That, இது-This, எது-Which, ஊது-Blow, காது-Ear, பல்-Teeth.',
+    skill: 'vocabulary',
+    difficulty: 1,
+    activityType: 'word-match',
+    matchRightOptions: ['That', 'This', 'Which', 'Blow', 'Ear', 'Teeth'],
+  },
+  {
+    id: 402,
+    prompt: 'Word Matching 2: Match each Tamil word with the correct English meaning.',
+    options: ['பால்', 'கல்', 'கால்', 'காடு', 'மாடு'],
+    correctIndex: 0,
+    explanation: 'Match all pairs correctly: பால்-Milk, கல்-Stone, கால்-Leg, காடு-Forest, மாடு-Cow.',
+    skill: 'vocabulary',
+    difficulty: 1,
+    activityType: 'word-match',
+    matchRightOptions: ['Milk', 'Stone', 'Leg', 'Forest', 'Cow'],
+  },
+  {
+    id: 403,
+    prompt: 'Word Matching 3: Match each Tamil word with the correct English meaning.',
+    options: ['படு', 'பாடு', 'கண்', 'என்', 'எண்'],
+    correctIndex: 0,
+    explanation: 'Match all pairs correctly: படு-Lie down, பாடு-Sing, கண்-Eye, என்-My, எண்-Number.',
+    skill: 'vocabulary',
+    difficulty: 1,
+    activityType: 'word-match',
+    matchRightOptions: ['Lie down', 'Sing', 'Eye', 'My', 'Number'],
+  },
+  {
+    id: 404,
+    prompt: 'Word Matching 4: Match each Tamil word with the correct English meaning.',
+    options: ['ஓடு', 'ஓது', 'வால்', 'வாள்', 'வாழ்'],
+    correctIndex: 0,
+    explanation: 'Match all pairs correctly: ஓடு-Run, ஓது-Recite, வால்-Tail, வாள்-Sword, வாழ்-Live.',
+    skill: 'vocabulary',
+    difficulty: 1,
+    activityType: 'word-match',
+    matchRightOptions: ['Run', 'Recite', 'Tail', 'Sword', 'Live'],
+  },
   // ── Correct Spelling — ன/ண/ந, ர/ற, ல/ள/ழ distinctions ──────────────────
   { id: 101, prompt: 'சூரியன் இருக்கும் இடம் என்ன?', options: ['வானம்', 'வாணம்', 'கடல்', 'மலை'], correctIndex: 0, explanation: 'வானம் என்பது சரியான சொல். வாணம் என்றால் வேறு பொருள்.', skill: 'correct-word', difficulty: 1 },
   { id: 102, prompt: 'பார்க்க உதவும் உறுப்பு எது?', options: ['கண்', 'கன்', 'காது', 'மூக்கு'], correctIndex: 0, explanation: 'கண் என்பது சரியான எழுத்துப்பிழையில்லா சொல்.', skill: 'correct-word', difficulty: 1 },
@@ -200,4 +241,149 @@ export const QUESTION_BANK: AssessmentQuestion[] = [
   { id: 124, prompt: 'கூட்டமாக வாழும், கழிவுகளை உண்ணும் விலங்கு', options: ['பன்றி', 'பண்றி', 'எருமை', 'ஆடு'], correctIndex: 0, explanation: 'பன்றி என்பது சரியான சொல்; இது pig என்று பொருள்.', skill: 'correct-word', difficulty: 2 },
   { id: 125, prompt: 'எறும்பு வாழும் மண்மேடு', options: ['புற்று', 'புரு', 'குகை', 'கூடு'], correctIndex: 0, explanation: 'புற்று என்பதே சரியான சொல்; இது anthill என்று பொருள்.', skill: 'correct-word', difficulty: 3 },
 ];
+
+function shiftQuestionOptions(question: AssessmentQuestion, shiftBy: number): AssessmentQuestion {
+  if (question.activityType === 'word-match') {
+    return { ...question };
+  }
+
+  if (!question.options.length) {
+    return { ...question };
+  }
+
+  const normalizedShift = ((shiftBy % question.options.length) + question.options.length) % question.options.length;
+  if (normalizedShift === 0) {
+    return { ...question };
+  }
+
+  const shiftedOptions = question.options.map(
+    (_, idx) => question.options[(idx - normalizedShift + question.options.length) % question.options.length]
+  );
+  const shiftedImages = question.optionImages
+    ? question.optionImages.map(
+      (_, idx) => question.optionImages![(idx - normalizedShift + question.optionImages!.length) % question.optionImages!.length]
+    )
+    : undefined;
+
+  return {
+    ...question,
+    options: shiftedOptions,
+    correctIndex: (question.correctIndex + normalizedShift) % question.options.length,
+    ...(shiftedImages ? { optionImages: shiftedImages } : {}),
+  };
+}
+
+function buildBankSupplements(bankNumber: number): AssessmentQuestion[] {
+  const suffix = `(Bank ${bankNumber})`;
+  const baseId = 9000 + bankNumber * 100;
+
+  return [
+    {
+      id: baseId + 1,
+      prompt: `Which Tamil number means ${bankNumber + 10}? ${suffix}`,
+      options: ['பதினொன்று', 'பன்னிரண்டு', 'பதிமூன்று', 'பதிநான்கு'],
+      correctIndex: Math.min(Math.max(bankNumber - 1, 0), 3),
+      explanation: 'This is a bank-specific number recognition question.',
+      skill: 'numbers',
+      difficulty: 1,
+    },
+    {
+      id: baseId + 2,
+      prompt: `Audio letters check: choose the Tamil letter for this sound ${suffix}`,
+      options: ['க', 'ச', 'த', 'ப'],
+      correctIndex: bankNumber % 4,
+      explanation: 'This bank includes a rotated letter-audio mapping question.',
+      skill: 'audio-letters',
+      difficulty: 1,
+      audioText: ['க', 'ச', 'த', 'ப'][bankNumber % 4],
+      audioLang: 'ta-IN',
+    },
+    {
+      id: baseId + 3,
+      prompt: `Choose the correct Tamil word for "Thank you" ${suffix}`,
+      options: ['நன்றி', 'வணக்கம்', 'மன்னிக்கவும்', 'போங்கள்'],
+      correctIndex: 0,
+      explanation: 'நன்றி means Thank you.',
+      skill: 'vocabulary',
+      difficulty: 1,
+    },
+    {
+      id: baseId + 4,
+      prompt: `Pick the correctly ordered Tamil sentence ${suffix}`,
+      options: [
+        'நான் இன்று தமிழ் படிக்கிறேன்',
+        'தமிழ் நான் இன்று படிக்கிறேன் இல்லை',
+        'இன்று படிக்கிறேன் நான் தமிழ் மட்டும்',
+        'நான் படிக்கிறேன் தமிழ் இன்று இல்லை',
+      ],
+      correctIndex: 0,
+      explanation: 'First sentence follows natural Tamil word order.',
+      skill: 'reading',
+      difficulty: 2,
+    },
+    {
+      id: baseId + 5,
+      prompt: `Identify the long vowels (நெடில்) ${suffix}`,
+      options: ['ஆ', 'ஈ', 'அ', 'உ'],
+      correctIndex: 0,
+      explanation: 'ஆ is a long vowel.',
+      skill: 'vowel-activities',
+      difficulty: 1,
+      activityType: 'mcq',
+      audioText: 'ஆ',
+      audioLang: 'ta-IN',
+    },
+    {
+      id: baseId + 6,
+      prompt: `Correct spelling check ${suffix}: choose the right word`,
+      options: ['வானம்', 'வாணம்', 'வானம்‌', 'வனம்'],
+      correctIndex: 0,
+      explanation: 'வானம் is the correct spelling for sky.',
+      skill: 'correct-word',
+      difficulty: 2,
+    },
+    {
+      id: baseId + 7,
+      prompt: `Image word matching ${suffix}: Which one is "மரம்"?`,
+      options: ['மரம்', 'மலை', 'கடல்', 'பூ'],
+      correctIndex: 0,
+      explanation: 'மரம் means tree.',
+      skill: 'word-to-image',
+      difficulty: 1,
+      optionImages: ['/learning-images/png/tree.png', '/learning-images/png/mountain.png', '/learning-images/png/sea.png', '/learning-images/png/flower.png'],
+    },
+    {
+      id: baseId + 8,
+      prompt: `Image recognition ${suffix}: what is this?`,
+      options: ['புத்தகம்', 'பை', 'மேசை', 'கடிகாரம்'],
+      correctIndex: 0,
+      explanation: 'புத்தகம் means book.',
+      skill: 'image-recognition',
+      difficulty: 1,
+      image: '/learning-images/png/book.png',
+    },
+  ];
+}
+
+function buildQuestionBankVariant(bankNumber: number): AssessmentQuestion[] {
+  return [
+    ...QUESTION_BANK.map((question) => shiftQuestionOptions(question, bankNumber % 3)),
+    ...buildBankSupplements(bankNumber),
+  ];
+}
+
+export const QUESTION_BANKS: AssessmentQuestion[][] = Array.from({ length: 10 }, (_, idx) =>
+  buildQuestionBankVariant(idx + 1)
+);
+
+export function getRandomQuestionBankIndex(): number {
+  return Math.floor(Math.random() * QUESTION_BANKS.length);
+}
+
+export function getQuestionBankByIndex(index: number): AssessmentQuestion[] {
+  if (index < 0 || index >= QUESTION_BANKS.length) {
+    return QUESTION_BANKS[0];
+  }
+  return QUESTION_BANKS[index];
+}
 

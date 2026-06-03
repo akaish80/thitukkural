@@ -30,9 +30,29 @@ const AssessmentResultView = ({
   latestResult,
   onRetake,
 }: AssessmentResultViewProps) => {
+  const isSuccess = accuracy >= 70;
+
   return (
     <div className="duo-eval">
-      <div className="duo-eval__result">
+      <div className={[
+        'duo-eval__result',
+        isSuccess ? 'duo-eval__result--success' : '',
+      ].filter(Boolean).join(' ')}>
+        {isSuccess && (
+          <div className="duo-eval__result-celebration" aria-hidden="true">
+            <span className="duo-eval__confetti duo-eval__confetti--1" />
+            <span className="duo-eval__confetti duo-eval__confetti--2" />
+            <span className="duo-eval__confetti duo-eval__confetti--3" />
+            <span className="duo-eval__confetti duo-eval__confetti--4" />
+            <span className="duo-eval__confetti duo-eval__confetti--5" />
+            <span className="duo-eval__confetti duo-eval__confetti--6" />
+          </div>
+        )}
+
+        {isSuccess && (
+          <p className="duo-eval__result-success-text">Great job! Quiz completed successfully.</p>
+        )}
+
         <p className="duo-eval__result-tag">
           {chapterTitle ? `${chapterTitle} Evaluation` : 'Tamil Experience Evaluation'}
         </p>

@@ -11,7 +11,7 @@ export type Skill =
 
 export type Difficulty = 1 | 2 | 3;
 export type SpeechLang = 'ta-IN' | 'en-US';
-export type ActivityType = 'mcq' | 'vowel-order' | 'vowel-length';
+export type ActivityType = 'mcq' | 'vowel-order' | 'vowel-length' | 'word-match';
 
 export type AssessmentQuestion = {
   id: number;
@@ -30,6 +30,7 @@ export type AssessmentQuestion = {
   activityType?: ActivityType;
   correctOrder?: string[];
   correctOptions?: string[];
+  matchRightOptions?: string[];
 };
 
 export type AnswerState = 'idle' | 'correct' | 'wrong';

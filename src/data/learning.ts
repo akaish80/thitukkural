@@ -9,8 +9,8 @@ export const CHAPTER_GROUPS: ChapterGroup[] = [
       { id: '1.1', title: 'Vowels' },
       { id: '1.2', title: 'Consonants' },
       { id: '1.3', title: 'Consonant + Vowel' },
-      { id: '1.4', title: 'Reading in Tamil: Easy Words' },
-      { id: '1.5', title: 'Numbers in Tamil' },
+      { id: '1.4', title: 'Numbers in Tamil' },
+      { id: '1.5', title: 'Reading in Tamil: Easy Words' },
     ],
   },
   {

@@ -2,6 +2,7 @@ import VowelsLessonContent from './VowelsLessonContent';
 import ConsonantsLessonContent from './ConsonantsLessonContent';
 import UyirmeiLessonContent from './UyirmeiLessonContent';
 import ReadingTamilLessonContent from './ReadingTamilLessonContent';
+import NumbersTamilLessonContent from './NumbersTamilLessonContent';
 
 type UnitContentProps = {
   unitId?: string;
@@ -21,6 +22,10 @@ const UnitContent = ({ unitId }: UnitContentProps) => {
   }
 
   if (unitId === '1.4') {
+    return <NumbersTamilLessonContent />;
+  }
+
+  if (unitId === '1.5') {
     return <ReadingTamilLessonContent />;
   }
 

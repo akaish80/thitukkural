@@ -8,10 +8,20 @@ type FeedbackPanelProps = {
 };
 
 const FeedbackPanel = ({ answerState, explanation, correctAnswer, onContinue }: FeedbackPanelProps) => {
+  const isCorrect = answerState === 'correct';
+
   return (
     <div className={`duo-eval__feedback duo-eval__feedback--${answerState}`}>
-      <p>
-        {answerState === 'correct'
+      {isCorrect && (
+        <div className="duo-eval__feedback-celebration" aria-hidden="true">
+          <span className="duo-eval__feedback-spark duo-eval__feedback-spark--1">✨</span>
+          <span className="duo-eval__feedback-spark duo-eval__feedback-spark--2">🎉</span>
+          <span className="duo-eval__feedback-spark duo-eval__feedback-spark--3">✨</span>
+          <span className="duo-eval__feedback-spark duo-eval__feedback-spark--4">🎊</span>
+        </div>
+      )}
+      <p className={isCorrect ? 'duo-eval__feedback-title duo-eval__feedback-title--correct' : 'duo-eval__feedback-title'}>
+        {isCorrect
           ? 'Correct answer. Great work!'
           : `Not quite. Correct answer: ${correctAnswer}`}
       </p>

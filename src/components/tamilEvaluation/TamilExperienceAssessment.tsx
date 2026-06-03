@@ -1,48 +1,54 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { speakText } from '../chatbot/speakText';
 import {
   getLatestTamilEvaluation,
-  recordActivity,
-  saveQuizResult,
-  saveTamilEvaluationResult,
 } from '../../utils/learningStore';
 import {
   CHAPTER_EVAL_CONFIG,
-  LESSON_SECTIONS,
   STARTING_HEARTS,
 } from './index';
 import type {
   AnswerState,
   AssessmentQuestion,
   Attempt,
+  ForcedQuestionConfig,
   SectionTransition,
-  SessionQuestion,
-  Skill,
 } from './index';
-import { buildSessionQuestions, computeLevel, speakByLang } from '../../utils/tamilEvaluationUtils';
+import { computeLevel, speakByLang } from '../../utils/tamilEvaluationUtils';
+import { TamilEvaluationActivityEvaluator } from '../../utils/tamilEvaluationActivityEvaluator';
+import { TamilEvaluationComponentUtils } from '../../utils/tamilEvaluationComponentUtils';
+import { getWeakSkills, persistTamilEvaluationCompletion } from '../../utils/tamilEvaluationResultUtils';
+import { useTamilEvaluationSession } from './useTamilEvaluationSession';
 import AssessmentQuestionCard from './AssessmentQuestionCard';
 import AssessmentResultView from './AssessmentResultView';
 import AssessmentTopBar from './AssessmentTopBar';
 import FeedbackPanel from './FeedbackPanel';
 import SectionTransitionView from './SectionTransitionView';
 import './TamilExperienceAssessment.scss';
+
 const TamilExperienceAssessment = () => {
   const [searchParams] = useSearchParams();
   const chapterId = searchParams.get('chapter') || '';
+  const forcedConfig = useMemo<ForcedQuestionConfig>(
+    () => TamilEvaluationComponentUtils.buildForcedQuestionConfig(searchParams),
+    [searchParams],
+  );
   const chapterConfig = CHAPTER_EVAL_CONFIG[chapterId] || null;
 
-  const sectionPlan = useMemo(() => {
-    if (!chapterConfig) return LESSON_SECTIONS;
-    return LESSON_SECTIONS.filter((section) => chapterConfig.skills.includes(section.skill));
-  }, [chapterConfig]);
+  const {
+    sectionPlan,
+    totalQuestions,
+    questions,
+    coveredUnitIds,
+    showCoverageDebug,
+    regenerateSessionQuestions,
+  } = useTamilEvaluationSession({
+    chapterId,
+    chapterConfig,
+    forcedConfig,
+  });
 
-  const totalQuestions = useMemo(
-    () => sectionPlan.reduce((sum, section) => sum + section.count, 0),
-    [sectionPlan],
-  );
-
-  const [questions, setQuestions] = useState<SessionQuestion[]>(() => buildSessionQuestions(sectionPlan, chapterId || undefined));
   const [questionIndex, setQuestionIndex] = useState(0);
   const [answerState, setAnswerState] = useState<AnswerState>('idle');
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -55,39 +61,47 @@ const TamilExperienceAssessment = () => {
   const [reorderItems, setReorderItems] = useState<string[]>([]);
   const [activeReorderItem, setActiveReorderItem] = useState<string | null>(null);
   const [selectedVowelSet, setSelectedVowelSet] = useState<string[]>([]);
+  const [matchRightItems, setMatchRightItems] = useState<string[]>([]);
+  const [wordMatches, setWordMatches] = useState<Record<string, string>>({});
+  const [activeMatchLeft, setActiveMatchLeft] = useState<string | null>(null);
   const [draggedVowel, setDraggedVowel] = useState<string | null>(null);
   const [resolvedAnswer, setResolvedAnswer] = useState<{ selected: string; correct: string } | null>(null);
+  const lastAutoPlayedQuestionIdRef = useRef<number | null>(null);
+
+  const clearActivityInteractionState = useCallback(() => {
+    setResolvedAnswer(null);
+    setDraggedVowel(null);
+    setActiveReorderItem(null);
+    setSelectedVowelSet([]);
+    setReorderItems([]);
+    setMatchRightItems([]);
+    setWordMatches({});
+    setActiveMatchLeft(null);
+  }, []);
 
   const latestResult = useMemo(() => getLatestTamilEvaluation(), []);
   const currentQuestion = questions[questionIndex] ?? null;
-  const coveredUnitIds = useMemo(
-    () => Array.from(new Set(questions.map((question) => question.unitId).filter((unitId): unitId is string => Boolean(unitId)))).sort(),
-    [questions],
-  );
-  const showCoverageDebug = import.meta.env.DEV && Boolean(chapterId);
 
   useEffect(() => {
     if (!currentQuestion) return;
 
-    setResolvedAnswer(null);
-    setDraggedVowel(null);
-    setActiveReorderItem(null);
+    clearActivityInteractionState();
 
     if (currentQuestion.activityType === 'vowel-order') {
       setReorderItems(currentQuestion.options);
-      setSelectedVowelSet([]);
       return;
     }
 
     if (currentQuestion.activityType === 'vowel-length') {
-      setSelectedVowelSet([]);
-      setReorderItems([]);
       return;
     }
 
-    setReorderItems([]);
-    setSelectedVowelSet([]);
-  }, [currentQuestion]);
+    if (currentQuestion.activityType === 'word-match') {
+      const rightItems = currentQuestion.matchRightOptions ?? currentQuestion.correctOptions ?? [];
+      setMatchRightItems(TamilEvaluationComponentUtils.shuffleItems(rightItems));
+      return;
+    }
+  }, [clearActivityInteractionState, currentQuestion]);
 
   const moveReorderItem = useCallback((fromItem: string, toItem: string) => {
     setReorderItems((prev) => {
@@ -110,27 +124,38 @@ const TamilExperienceAssessment = () => {
 
   const checkActivity = useCallback(() => {
     if (!currentQuestion || answerState !== 'idle') return;
+    const evaluation = TamilEvaluationActivityEvaluator.evaluateActivity(
+      currentQuestion,
+      reorderItems,
+      selectedVowelSet,
+      wordMatches,
+    );
+    if (!evaluation) return;
 
-    if (currentQuestion.activityType === 'vowel-order') {
-      const expected = currentQuestion.correctOrder ?? [];
-      if (reorderItems.length !== expected.length) return;
+    setResolvedAnswer({ selected: evaluation.selected, correct: evaluation.correct });
+    setAnswerState(evaluation.isCorrect ? 'correct' : 'wrong');
+  }, [answerState, currentQuestion, reorderItems, selectedVowelSet, wordMatches]);
 
-      const isCorrect = expected.every((item, idx) => reorderItems[idx] === item);
-      setResolvedAnswer({ selected: reorderItems.join('  '), correct: expected.join('  ') });
-      setAnswerState(isCorrect ? 'correct' : 'wrong');
-      return;
-    }
+  const handleMatchLeftSelect = useCallback((leftItem: string) => {
+    if (answerState !== 'idle') return;
+    setActiveMatchLeft(leftItem);
+  }, [answerState]);
 
-    if (currentQuestion.activityType === 'vowel-length') {
-      const expected = [...(currentQuestion.correctOptions ?? [])].sort();
-      const selected = [...selectedVowelSet].sort();
-      if (selected.length === 0) return;
+  const handleMatchRightSelect = useCallback((rightItem: string) => {
+    if (answerState !== 'idle' || !activeMatchLeft) return;
 
-      const isCorrect = expected.length === selected.length && expected.every((item, idx) => item === selected[idx]);
-      setResolvedAnswer({ selected: selected.join(', '), correct: expected.join(', ') });
-      setAnswerState(isCorrect ? 'correct' : 'wrong');
-    }
-  }, [answerState, currentQuestion, reorderItems, selectedVowelSet]);
+    setWordMatches((prev) => {
+      const next = { ...prev };
+      Object.keys(next).forEach((left) => {
+        if (next[left] === rightItem) {
+          delete next[left];
+        }
+      });
+      next[activeMatchLeft] = rightItem;
+      return next;
+    });
+    setActiveMatchLeft(null);
+  }, [activeMatchLeft, answerState]);
 
   const playQuestionAudio = useCallback((question: AssessmentQuestion) => {
     if (question.audioText) {
@@ -142,8 +167,17 @@ const TamilExperienceAssessment = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (!currentQuestion) return;
+    if (currentQuestion.skill !== 'audio-letters' || !currentQuestion.audioText) return;
+    if (lastAutoPlayedQuestionIdRef.current === currentQuestion.id) return;
+
+    lastAutoPlayedQuestionIdRef.current = currentQuestion.id;
+    playQuestionAudio(currentQuestion);
+  }, [currentQuestion, playQuestionAudio]);
+
   const beginSession = useCallback(() => {
-    setQuestions(buildSessionQuestions(sectionPlan, chapterId || undefined));
+    regenerateSessionQuestions();
     setQuestionIndex(0);
     setAnswerState('idle');
     setSelectedIndex(null);
@@ -153,16 +187,15 @@ const TamilExperienceAssessment = () => {
     setHistory([]);
     setIsComplete(false);
     setSectionTransition(null);
-    setReorderItems([]);
-    setSelectedVowelSet([]);
-    setActiveReorderItem(null);
-    setDraggedVowel(null);
-    setResolvedAnswer(null);
-  }, [chapterId, sectionPlan]);
+    clearActivityInteractionState();
+    lastAutoPlayedQuestionIdRef.current = null;
+  }, [clearActivityInteractionState, regenerateSessionQuestions]);
 
   const handleSelect = useCallback(
     (index: number) => {
-      if (!currentQuestion || answerState !== 'idle' || currentQuestion.activityType === 'vowel-order' || currentQuestion.activityType === 'vowel-length') return;
+      if (!currentQuestion || answerState !== 'idle') return;
+      if (currentQuestion.activityType && currentQuestion.activityType !== 'mcq') return;
+
       setSelectedIndex(index);
       const isCorrect = index === currentQuestion.correctIndex;
       setResolvedAnswer({
@@ -208,24 +241,7 @@ const TamilExperienceAssessment = () => {
 
     if (shouldFinish) {
       const answered = questionIndex + 1;
-      const accuracy = Math.round((nextCorrect / answered) * 100);
-      const level = computeLevel(accuracy);
-      saveQuizResult({
-        date: new Date().toISOString(),
-        score: nextCorrect,
-        total: answered,
-        accuracy,
-        type: 'tamil-evaluation',
-      });
-      saveTamilEvaluationResult({
-        date: new Date().toISOString(),
-        score: nextCorrect,
-        total: answered,
-        accuracy,
-        xp: nextXp,
-        level,
-      });
-      recordActivity();
+      persistTamilEvaluationCompletion(nextCorrect, answered, nextXp);
       setIsComplete(true);
       return;
     }
@@ -267,34 +283,7 @@ const TamilExperienceAssessment = () => {
     const answered = history.length;
     const accuracy = answered > 0 ? Math.round((correctCount / answered) * 100) : 0;
     const level = computeLevel(accuracy);
-    const weakSkills = Object.entries(
-      history.reduce<Record<Skill, { total: number; correct: number }>>(
-        (acc, item) => {
-          if (!acc[item.skill]) acc[item.skill] = { total: 0, correct: 0 };
-          acc[item.skill].total += 1;
-          if (item.isCorrect) acc[item.skill].correct += 1;
-          return acc;
-        },
-        {
-          letters: { total: 0, correct: 0 },
-          'vowel-activities': { total: 0, correct: 0 },
-          'audio-letters': { total: 0, correct: 0 },
-          numbers: { total: 0, correct: 0 },
-          vocabulary: { total: 0, correct: 0 },
-          reading: { total: 0, correct: 0 },
-          'image-recognition': { total: 0, correct: 0 },
-          'word-to-image': { total: 0, correct: 0 },
-          'correct-word': { total: 0, correct: 0 },
-        },
-      ),
-    )
-      .filter(([, stats]) => stats.total > 0)
-      .map(([skill, stats]) => ({
-        skill: skill as Skill,
-        accuracy: Math.round((stats.correct / stats.total) * 100),
-      }))
-      .sort((a, b) => a.accuracy - b.accuracy)
-      .slice(0, 2);
+    const weakSkills = getWeakSkills(history, 2);
 
     return (
       <AssessmentResultView
@@ -319,11 +308,15 @@ const TamilExperienceAssessment = () => {
   const currentSection = sectionPlan[currentQuestion!.sectionIdx];
   const sectionTotal = currentSection.count;
   const sectionDone = currentQuestion!.indexInSection;
-  const canCheckActivity =
-    answerState === 'idle' && (
-      (currentQuestion.activityType === 'vowel-order' && reorderItems.length > 0) ||
-      (currentQuestion.activityType === 'vowel-length' && selectedVowelSet.length > 0)
+  const canCheckActivity = useMemo(() => {
+    return TamilEvaluationActivityEvaluator.canCheckActivity(
+      answerState,
+      currentQuestion,
+      reorderItems,
+      selectedVowelSet,
+      wordMatches,
     );
+  }, [answerState, currentQuestion.activityType, currentQuestion.options, reorderItems.length, selectedVowelSet.length, wordMatches]);
   const progress = totalQuestions > 0 ? Math.round((questionIndex / totalQuestions) * 100) : 0;
   // Section segment markers (cumulative question counts at section boundaries)
   const sectionBoundaries = sectionPlan.reduce<number[]>((acc, s) => {
@@ -333,6 +326,17 @@ const TamilExperienceAssessment = () => {
 
   return (
     <div className="duo-eval">
+      {answerState === 'correct' && (
+        <div className="duo-eval__success-overlay" aria-hidden="true">
+          <span className="duo-eval__success-burst duo-eval__success-burst--1">✨</span>
+          <span className="duo-eval__success-burst duo-eval__success-burst--2">🎉</span>
+          <span className="duo-eval__success-burst duo-eval__success-burst--3">✨</span>
+          <span className="duo-eval__success-burst duo-eval__success-burst--4">🎊</span>
+          <span className="duo-eval__success-burst duo-eval__success-burst--5">✨</span>
+          <span className="duo-eval__success-ring" />
+        </div>
+      )}
+
       <AssessmentTopBar
         chapterTitle={chapterConfig?.title}
         questionIndex={questionIndex}
@@ -359,6 +363,9 @@ const TamilExperienceAssessment = () => {
         reorderItems={reorderItems}
         activeReorderItem={activeReorderItem}
         selectedVowelSet={selectedVowelSet}
+        matchRightItems={matchRightItems}
+        wordMatches={wordMatches}
+        activeMatchLeft={activeMatchLeft}
         canCheckActivity={canCheckActivity}
         onPlayAudio={() => playQuestionAudio(currentQuestion)}
         onSelectOption={handleSelect}
@@ -371,6 +378,8 @@ const TamilExperienceAssessment = () => {
         onSwapReorderItem={moveReorderItem}
         onCheckActivity={checkActivity}
         onToggleVowelLengthOption={toggleVowelLengthOption}
+        onSelectMatchLeft={handleMatchLeftSelect}
+        onSelectMatchRight={handleMatchRightSelect}
       />
 
       {answerState !== 'idle' && (

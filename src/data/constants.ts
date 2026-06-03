@@ -49,7 +49,7 @@ export const nav: NavItem[] = [
 export const STARTING_HEARTS = 3;
 
 export const LESSON_SECTIONS: LessonSection[] = [
-  { skill: 'letters' as Skill, label: 'Letters', labelTamil: 'எழுத்துக்கள்', icon: '🔤', count: 3 },
+  { skill: 'letters' as Skill, label: 'Letters', labelTamil: 'எழுத்துக்கள்', icon: '🔤', count: 4 },
   {
     skill: 'vowel-activities' as Skill,
     label: 'Vowel Activities',
@@ -58,12 +58,12 @@ export const LESSON_SECTIONS: LessonSection[] = [
     count: 5,
     requiredQuestionIds: [203, 204, 205],
   },
-  { skill: 'audio-letters' as Skill, label: 'Audio Letters', labelTamil: 'ஒலி எழுத்து', icon: '🔊', count: 2 },
-  { skill: 'numbers' as Skill, label: 'Numbers', labelTamil: 'எண்கள்', icon: '🔢', count: 2 },
-  { skill: 'vocabulary' as Skill, label: 'Vocabulary', labelTamil: 'சொல்லகராதி', icon: '📝', count: 3 },
-  { skill: 'reading' as Skill, label: 'Reading', labelTamil: 'வாசிப்பு', icon: '📖', count: 2 },
-  { skill: 'image-recognition' as Skill, label: 'Image Recognition', labelTamil: 'படம் அடையாளம்', icon: '🖼️', count: 2 },
-  { skill: 'correct-word' as Skill, label: 'Correct Spelling', labelTamil: 'சரியான சொல்', icon: '✍️', count: 3 },
+  { skill: 'audio-letters' as Skill, label: 'Audio Letters', labelTamil: 'ஒலி எழுத்து', icon: '🔊', count: 3 },
+  { skill: 'numbers' as Skill, label: 'Numbers', labelTamil: 'எண்கள்', icon: '🔢', count: 3 },
+  { skill: 'vocabulary' as Skill, label: 'Vocabulary', labelTamil: 'சொல்லகராதி', icon: '📝', count: 4 },
+  { skill: 'reading' as Skill, label: 'Reading', labelTamil: 'வாசிப்பு', icon: '📖', count: 3 },
+  { skill: 'image-recognition' as Skill, label: 'Image Recognition', labelTamil: 'படம் அடையாளம்', icon: '🖼️', count: 4 },
+  { skill: 'correct-word' as Skill, label: 'Correct Spelling', labelTamil: 'சரியான சொல்', icon: '✍️', count: 4 },
 ];
 
 export const CHAPTER_EVAL_CONFIG: Record<string, { title: string; skills: Skill[] }> = {
@@ -157,4 +157,7 @@ export type {
 
 export {
   QUESTION_BANK,
+  QUESTION_BANKS,
+  getQuestionBankByIndex,
+  getRandomQuestionBankIndex,
 } from './evaluation';
